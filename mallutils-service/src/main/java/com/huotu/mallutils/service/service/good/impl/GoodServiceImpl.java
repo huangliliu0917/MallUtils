@@ -1,3 +1,12 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼在地图中查看
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2016. All rights reserved.
+ */
+
 package com.huotu.mallutils.service.service.good.impl;
 
 import com.alibaba.fastjson.JSON;
@@ -45,7 +54,7 @@ public class GoodServiceImpl implements GoodService {
     public void batchSetUserPrice(Map<Integer, String> levelsToSet, List<Good> goods, int customerId) throws ScriptException {
         ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("JavaScript");
 
-        List<Level> levels = levelService.findByCustomerId(296);
+        List<Level> levels = levelService.findByCustomerId(customerId);
         for (Good good : goods) {
             double minPrice = 0, maxPrice = 0;
             for (Product product : good.getProducts()) {
@@ -140,9 +149,9 @@ public class GoodServiceImpl implements GoodService {
      * @return
      */
     private double getResultPrice(String eval, double cost, double price, double marketPrice, ScriptEngine scriptEngine) throws ScriptException {
-        eval = eval.replaceAll("a", String.valueOf(cost));
-        eval = eval.replaceAll("b", String.valueOf(marketPrice));
-        eval = eval.replaceAll("c", String.valueOf(price));
+        eval = eval.replaceAll("a", String.valueOf(price));
+        eval = eval.replaceAll("b", String.valueOf(cost));
+        eval = eval.replaceAll("c", String.valueOf(marketPrice));
         double resultPrice = Double.parseDouble(scriptEngine.eval(eval).toString());
         resultPrice = BigDecimal.valueOf(resultPrice).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue(); //目标价格
 
