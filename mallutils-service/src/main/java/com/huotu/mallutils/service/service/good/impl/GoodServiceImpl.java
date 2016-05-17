@@ -186,27 +186,27 @@ public class GoodServiceImpl implements GoodService {
                     if (priceLevelDesc == null) {
                         priceLevelDesc = new PriceLevelDesc();
                         priceLevelDesc.setLevelId(level.getId());
-                        priceLevelDesc.setMinPrice(goodLvPrice.getPrice());
-                        priceLevelDesc.setMaxPrice(goodLvPrice.getPrice());
-                        priceLevelDesc.setMinIntegral(goodLvPrice.getMaxIntegral());
-                        priceLevelDesc.setMaxIntegral(goodLvPrice.getMaxIntegral());
+//                        priceLevelDesc.setMinPrice(goodLvPrice.getPrice());
+//                        priceLevelDesc.setMaxPrice(goodLvPrice.getPrice());
+//                        priceLevelDesc.setMinIntegral(goodLvPrice.getMaxIntegral());
+//                        priceLevelDesc.setMaxIntegral(goodLvPrice.getMaxIntegral());
                     }
-//                    if (goodLvPrice.getPrice() > 0) {
-//                        if (priceLevelDesc.getMinPrice() <= 0 || priceLevelDesc.getMinPrice() >= goodLvPrice.getPrice()) {
-//                            priceLevelDesc.setMinPrice(goodLvPrice.getPrice());
-//                        }
-//                        if (goodLvPrice.getPrice() >= priceLevelDesc.getMaxPrice()) {
-//                            priceLevelDesc.setMaxPrice(goodLvPrice.getPrice());
-//                        }
-//                    }
-//                    if (goodLvPrice.getMaxIntegral() > 0) {
-//                        if (priceLevelDesc.getMinIntegral() <= 0 || priceLevelDesc.getMinIntegral() >= goodLvPrice.getMaxIntegral()) {
-//                            priceLevelDesc.setMinIntegral(goodLvPrice.getMaxIntegral());
-//                        }
-//                        if (goodLvPrice.getMaxIntegral() >= priceLevelDesc.getMaxIntegral()) {
-//                            priceLevelDesc.setMaxIntegral(goodLvPrice.getMaxIntegral());
-//                        }
-//                    }
+                    if (goodLvPrice.getPrice() > 0) {
+                        if (priceLevelDesc.getMinPrice() <= 0 || priceLevelDesc.getMinPrice() >= goodLvPrice.getPrice()) {
+                            priceLevelDesc.setMinPrice(goodLvPrice.getPrice());
+                        }
+                        if (goodLvPrice.getPrice() >= priceLevelDesc.getMaxPrice()) {
+                            priceLevelDesc.setMaxPrice(goodLvPrice.getPrice());
+                        }
+                    }
+                    if (goodLvPrice.getMaxIntegral() > 0) {
+                        if (priceLevelDesc.getMinIntegral() <= 0 || priceLevelDesc.getMinIntegral() >= goodLvPrice.getMaxIntegral()) {
+                            priceLevelDesc.setMinIntegral(goodLvPrice.getMaxIntegral());
+                        }
+                        if (goodLvPrice.getMaxIntegral() >= priceLevelDesc.getMaxIntegral()) {
+                            priceLevelDesc.setMaxIntegral(goodLvPrice.getMaxIntegral());
+                        }
+                    }
                     if (goodLvPrice.getPrice() > 0 || goodLvPrice.getMaxIntegral() > 0) {
                         priceLevelDescMap.put(level.getId(), priceLevelDesc);
                     }
