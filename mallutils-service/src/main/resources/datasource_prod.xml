@@ -33,7 +33,7 @@
 
     <bean id="datasource" class="org.springframework.jndi.JndiObjectFactoryBean">
         <property name="jndiName">
-            <value>jdbc/MallUtils</value>
+            <value>jdbc/MallMSData</value>
         </property>
         <property name="resourceRef">
             <value>true</value>
