@@ -57,14 +57,14 @@ public class BatchSetPriceController {
         try {
             String[] cateIdArray = cateIdList.split(",");
             String[] evalInfoArray = evalInfos.split(",");
-            Map<Integer, String> levelsToSet = new HashMap<>(); //设置的等级及公式列表
+            Map<Integer, String[]> levelsToSet = new HashMap<>(); //设置的等级及公式列表
             for (String evalInfo : evalInfoArray) {
                 String[] info = evalInfo.split(":");
-                levelsToSet.put(Integer.valueOf(info[0]), info[1]);
+                levelsToSet.put(Integer.valueOf(info[0]), new String[]{info[1], info[2]});
             }
             for (String cateIdStr : cateIdArray) {
                 List<Good> goodsBeans = goodService.findByCatId(Integer.parseInt(cateIdStr));
-                goodService.batchSetUserPrice(levelsToSet, goodsBeans, customerId);
+                goodService.batchSetUserPriceV2(levelsToSet, goodsBeans, customerId);
             }
             return ApiResult.resultWith(ResultCode.SUCCESS);
         } catch (Exception e) {
