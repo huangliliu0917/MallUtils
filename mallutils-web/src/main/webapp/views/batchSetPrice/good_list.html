@@ -30,52 +30,16 @@
         var ajaxUrl = /*[[@{/batchSetPrice/}]]*/ "";
     </script>
     <script type="text/javascript">
+        /*<![CDATA[*/
         var batchSetHandler = {
             showDialog: function () {
-                var savedGoodInfo = $.trim($("#savedGoodInfo").val());//由于分页,这是设置过的商品id
-
-                var goodListStr = "";
-                $("input[name='chkGoodId']:checked").each(function () {
-                    goodListStr += $(this).val() + ",";
-                });
-
-                goodListStr = goodListStr.substring(0, goodListStr.length - 1); //本页设置的商品
-                var currentPageInfo = pageIndex + ":" + goodListStr;
-
-                if (savedGoodInfo.length == 0 && goodListStr == "") {
+                var savedGoodInfo = $("#savedGoodInfo").val();
+                if (savedGoodInfo.length == 0) {
                     $.jBox.tip("请选择所要设置的商品");
                     return;
                 }
                 J.ShowDialog("bulkDiscount_dialog", "批量设置", function () {
                     var self = this;
-                    if (savedGoodInfo.length > 0) {
-                        //1:1,2|2:3,4
-                        var savedGoodInfoArray = savedGoodInfo.split('|');
-                        var newSavedGoodInfo = "";
-                        var addIndex = true;
-                        savedGoodInfoArray.each(function () {
-                            var info = this;
-                            var infoArray = info.split(':');
-                            if (parseInt(infoArray[0]) == pageIndex) {
-                                addIndex = false;
-                                info = currentPageInfo;
-                            }
-                            if (goodListStr != "") {
-                                newSavedGoodInfo += info + "|";
-                            }
-                        });
-                        if (addIndex) {
-                            if (goodListStr != "") {
-                                newSavedGoodInfo += currentPageInfo;
-                            }
-                        }
-                        savedGoodInfo = newSavedGoodInfo;
-                    } else {
-                        if (goodListStr != "") {
-                            savedGoodInfo = currentPageInfo;
-                        }
-                    }
-
                     var evalInfos = ""; //levelId:priceEval:integralEval,levelId:priceEval:integralEval
 
                     var chkLevels = $("input[name=chkLevel]:checked");
@@ -96,10 +60,17 @@
                         }
                         evalInfos += levelId + ":" + priceEvalStr + ":" + integralEvalStr + ",";
                     });
-
+                    var savedGoodInfoArray = savedGoodInfo.split('|');
+                    var goodListStr = "";
+                    $.each(savedGoodInfoArray, function (o, item) {
+                        var infoArray = item.split(':');
+                        $.each(infoArray[1].split(','), function (o, id) {
+                            goodListStr += id + ",";
+                        });
+                    });
                     var requestData = {
                         evalInfos: evalInfos.substring(0, evalInfos.length - 1),
-                        goodListStr: savedGoodInfo
+                        goodListStr: goodListStr.substring(0, goodListStr.length - 1)
                     };
                     $.jBox.tip("正在设置...", "loading");
                     J.GetJsonRespons(ajaxUrl + "batchSetUserPriceByGoods", requestData, function (json) {
@@ -117,10 +88,66 @@
                 }, function () {
                     $(this).dialog("close");
                 })
+            },
+            setSavedGoodInfo: function () {
+                var savedGoodInfo = $.trim($("#savedGoodInfo").val());//由于分页,这是设置过的商品id
+
+                var goodListStr = "";
+                $("input[name='chkGoodId']:checked").each(function () {
+                    goodListStr += $(this).val() + ",";
+                });
+
+                goodListStr = goodListStr.substring(0, goodListStr.length - 1); //本页设置的商品
+                var currentPageInfo = pageIndex + ":" + goodListStr;
+
+                if (savedGoodInfo.length > 0) {
+                    //1:1,2|2:3,4
+                    var savedGoodInfoArray = savedGoodInfo.split('|');
+                    var newSavedGoodInfo = "";
+                    var addIndex = true;
+                    $.each(savedGoodInfoArray, function (o, item) {
+                        var info = item;
+                        var infoArray = info.split(':');
+                        if (parseInt(infoArray[0]) == pageIndex) {
+                            addIndex = false;
+                            info = currentPageInfo;
+                        }
+                        if (goodListStr != "") {
+                            newSavedGoodInfo += info + "|";
+                        }
+                    });
+                    if (addIndex) {
+                        if (goodListStr != "") {
+                            newSavedGoodInfo += currentPageInfo;
+                        }
+                    }
+                    savedGoodInfo = newSavedGoodInfo;
+                } else {
+                    if (goodListStr != "") {
+                        savedGoodInfo = currentPageInfo;
+                    }
+                }
+                $("#savedGoodInfo").val(savedGoodInfo);
+            },
+            bindSavedGoodInfo: function () {
+                var savedGoodInfo = $.trim($("#savedGoodInfo").val());
+                if (savedGoodInfo.length > 0) {
+                    var savedGoodInfoArray = savedGoodInfo.split('|');
+                    $.each(savedGoodInfoArray, function (o, item) {
+                        var infoArray = item.split(':');
+                        if (parseInt(infoArray[0]) == pageIndex) {
+                            var idList = infoArray[1].split(',');
+                            $.each(idList, function (o, id) {
+                                $("input[name=chkGoodId][value=" + id + "]").attr("checked", "checked");
+                            });
+                        }
+                    })
+                }
             }
         };
 
         $(function () {
+            batchSetHandler.bindSavedGoodInfo();
             $("#levelCheckAll").change(function () {
                 if ($(this).attr("checked")) {
                     $("input[name=chkLevel]").attr("checked", "checked");
@@ -135,8 +162,10 @@
                 } else {
                     $("input[name=chkGoodId]").removeAttr("checked", "checked");
                 }
+                batchSetHandler.setSavedGoodInfo();
             });
-        })
+        });
+        /*]]>*/
     </script>
 </head>
 <body>
@@ -186,6 +215,7 @@
     <!--/*@thymesVar id="goodSearch" type="com.huotu.mallutils.service.search.GoodSearch"*/-->
     <form method="get" id="searchForm" th:action="@{/batchSetPrice/goodList}" th:object="${goodSearch}">
         <input type="hidden" id="savedGoodInfo" name="savedGoodInfo" th:value="${savedGoodInfo}"/>
+        <input type="hidden" name="catId" th:value="*{catId}"/>
 
         <div class="search block" style="display: block;">
             <div class="h">
@@ -272,7 +302,7 @@
                         <!--/*@thymesVar id="goods" type="java.util.List<com.huotu.mallutils.service.entity.good.Good>"*/-->
                         <tr th:each="good:${goods}">
                             <td class="txt40 c">
-                                <input type="checkbox" name="chkGoodId" th:value="${good.goodId}"/>
+                                <input type="checkbox" onclick="batchSetHandler.setSavedGoodInfo()" name="chkGoodId" th:value="${good.goodId}"/>
                             </td>
                             <td class="txt80 c" th:text="${good.name}">
                             </td>
