@@ -99,7 +99,7 @@ public class BatchSetPriceController {
             levelsToSet.put(Integer.valueOf(info[0]), new String[]{info[1], info[2]});
         }
         for (String cateIdStr : cateIdArray) {
-            List<Good> goodsBeans = goodService.findByCatId(Integer.parseInt(cateIdStr));
+            List<Good> goodsBeans = goodService.findByCatId("|" + cateIdStr + "|");
             goodService.batchSetUserPriceV2(levelsToSet, goodsBeans, customerId);
         }
         return ApiResult.resultWith(ResultCode.SUCCESS);

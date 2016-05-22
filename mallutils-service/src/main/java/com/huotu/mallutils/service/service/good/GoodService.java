@@ -36,7 +36,7 @@ public interface GoodService {
     @Transactional
     void batchSetUserPriceV2(Map<Integer, String[]> levelsToSet, List<Good> goods, int customerId) throws Exception;
 
-    List<Good> findByCatId(int catId);
+    List<Good> findByCatId(String catId);
 
     Page<Good> findAll(int pageIndex, int pageSize, int customerId, GoodSearch goodSearch);
 

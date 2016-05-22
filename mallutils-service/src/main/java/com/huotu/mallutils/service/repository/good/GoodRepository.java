@@ -22,7 +22,8 @@ import java.util.List;
  */
 @Repository
 public interface GoodRepository extends JpaRepository<Good, Integer>, JpaSpecificationExecutor<Good> {
-    List<Good> findByGoodCat_CatId(int catId);
+    @Query("select good from Good good where good.goodCat.catPath like %?1%")
+    List<Good> findByGoodCat_CatId(String catId);
 
     @Query("select good from Good good where good.goodId in ?1")
     List<Good> findByGoodIdIn(List<Integer> goodIdList);

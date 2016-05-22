@@ -237,7 +237,7 @@ public class GoodServiceImpl implements GoodService {
     }
 
     @Override
-    public List<Good> findByCatId(int catId) {
+    public List<Good> findByCatId(String catId) {
         return goodRepository.findByGoodCat_CatId(catId);
     }
 
@@ -250,7 +250,8 @@ public class GoodServiceImpl implements GoodService {
                 predicates.add(cb.like(root.get("name").as(String.class), "%" + goodSearch.getGoodName() + "%"));
             }
             if (goodSearch.getCatId() > 0) {
-                predicates.add(cb.equal(root.get("goodCat").get("catId").as(Integer.class), goodSearch.getCatId()));
+                predicates.add(cb.like(root.get("goodCat").get("catPath").as(String.class), "%|" + goodSearch.getCatId() + "|%"));
+//                predicates.add(cb.equal(root.get("goodCat").get("catId").as(Integer.class), goodSearch.getCatId()));
             }
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         });

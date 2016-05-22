@@ -164,6 +164,12 @@
                 }
                 batchSetHandler.setSavedGoodInfo();
             });
+
+            $("#searchAll").click(function () {
+                $("input[name=pageIndex]").val(1);
+                $("#goodName").val("");
+                $("#searchForm").submit();
+            })
         });
         /*]]>*/
     </script>
@@ -236,13 +242,13 @@
                     <div class="search-bar">
                         <div>
                             <label class="first ">商品名称：</label>
-                            <input name="goodName" th:value="*{goodName}" type="text" class="input-big"/>
+                            <input id="goodName" name="goodName" th:value="*{goodName}" type="text" class="input-big"/>
                             <label>
                                 <a class="btn-lit btn-middle" href="javascript:$('#pageIndex').val(1);$('#searchForm').submit();"
                                    style="margin-bottom: 3px;">
                                     <span>查询</span>
                                 </a>
-                                <a class="btn-lit btn-middle" th:href="@{/order/deliveries}"
+                                <a class="btn-lit btn-middle" id="searchAll"
                                    style="margin-bottom: 3px;">
                                     <span>显示全部</span>
                                 </a>
