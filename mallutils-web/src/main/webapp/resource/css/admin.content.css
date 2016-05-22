@@ -17,7 +17,6 @@ body {
     height: auto;
     min-width: 1020px;
 }
-
 /*#395a7b*/
 
 .location {
@@ -299,6 +298,10 @@ body {
     color: #FF6600;
 }
 
+
+
+
+
 /* 数据表格 */
 .data-table {
     width: 100%;
@@ -312,6 +315,7 @@ body {
     color: #2e3740;
     font-weight: bold;
     font-size: 12px;
+    background-size: cover;
 }
 
 .data-table .even {
@@ -371,22 +375,22 @@ body {
 .data-table td.txt120 {
     text-indent: 5px;
     width: 120px;
-    text-indent: 5px;
-    width: 300px;
+    *text-indent: 5px;
+    *width: 300px;
 }
 
 .data-table td.txt160 {
     text-indent: 5px;
     width: 160px;
-    text-indent: 5px;
-    width: 350px;
+    *text-indent: 5px;
+    *width: 350px;
 }
 
 .data-table td.txt200 {
     text-indent: 5px;
     width: 200px;
-    text-indent: 5px;
-    width: 400px;
+    *text-indent: 5px;
+    *width: 400px;
 }
 
 .data-table td.icon {
@@ -426,6 +430,7 @@ body {
     margin: 0px 4px;
 }
 
+
 /* 分页按钮 */
 .button-white {
     display: inline-block;
@@ -451,6 +456,7 @@ body {
     font-size: 12px;
     font-family: "微软雅黑", "宋体";
 }
+
 
 /* 后来添加 */
 .select {

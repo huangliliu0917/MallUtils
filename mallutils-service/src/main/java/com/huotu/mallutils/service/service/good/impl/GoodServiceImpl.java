@@ -16,18 +16,24 @@ import com.huotu.mallutils.service.entity.good.Product;
 import com.huotu.mallutils.service.entity.user.Level;
 import com.huotu.mallutils.service.model.PriceLevelDesc;
 import com.huotu.mallutils.service.repository.good.GoodRepository;
+import com.huotu.mallutils.service.search.GoodSearch;
 import com.huotu.mallutils.service.service.good.GoodService;
 import com.huotu.mallutils.service.service.good.ProductService;
 import com.huotu.mallutils.service.service.user.LevelService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.criteria.Predicate;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,7 +145,7 @@ public class GoodServiceImpl implements GoodService {
 
     @Override
     @Transactional
-    public void batchSetUserPriceV2(Map<Integer, String[]> levelsToSet, List<Good> goods, int customerId) throws ScriptException {
+    public void batchSetUserPriceV2(Map<Integer, String[]> levelsToSet, List<Good> goods, int customerId) throws Exception {
         ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("JavaScript");
         List<Level> levels = levelService.findByCustomerId(customerId);
         for (Good good : goods) {
@@ -167,11 +173,17 @@ public class GoodServiceImpl implements GoodService {
                         String integralEval = evalInfo[1];
                         if (!StringUtils.isEmpty(priceEval) && !priceEval.equalsIgnoreCase("none")) {
                             resultPrice = getResultPrice(priceEval, product.getCost(), product.getPrice(), product.getMarketPrice(), scriptEngine);
+                            if (resultPrice < 0) {
+                                throw new Exception("不可将会员价设置为负数,请检查输入的公式或值");
+                            }
                             goodLvPrice.setPrice(resultPrice);
                         }
                         goodLvPrice.setPrice(resultPrice);
                         if (!StringUtils.isEmpty(integralEval) && !integralEval.equalsIgnoreCase("none")) {
                             resultIntegral = (int) getResultPrice(integralEval, product.getCost(), product.getPrice(), product.getMarketPrice(), scriptEngine);
+                            if (resultIntegral < 0) {
+                                throw new Exception("不可将最高可抵用积分设置为负数,请检查输入的公式或值");
+                            }
                             goodLvPrice.setMaxIntegral(resultIntegral);
                         }
                         goodLvPrice.setMaxIntegral(resultIntegral);
@@ -227,6 +239,33 @@ public class GoodServiceImpl implements GoodService {
     @Override
     public List<Good> findByCatId(int catId) {
         return goodRepository.findByGoodCat_CatId(catId);
+    }
+
+    @Override
+    public Page<Good> findAll(int pageIndex, int pageSize, int customerId, GoodSearch goodSearch) {
+        Specification<Good> specification = ((root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(cb.equal(root.get("customerId").as(Integer.class), customerId));
+            if (!StringUtils.isEmpty(goodSearch.getGoodName())) {
+                predicates.add(cb.like(root.get("name").as(String.class), "%" + goodSearch.getGoodName() + "%"));
+            }
+            if (goodSearch.getCatId() > 0) {
+                predicates.add(cb.equal(root.get("goodCat").get("catId").as(Integer.class), goodSearch.getCatId()));
+            }
+            return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+        });
+
+        return goodRepository.findAll(specification, new PageRequest(pageIndex - 1, pageSize));
+    }
+
+    @Override
+    public List<Good> findByIdIn(List<Integer> goodIdList) {
+        return goodRepository.findByGoodIdIn(goodIdList);
+    }
+
+    public List<Good> findByCatIdExceptAct(int catId) {
+        // TODO: 5/21/16 //过滤活动的商品
+        return null;
     }
 
     /**

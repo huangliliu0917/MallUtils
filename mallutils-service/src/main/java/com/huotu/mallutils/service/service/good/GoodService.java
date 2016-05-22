@@ -10,9 +10,10 @@
 package com.huotu.mallutils.service.service.good;
 
 import com.huotu.mallutils.service.entity.good.Good;
+import com.huotu.mallutils.service.search.GoodSearch;
+import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.script.ScriptException;
 import java.util.List;
 import java.util.Map;
 
@@ -30,10 +31,14 @@ public interface GoodService {
      * @param goods       要应用设置的商品列表
      */
     @Transactional
-    void batchSetUserPrice(Map<Integer, String> levelsToSet, List<Good> goods, int customerId) throws ScriptException;
+    void batchSetUserPrice(Map<Integer, String> levelsToSet, List<Good> goods, int customerId) throws Exception;
 
     @Transactional
-    void batchSetUserPriceV2(Map<Integer, String[]> levelsToSet, List<Good> goods, int customerId) throws ScriptException;
+    void batchSetUserPriceV2(Map<Integer, String[]> levelsToSet, List<Good> goods, int customerId) throws Exception;
 
     List<Good> findByCatId(int catId);
+
+    Page<Good> findAll(int pageIndex, int pageSize, int customerId, GoodSearch goodSearch);
+
+    List<Good> findByIdIn(List<Integer> goodIdList);
 }

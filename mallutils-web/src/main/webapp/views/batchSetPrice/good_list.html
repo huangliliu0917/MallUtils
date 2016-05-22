@@ -1,0 +1,308 @@
+<!doctype html>
+<!--
+  ~ 版权所有:杭州火图科技有限公司
+  ~ 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼在地图中查看
+  ~
+  ~ (c) Copyright Hangzhou Hot Technology Co., Ltd.
+  ~ Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+  ~ 2013-2016. All rights reserved.
+  -->
+
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<!--/*@thymesVar id="levels" type="java.util.List<com.huotu.mallutils.service.entity.user.Level>"*/-->
+<!--/*@thymesVar id="goodCatList" type="java.util.List<com.huotu.mallutils.service.entity.good.GoodCat>"*/-->
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <link rel="stylesheet" type="text/css" href="../../resource/css/admin.global.css" th:href="@{/resource/css/admin.global.css}"/>
+    <link rel="stylesheet" type="text/css" href="../../resource/css/admin.content.css" th:href="@{/resource/css/admin.content.css}"/>
+    <link rel="stylesheet" type="text/css" href="../../resource/scripts/lib/jBox/Skins/Green/jbox.css" th:href="@{/resource/scripts/lib/jBox/Skins/Green/jbox.css}"/>
+    <script type="text/javascript" src="../../resource/scripts/lib/jquery-1.7.2.min.js" th:src="@{/resource/scripts/lib/jquery-1.7.2.min.js}"></script>
+    <script type="text/javascript" src="../../resource/scripts/lib/jquery.utils.js" th:src="@{/resource/scripts/lib/jquery.utils.js}"></script>
+    <script type="text/javascript" src="../../resource/scripts/lib/jBox/jquery.jBox-2.3.min.js" th:src="@{/resource/scripts/lib/jBox/jquery.jBox-2.3.min.js}"></script>
+    <script type="text/javascript" src="../../resource/scripts/lib/admin.js" th:src="@{/resource/scripts/lib/admin.js}"></script>
+    <script type="text/javascript" src="../../resource/scripts/lib/jqueryui/jquery-ui-1.8.20.min.js" th:src="@{/resource/scripts/lib/jqueryui/jquery-ui-1.8.20.min.js}"></script>
+    <link rel="stylesheet" type="text/css"
+          href="../../resource/scripts/lib/jqueryui/jquery-ui-1.10.3.custom.min.css"
+          th:href="@{/resource/scripts/lib/jqueryui/jquery-ui-1.10.3.custom.min.css}"/>
+    <title>商品分类</title>
+    <script type="text/javascript" th:inline="javascript">
+        var ajaxUrl = /*[[@{/batchSetPrice/}]]*/ "";
+    </script>
+    <script type="text/javascript">
+        var batchSetHandler = {
+            showDialog: function () {
+                var savedGoodInfo = $.trim($("#savedGoodInfo").val());//由于分页,这是设置过的商品id
+
+                var goodListStr = "";
+                $("input[name='chkGoodId']:checked").each(function () {
+                    goodListStr += $(this).val() + ",";
+                });
+
+                goodListStr = goodListStr.substring(0, goodListStr.length - 1); //本页设置的商品
+                var currentPageInfo = pageIndex + ":" + goodListStr;
+
+                if (savedGoodInfo.length == 0 && goodListStr == "") {
+                    $.jBox.tip("请选择所要设置的商品");
+                    return;
+                }
+                J.ShowDialog("bulkDiscount_dialog", "批量设置", function () {
+                    var self = this;
+                    if (savedGoodInfo.length > 0) {
+                        //1:1,2|2:3,4
+                        var savedGoodInfoArray = savedGoodInfo.split('|');
+                        var newSavedGoodInfo = "";
+                        var addIndex = true;
+                        savedGoodInfoArray.each(function () {
+                            var info = this;
+                            var infoArray = info.split(':');
+                            if (parseInt(infoArray[0]) == pageIndex) {
+                                addIndex = false;
+                                info = currentPageInfo;
+                            }
+                            if (goodListStr != "") {
+                                newSavedGoodInfo += info + "|";
+                            }
+                        });
+                        if (addIndex) {
+                            if (goodListStr != "") {
+                                newSavedGoodInfo += currentPageInfo;
+                            }
+                        }
+                        savedGoodInfo = newSavedGoodInfo;
+                    } else {
+                        if (goodListStr != "") {
+                            savedGoodInfo = currentPageInfo;
+                        }
+                    }
+
+                    var evalInfos = ""; //levelId:priceEval:integralEval,levelId:priceEval:integralEval
+
+                    var chkLevels = $("input[name=chkLevel]:checked");
+                    if (chkLevels.length == 0) {
+                        $.jBox.tip("请选择要设置的等级及相应的公式或具体值");
+                        return;
+                    }
+
+                    chkLevels.each(function () {
+                        var levelId = $(this).val();
+                        var priceEvalStr = $.trim($("#priceEval" + levelId).val());
+                        if (priceEvalStr.length == 0) {
+                            priceEvalStr = "none";
+                        }
+                        var integralEvalStr = $.trim($("#integralEval" + levelId).val());
+                        if (integralEvalStr.length == 0) {
+                            integralEvalStr = "none";
+                        }
+                        evalInfos += levelId + ":" + priceEvalStr + ":" + integralEvalStr + ",";
+                    });
+
+                    var requestData = {
+                        evalInfos: evalInfos.substring(0, evalInfos.length - 1),
+                        goodListStr: savedGoodInfo
+                    };
+                    $.jBox.tip("正在设置...", "loading");
+                    J.GetJsonRespons(ajaxUrl + "batchSetUserPriceByGoods", requestData, function (json) {
+                        if (json.code == 2000) {
+                            $.jBox.tip("设置成功", "success");
+                            $(self).dialog("close");
+                        } else {
+                            if (json.msg == null || json.msg == "") {
+                                json.msg = "请检查输入的公式和值";
+                            }
+                            $.jBox.tip("设置失败:" + json.msg, "error");
+                        }
+                    }, function () {
+                    }, "post");
+                }, function () {
+                    $(this).dialog("close");
+                })
+            }
+        };
+
+        $(function () {
+            $("#levelCheckAll").change(function () {
+                if ($(this).attr("checked")) {
+                    $("input[name=chkLevel]").attr("checked", "checked");
+                } else {
+                    $("input[name=chkLevel]").removeAttr("checked", "checked");
+                }
+            });
+
+            $("#checkAll").change(function () {
+                if ($(this).attr("checked")) {
+                    $("input[name=chkGoodId]").attr("checked", "checked");
+                } else {
+                    $("input[name=chkGoodId]").removeAttr("checked", "checked");
+                }
+            });
+        })
+    </script>
+</head>
+<body>
+<div id="bulkDiscount_dialog" style="padding:20px;display: none;">
+    <div class="dataTables_wrapper">
+        <table width="100%" class="table_appss tablept5">
+            <thead>
+            <tr class="sdkbar" style="font-weight:bold;">
+                <th align="center" rowspan="1" colspan="1">
+                    <input type="checkbox" id="levelCheckAll"/>
+                </th>
+                <th align="center" rowspan="1" colspan="1">等级名称</th>
+                <th align="center" rowspan="1" colspan="1">等级类型</th>
+                <th align="center" rowspan="1" colspan="1">会员价公式/值</th>
+                <th align="center" rowspan="1" colspan="1">可抵用积分公式/值</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr height="28px" class="odd" th:each="level:${levels}">
+                <td align="center" style="width: 50px;">
+                    <input type="checkbox" name="chkLevel" th:value="${level.id}"/>
+                </td>
+                <td align="center" th:text="${level.levelName}">
+                </td>
+                <td align="center" th:text="${level.type==0?'会员':'小伙伴'}">
+                </td>
+                <td>
+                    <input type="text" th:id="'priceEval'+${level.id}"/>
+                </td>
+                <td>
+                    <input type="text" th:id="'integralEval'+${level.id}"/>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <p style=" clear:both"></p>
+    </div>
+    <p style="color: red;">说明:</p>
+
+    <p style="color: red;">1.请输入公式:a表示销售价,b表示成本价,c表示市场价.如会员价为销售价的50%,则公式为a/2</p>
+
+    <p style="color: red;">2.批量设置以后将会批量更新商品的会员价,不填则表示不设置</p>
+</div>
+<div class="container">
+    <div class="blank10">
+    </div>
+    <!--/*@thymesVar id="goodSearch" type="com.huotu.mallutils.service.search.GoodSearch"*/-->
+    <form method="get" id="searchForm" th:action="@{/batchSetPrice/goodList}" th:object="${goodSearch}">
+        <input type="hidden" id="savedGoodInfo" name="savedGoodInfo" th:value="${savedGoodInfo}"/>
+
+        <div class="search block" style="display: block;">
+            <div class="h">
+                <span class="icon-sprite icon-magnifier"></span>
+
+                <h3>搜索</h3>
+            </div>
+            <div class="tl corner">
+            </div>
+            <div class="tr corner">
+            </div>
+            <div class="bl corner">
+            </div>
+            <div class="br corner">
+            </div>
+            <div class="cnt-wp" style="padding: 35px 10px 10px;">
+                <div class="cnt">
+                    <div class="search-bar">
+                        <div>
+                            <label class="first ">商品名称：</label>
+                            <input name="goodName" th:value="*{goodName}" type="text" class="input-big"/>
+                            <label>
+                                <a class="btn-lit btn-middle" href="javascript:$('#pageIndex').val(1);$('#searchForm').submit();"
+                                   style="margin-bottom: 3px;">
+                                    <span>查询</span>
+                                </a>
+                                <a class="btn-lit btn-middle" th:href="@{/order/deliveries}"
+                                   style="margin-bottom: 3px;">
+                                    <span>显示全部</span>
+                                </a>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="blank10">
+        </div>
+
+        <div class="block">
+            <div class="h">
+                <span class="icon-sprite icon-list"></span>
+
+                <h3 style="float: left; width: 144px;">商品列表 </h3>
+
+                <div class="bar">
+
+                    <a class="btn-lit" href="javascript:batchSetHandler.showDialog()">
+                        <span>设置</span></a>
+                </div>
+            </div>
+            <div class="tl corner">
+            </div>
+            <div class="tr corner">
+            </div>
+            <div class="bl corner">
+            </div>
+            <div class="br corner">
+            </div>
+            <div class="cnt-wp">
+
+                <div class="cnt">
+                    <table class="data-table even1" width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <thead>
+                        <tr class="even">
+                            <th scope="col">
+                                <input type="checkbox" id="checkAll"/>
+                            </th>
+                            <th scope="col">商品名称
+                            </th>
+                            <th scope="col">商品编号
+                            </th>
+                            <th scope="col">销售价
+                            </th>
+                            <th scope="col">市场价
+                            </th>
+                            <th scope="col">成本价
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <!--/*@thymesVar id="goods" type="java.util.List<com.huotu.mallutils.service.entity.good.Good>"*/-->
+                        <tr th:each="good:${goods}">
+                            <td class="txt40 c">
+                                <input type="checkbox" name="chkGoodId" th:value="${good.goodId}"/>
+                            </td>
+                            <td class="txt80 c" th:text="${good.name}">
+                            </td>
+                            <td class="txt40 c" th:text="${good.barcode}">
+                            </td>
+                            <td class="txt40 c" th:text="${good.price}">
+                            </td>
+                            <td class="txt40 c" th:text="${good.cost}">
+                            </td>
+                            <td class="txt40 c" th:text="${good.marketPrice}">
+                            </td>
+                        </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+
+                <script type="text/javascript" th:inline="javascript">
+                    /*<![CDATA[*/
+                    var pageSize = /*[[${pageSize}]]*/ '-1';
+                    var pageIndex = /*[[${pageIndex}]]*/ '-1';
+                    var pageCount = /*[[${totalPages}]]*/ '-1';
+                    var recordCount = /*[[${totalRecords}]]*/ '-1';
+                    var formName = 'searchForm';
+                    Pager.Output(formName, 'pageIndex', pageSize, pageIndex, pageCount, recordCount);
+                    /*]]>*/
+                </script>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>
