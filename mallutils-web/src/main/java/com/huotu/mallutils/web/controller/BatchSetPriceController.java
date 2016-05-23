@@ -64,11 +64,11 @@ public class BatchSetPriceController {
             GoodSearch goodSearch,
             Model model
     ) {
-        Page<Good> goods = goodService.findAll(pageIndex, SysConstant.DEFALUT_PAGE_INDEX, customerId, goodSearch);
+        Page<Good> goods = goodService.findAll(pageIndex, SysConstant.DEFAULT_PAGE_INDEX, customerId, goodSearch);
         List<Level> levels = levelService.findByCustomerIdWithOrder(customerId);
 
         model.addAttribute("goods", goods.getContent());
-        model.addAttribute("pageSize", SysConstant.DEFALUT_PAGE_INDEX);
+        model.addAttribute("pageSize", SysConstant.DEFAULT_PAGE_INDEX);
         model.addAttribute("totalPages", goods.getTotalPages());
         model.addAttribute("totalRecords", goods.getTotalElements());
         model.addAttribute("goodSearch", goodSearch);
