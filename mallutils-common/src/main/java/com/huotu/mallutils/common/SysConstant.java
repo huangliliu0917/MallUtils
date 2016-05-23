@@ -22,6 +22,7 @@ import javax.annotation.PostConstruct;
 public class SysConstant {
     public static final int DEFAULT_PAGE_INDEX = 20;
     public static String HUOBANMALL_LOGIN;
+
     @Autowired
     private Environment environment;
 
