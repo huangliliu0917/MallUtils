@@ -13,17 +13,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Created by admin on 2016/5/20.
+ * Created by allan on 5/23/16.
  */
-@Getter
 @Setter
+@Getter
 public class DWTSysData {
-
     private String BASIS_URL = "http://180.168.134.198:8080/Cherry/webservice/cherryws";
 
     private String REGISTER_URL = "http://180.168.134.198:8080/CherryBatch/webservice/cherryws";
     private String appID = "weshop";
     private String brandCode = "OJM";
     private String AESKey = "KwBHRgqFEygN1VZC2TR7Qw==";
-
 }
