@@ -79,11 +79,23 @@ public class DWTApiController {
                     e.printStackTrace();
                 }
                 break;
-            case "PointMaintenance": //积分查询
+            case "PointMaintenance": //积分维护
                 MaintainPoint maintainPoint = new MaintainPoint();
                 maintainPoint.setTradeType("PointMaintenance");
                 try {
                     ReturnData data = new SapConnector().MaintainPoint(maintainPoint);
+                    if("0".equals(data.getERRORCODE())){
+                        return ApiResult.resultWith(ResultCode.SUCCESS,data.getData());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case "GetMemberInfo"://会员信息查询（包括现有积分）
+                GetMemberInfoBean memberInfoBean = new GetMemberInfoBean();
+                memberInfoBean.setTradeType("GetMemberInfo");
+                try {
+                    ReturnData data = new SapConnector().getMemberInfo(memberInfoBean);
                     if("0".equals(data.getERRORCODE())){
                         return ApiResult.resultWith(ResultCode.SUCCESS,data.getData());
                     }
