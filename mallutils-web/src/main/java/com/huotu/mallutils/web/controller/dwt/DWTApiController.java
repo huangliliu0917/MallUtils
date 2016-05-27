@@ -80,7 +80,7 @@ public class DWTApiController {
                 }
                 break;
             case "PointMaintenance": //积分维护
-                MaintainPoint maintainPoint = new MaintainPoint();
+                MaintainPoint maintainPoint = JSON.parseObject(infoJson, MaintainPoint.class);
                 maintainPoint.setTradeType("PointMaintenance");
                 try {
                     ReturnData data = new SapConnector().MaintainPoint(maintainPoint);
@@ -92,12 +92,12 @@ public class DWTApiController {
                 }
                 break;
             case "GetMemberInfo"://会员信息查询（包括现有积分）
-                GetMemberInfoBean memberInfoBean = new GetMemberInfoBean();
+                GetMemberInfoBean memberInfoBean = JSON.parseObject(infoJson, GetMemberInfoBean.class);
                 memberInfoBean.setTradeType("GetMemberInfo");
                 try {
                     ReturnData data = new SapConnector().getMemberInfo(memberInfoBean);
                     if("0".equals(data.getERRORCODE())){
-                        return ApiResult.resultWith(ResultCode.SUCCESS,data.getData());
+                        return ApiResult.resultWith(ResultCode.SUCCESS,data.getData().get("ResultContent"));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
