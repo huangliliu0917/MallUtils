@@ -97,7 +97,7 @@ public class DWTApiController {
                 try {
                     ReturnData data = new SapConnector().getMemberInfo(memberInfoBean);
                     if("0".equals(data.getERRORCODE())){
-                        return ApiResult.resultWith(ResultCode.SUCCESS,data.getData().get("ResultContent"));
+                        return ApiResult.resultWith(ResultCode.SUCCESS,data.getData());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
