@@ -81,7 +81,7 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authorityInterceptor);
+        registry.addInterceptor(authorityInterceptor).excludePathPatterns("/dwt/**");
     }
 
     @Override

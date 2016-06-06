@@ -134,7 +134,7 @@
                     <input type="text" th:id="'priceEval'+${level.id}"/>
                 </td>
                 <td>
-                    <input type="text" th:id="'integralEval'+${level.id}"/>
+                    <input th:if="${level.type==0}" type="text" th:id="'integralEval'+${level.id}"/>
                 </td>
             </tr>
             </tbody>

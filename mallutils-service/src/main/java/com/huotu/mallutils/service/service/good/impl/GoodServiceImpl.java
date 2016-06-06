@@ -191,7 +191,7 @@ public class GoodServiceImpl implements GoodService {
 
                     goodLvPriceMap.put(level.getId(), goodLvPrice);
 
-                    userPriceInfo += level.getId() + ":" + resultPrice + ":" + goodLvPrice.getMaxIntegral() + "|";
+                    userPriceInfo += level.getId() + ":" + goodLvPrice.getPrice() + ":" + goodLvPrice.getMaxIntegral() + "|";
 
                     //处理商品冗余
                     PriceLevelDesc priceLevelDesc = priceLevelDescMap.get(level.getId());
@@ -246,6 +246,7 @@ public class GoodServiceImpl implements GoodService {
         Specification<Good> specification = ((root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(cb.equal(root.get("customerId").as(Integer.class), customerId));
+            predicates.add(cb.isFalse(root.get("disabled").as(Boolean.class)));
             if (!StringUtils.isEmpty(goodSearch.getGoodName())) {
                 predicates.add(cb.like(root.get("name").as(String.class), "%" + goodSearch.getGoodName() + "%"));
             }

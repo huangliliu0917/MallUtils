@@ -14,30 +14,50 @@ import com.huotu.mallutils.common.ienum.ResultCode;
 import com.huotu.mallutils.web.common.ApiResult;
 import connector.SapConnector;
 import entity.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.annotation.PostConstruct;
 
 /**
  * Created by allan on 5/23/16.
  */
+@Controller
 @RequestMapping("/dwt")
 public class DWTApiController {
+    private static final Log log = LogFactory.getLog(DWTApiController.class);
+
+    @PostConstruct
+    public void initSysData() {
+        DWTSysData.BASIS_URL = "http://202.107.243.44:60080/Cherry/webservice/cherryws";
+        DWTSysData.REGISTER_URL = "http://202.107.243.44:60080/CherryBatch/webservice/cherryws";
+        DWTSysData.GET_MEMBER_INFO_URL = "http://202.107.243.44:60080/Cherry/webservice/cherryws";
+        DWTSysData.appID = "weshop";
+        DWTSysData.brandCode = "ply";
+        DWTSysData.AESKey = "KwBHRgqFEygN1VZC2TR7Qw==";
+    }
+
     /**
      * @param tradeType 方法类型
      * @param infoJson  json格式信息
      * @return
      */
 
-    @RequestMapping("/dwtApi")
+    @RequestMapping(value = "/dwtApi", method = RequestMethod.POST)
+    @ResponseBody
     public ApiResult dwtApi(String tradeType, String infoJson) {
-
-        switch (tradeType){
+        switch (tradeType) {
             case "SendMobileMessage"://注册验证码
                 RegisterCodeBean registerCodeBean = JSON.parseObject(infoJson, RegisterCodeBean.class);
                 registerCodeBean.setTradeType("SendMobileMessage");
                 try {
                     ReturnData data = new SapConnector().GetRegisterCode(registerCodeBean);
-                    if("0".equals(data.getERRORCODE())){
-                        return ApiResult.resultWith(ResultCode.SUCCESS);
+                    if ("0".equals(data.getERRORCODE())) {
+                        return ApiResult.resultWith(ResultCode.SUCCESS, data.getData());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -48,8 +68,8 @@ public class DWTApiController {
                 memberRegisterBean.setTradeType("WechatBindCreate");
                 try {
                     ReturnData data = new SapConnector().Memberregister(memberRegisterBean);
-                    if("0".equals(data.getERRORCODE())){
-                        return ApiResult.resultWith(ResultCode.SUCCESS,data.getData());
+                    if ("0".equals(data.getERRORCODE())) {
+                        return ApiResult.resultWith(ResultCode.SUCCESS, data.getData());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -60,8 +80,8 @@ public class DWTApiController {
                 bindCodeBean.setTradeType("AuthenticateWechatRequest");
                 try {
                     ReturnData data = new SapConnector().GetbindCode(bindCodeBean);
-                    if("0".equals(data.getERRORCODE())){
-                        return ApiResult.resultWith(ResultCode.SUCCESS);
+                    if ("0".equals(data.getERRORCODE())) {
+                        return ApiResult.resultWith(ResultCode.SUCCESS, data.getData());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -72,32 +92,35 @@ public class DWTApiController {
                 memberBindBean.setTradeType("BindWechat");
                 try {
                     ReturnData data = new SapConnector().Memberbind(memberBindBean);
-                    if("0".equals(data.getERRORCODE())){
-                        return ApiResult.resultWith(ResultCode.SUCCESS,data.getData());
+                    if ("0".equals(data.getERRORCODE())) {
+                        return ApiResult.resultWith(ResultCode.SUCCESS, data.getData());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
             case "PointMaintenance": //积分维护
-                MaintainPoint maintainPoint = new MaintainPoint();
+                MaintainPoint maintainPoint = JSON.parseObject(infoJson, MaintainPoint.class);
                 maintainPoint.setTradeType("PointMaintenance");
                 try {
                     ReturnData data = new SapConnector().MaintainPoint(maintainPoint);
-                    if("0".equals(data.getERRORCODE())){
-                        return ApiResult.resultWith(ResultCode.SUCCESS,data.getData());
+                    if ("0".equals(data.getERRORCODE())) {
+                        return ApiResult.resultWith(ResultCode.SUCCESS, data.getData());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
             case "GetMemberInfo"://会员信息查询（包括现有积分）
-                GetMemberInfoBean memberInfoBean = new GetMemberInfoBean();
+                GetMemberInfoBean memberInfoBean = JSON.parseObject(infoJson, GetMemberInfoBean.class);
                 memberInfoBean.setTradeType("GetMemberInfo");
                 try {
                     ReturnData data = new SapConnector().getMemberInfo(memberInfoBean);
-                    if("0".equals(data.getERRORCODE())){
-                        return ApiResult.resultWith(ResultCode.SUCCESS,data.getData());
+                    if ("0".equals(data.getERRORCODE())) {
+                        return ApiResult.resultWith(ResultCode.SUCCESS, data.getData().getJSONArray("ResultContent").get(0));
+                    } else {
+
+                        log.info("url:" + DWTSysData.GET_MEMBER_INFO_URL + "&returndata:" + JSON.toJSONString(data));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -106,11 +129,8 @@ public class DWTApiController {
             default:
                 return ApiResult.resultWith(ResultCode.ERROR);
         }
-        // TODO: 5/23/16 会员信息
         return ApiResult.resultWith(ResultCode.ERROR);
     }
-
-
 
 
 }
