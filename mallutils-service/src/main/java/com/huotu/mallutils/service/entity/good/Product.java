@@ -71,4 +71,8 @@ public class Product {
     )
     @MapKey(name = "levelId")
     private Map<Integer, GoodLvPrice> goodLvPriceMap;
+    @Column(name = "DisRebateMode")
+    private int disRebateMode;
+    @Column(name = "DisUnifiedRebate")
+    private double disUnifiedRebate;
 }

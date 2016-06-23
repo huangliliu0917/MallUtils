@@ -22,9 +22,12 @@ import java.util.List;
  */
 @Repository
 public interface GoodRepository extends JpaRepository<Good, Integer>, JpaSpecificationExecutor<Good> {
-    @Query("select good from Good good where good.disabled=false and good.goodCat.catPath like %?1%")
-    List<Good> findByGoodCat_CatId(String catId);
+    @Query("select good from Good good where good.disabled=false and good.goodScenes=?2 and good.goodCat.catPath like %?1%")
+    List<Good> findByGoodCat_CatIdAndGoodScenes(String catId, int goodScenes);
 
     @Query("select good from Good good where good.goodId in ?1")
     List<Good> findByGoodIdIn(List<Integer> goodIdList);
+
+    @Query("select good from Good good where good.disabled=false and good.brandId=?1 and good.goodScenes=?2")
+    List<Good> findByBrandIdAndGoodScenes(int brandId, int goodScenes);
 }

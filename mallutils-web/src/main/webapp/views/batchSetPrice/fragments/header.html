@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!--
+  ~ 版权所有:杭州火图科技有限公司
+  ~ 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼在地图中查看
+  ~
+  ~ (c) Copyright Hangzhou Hot Technology Co., Ltd.
+  ~ Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+  ~ 2013-2016. All rights reserved.
+  -->
+
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>顶部导航</title>
+</head>
+<body>
+<div th:fragment="header (activeHeader)"
+     class="om-tabs-headers om-helper-reset om-helper-clearfix om-widget-header om-corner-all header-no-border"
+     style="height: 28px;">
+    <ul style="height: 28px; line-height: 28px;">
+        <span class="left-placeholder"></span>
+        <li class="om-state-default om-corner-top"
+            th:classappend="${activeHeader==0?'om-tabs-activated om-state-active':''}" id="ddgl1">
+            <span class="lileft"></span><a th:href="@{/batchSetPrice/goodList}" class="om-tabs-inner" style="width: auto; height: 27px;">按商品</a><span class="liright"></span>
+        </li>
+        <li class="om-state-default om-corner-top"
+            th:classappend="${activeHeader==1?'om-tabs-activated om-state-active':''}" id="ddgl2"><span class="lileft"></span><a
+                th:href="@{/batchSetPrice/brandList}" class="om-tabs-inner"
+                style="width: auto; height: 27px;">按品牌</a><span class="liright"></span></li>
+
+        <li class="om-state-default om-corner-top"
+            th:classappend="${activeHeader==2?'om-tabs-activated om-state-active':''}" id="ddgl3"><span class="lileft">
+                            </span><a
+                th:href="@{/batchSetPrice/catList}" class="om-tabs-inner"
+                style="width: auto; height: 27px;">按分类</a><span class="liright"></span></li>
+        <!--<li class="om-state-default om-corner-top"-->
+        <!--th:classappend="${activeHeader==4?'om-tabs-activated om-state-active':''}" id="ddgl4"><span class="lileft"></span><a-->
+        <!--href="javascript:showList(4);" class="om-tabs-inner"-->
+        <!--style="width: auto; height: 27px;">按商品类型</a><span class="liright"></span></li>-->
+        <!--<li class="om-state-default om-corner-top"-->
+        <!--th:classappend="${activeHeader==4?'om-tabs-activated om-state-active':''}" id="ddgl5"><span class="lileft"></span><a-->
+        <!--href="javascript:showList(4);" class="om-tabs-inner"-->
+        <!--style="width: auto; height: 27px;">按标准商品类型</a><span class="liright"></span></li>-->
+
+        <span class="right-placeholder"></span>
+    </ul>
+</div>
+</body>
+</html>

@@ -9,6 +9,7 @@
 
 package com.huotu.mallutils.service.entity.good;
 
+import com.huotu.mallutils.service.model.DisRebateDesc;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,6 +34,8 @@ public class Good {
     @ManyToOne
     @JoinColumn(name = "Cat_Id", referencedColumnName = "Cat_Id")
     private GoodCat goodCat;
+    @Column(name = "Brand_Id")
+    private int brandId;
     /**
      * 商品简介
      */
@@ -68,4 +71,13 @@ public class Good {
      */
     @Column(name = "Price_LevelDesc")
     private String priceLevelDesc;
+
+    /**
+     * 上架场景
+     */
+    @Column(name = "Goods_Scenes")
+    private int goodScenes;
+
+    @Column(name = "DisRebate_Desc")
+    private List<DisRebateDesc> disRebateDescList;
 }

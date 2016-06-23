@@ -14,6 +14,7 @@ import com.huotu.mallutils.service.entity.good.Good;
 import com.huotu.mallutils.service.entity.good.GoodLvPrice;
 import com.huotu.mallutils.service.entity.good.Product;
 import com.huotu.mallutils.service.entity.user.Level;
+import com.huotu.mallutils.service.model.DisRebateDesc;
 import com.huotu.mallutils.service.model.PriceLevelDesc;
 import com.huotu.mallutils.service.repository.good.GoodRepository;
 import com.huotu.mallutils.service.search.GoodSearch;
@@ -237,8 +238,8 @@ public class GoodServiceImpl implements GoodService {
     }
 
     @Override
-    public List<Good> findByCatId(String catId) {
-        return goodRepository.findByGoodCat_CatId(catId);
+    public List<Good> findByCatIdExceptAct(String catId, int goodScenes) {
+        return goodRepository.findByGoodCat_CatIdAndGoodScenes(catId, goodScenes);
     }
 
     @Override
@@ -252,7 +253,12 @@ public class GoodServiceImpl implements GoodService {
             }
             if (goodSearch.getCatId() > 0) {
                 predicates.add(cb.like(root.get("goodCat").get("catPath").as(String.class), "%|" + goodSearch.getCatId() + "|%"));
-//                predicates.add(cb.equal(root.get("goodCat").get("catId").as(Integer.class), goodSearch.getCatId()));
+            }
+            if (!StringUtils.isEmpty(goodSearch.getGoodBn())) {
+                predicates.add(cb.like(root.get("barcode").as(String.class), "%" + goodSearch.getGoodBn() + "%"));
+            }
+            if (goodSearch.getBrand() > 0) {
+                predicates.add(cb.equal(root.get("brandId").as(Integer.class), goodSearch.getBrand()));
             }
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         });
@@ -265,9 +271,33 @@ public class GoodServiceImpl implements GoodService {
         return goodRepository.findByGoodIdIn(goodIdList);
     }
 
-    public List<Good> findByCatIdExceptAct(int catId) {
-        // TODO: 5/21/16 //过滤活动的商品
-        return null;
+    @Override
+    public List<Good> findByBrandIdExceptAct(int brandId, int goodScenes) {
+        return goodRepository.findByBrandIdAndGoodScenes(brandId, goodScenes);
+    }
+
+    @Override
+    @Transactional
+    public void batchSetRebate(String eval, List<Good> goods, int customerId) throws ScriptException {
+        ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("JavaScript");
+        for (Good good : goods) {
+            List<DisRebateDesc> disRebateDescList = new ArrayList<>();
+            for (Product product : good.getProducts()) {
+                double resultValue = getResultPrice(eval, product.getCost(), product.getPrice(), product.getMarketPrice(), scriptEngine);
+                product.setDisRebateMode(0);
+                product.setDisUnifiedRebate(resultValue);
+                productService.save(product);
+
+                //商品冗余序列化字段
+                DisRebateDesc disRebateDesc = new DisRebateDesc();
+                disRebateDesc.setIsCustom(0);
+                disRebateDesc.setAmount(resultValue);
+                disRebateDesc.setProId(product.getProductId());
+                disRebateDescList.add(disRebateDesc);
+            }
+            good.setDisRebateDescList(disRebateDescList);
+            this.save(good);
+        }
     }
 
     /**

@@ -7,19 +7,15 @@
  * 2013-2016. All rights reserved.
  */
 
-package com.huotu.mallutils.service.search;
+package com.huotu.mallutils.service.service.good;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.huotu.mallutils.service.entity.good.GoodBrand;
+
+import java.util.List;
 
 /**
- * Created by allan on 5/21/16.
+ * Created by allan on 6/21/16.
  */
-@Setter
-@Getter
-public class GoodSearch {
-    private String goodName;
-    private int catId;
-    private String goodBn;
-    private int brand;
+public interface GoodBrandService {
+    List<GoodBrand> findByCustomerId(int customerId);
 }

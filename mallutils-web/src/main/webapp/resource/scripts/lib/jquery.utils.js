@@ -41,38 +41,6 @@ $.fn.extend({
     }
 });
 
-var pageHandler = {
-    totalPage: 1,
-    pageIndex: 1,
-    pageUri: "",
-    init: function (totalPage, pageIndex, pageUri) {
-        this.totalPage = totalPage;
-        this.pageIndex = pageIndex;
-        this.pageUri = pageUri;
-        if (totalPage <= 1) {
-            $("#pagePanel").hide();
-        } else {
-            $("#pagePanel").show();
-        }
-    },
-    previewPage: function () {
-        if (this.pageIndex > 1) {
-            this.pageIndex--;
-            $("#pageIndex").val(this.pageIndex);
-            //window.location.href = this.pageUri + "&pageIndex=" + this.pageIndex;
-            $("#searchForm").submit();
-        }
-    },
-    nextPage: function () {
-        if (this.pageIndex < this.totalPage) {
-            this.pageIndex++;
-            $("#pageIndex").val(this.pageIndex);
-            $("#searchForm").submit();
-            //window.location.href = this.pageUri + "&pageIndex=" + this.pageIndex;
-        }
-    }
-}
-
 var J = J || {};
 
 $.extend(
@@ -489,37 +457,54 @@ $.extend(
             if (arguments.length == 2)
                 return arguments[1];
         },
-        pageOutput: function (url, pageSize, pageIndex, pageCount, recordCount) {
-            pageSize = parseInt(pageSize, 10);
-            pageIndex = parseInt(pageIndex, 10);
-            pageCount = parseInt(pageCount, 10);
-            recordCount = parseInt(recordCount, 10);
-
-            if (pageIndex < 1)
-                pageIndex = 1;
-            if (pageIndex > pageCount)
-                pageIndex = pageCount;
-
-            // Pager.Data.urlFormat = urlFormat;
-            // Pager.Data.pageCount = pageCount;
-
-            function _getLink(text, enabled, urlFormat, index) {
-                if (enabled == false)
-                    return J.FormatString(' <a class="button-white" style="filter:Alpha(Opacity=60);opacity:0.6;" href="javascript:void(0);"><span>{0}</span></a>',
-                        text);
-                else
-                    return J.FormatString(' <a class="button-white" href="javascript:window.location.href=\'' + urlFormat + '\';"><span>{1}</span></a>', index, text);
-            }
-
-            var html = [];
-            html.push('<div class="pager-bar">');
-            html.push(J.FormatString('<div class="msg">共{0}条记录，当前第{1}/{2}，每页{3}条记录</div>', recordCount, pageIndex, pageCount, pageSize));
-            html.push(_getLink('上一页', pageIndex > 1, url, pageIndex - 1));
-            html.push(_getLink('下一页', pageCount > 0 && pageIndex < pageCount, url, pageIndex + 1));
-            html.push('</div>');
-
-            document.write(html.join(''));
-        }
+        jboxConfirm: function (msg, callback) {
+            jBox.confirm(msg, '提示', function (v, h, f) {
+                if (v == "ok") {
+                    callback();
+                }
+                return true;
+            });
+        },
+        PopupIFrame: function (url, PopupTitle, width, height, iframeID, buttons, iframeScrolling, bottomText, callback) {
+            ///<summary>
+            ///弹出层（iframe）,显示页面必须有submitMenu函数
+            ///</summary>
+            ///<param name="url" type="String">弹出层显示页面地址</param>
+            ///<param name="PopupTitle" type="String">弹出层标题</param>
+            ///<param name="width" type="Number">弹出层宽度</param>
+            ///<param name="height" type="Number">弹出层高度</param>
+            ///<param name="iframeID" type="String">弹出层ID</param>
+            ///<param name="buttons" type="jQuery">弹出层显示页面地址,如：{ "确定": true, "关闭窗体": false }</param>
+            ///<param name="iframeScrolling" type="String">弹出层是否显示滚动条,如'auto','yes','no'</param>
+            ///<param name="bottomText" type="String">窗口的按钮左边的内容，当没有按钮时此设置无效</param>
+            ///<param name="callback" type="jQuery">回调函数</param>
+            $.jBox.open("iframe:" + url,
+                PopupTitle,
+                width,
+                height,
+                {
+                    id: iframeID,
+                    buttons: buttons,
+                    bottomText: bottomText,
+                    showScrolling: false,
+                    iframeScrolling: iframeScrolling,
+                    submit: function (v, h, f) {
+                        if (v == true) {
+                            var result = $.jBox.getIframe(iframeID).contentWindow.submitMenu(); //调用子窗口里的方法如：myFrame.window.functionName();
+                            if (result == -1)
+                                return false;
+                            if (callback) {
+                                callback(result);
+                            }
+                            else
+                                return false;
+                        }
+                        return true;
+                    },
+                    left: '15%'
+                }
+            );
+        },
     });
 
 var LoadObj = null;

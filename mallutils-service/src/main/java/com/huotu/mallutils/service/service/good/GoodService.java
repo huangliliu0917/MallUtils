@@ -14,6 +14,7 @@ import com.huotu.mallutils.service.search.GoodSearch;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.script.ScriptException;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,9 @@ public interface GoodService {
     @Transactional
     Good save(Good good);
 
+    @Transactional
+    void batchSetUserPrice(Map<Integer, String> levelsToSet, List<Good> goods, int customerId) throws Exception;
+
     /**
      * 设置用户会员价
      *
@@ -31,14 +35,24 @@ public interface GoodService {
      * @param goods       要应用设置的商品列表
      */
     @Transactional
-    void batchSetUserPrice(Map<Integer, String> levelsToSet, List<Good> goods, int customerId) throws Exception;
-
-    @Transactional
     void batchSetUserPriceV2(Map<Integer, String[]> levelsToSet, List<Good> goods, int customerId) throws Exception;
 
-    List<Good> findByCatId(String catId);
+    List<Good> findByCatIdExceptAct(String catId, int goodScenes);
 
     Page<Good> findAll(int pageIndex, int pageSize, int customerId, GoodSearch goodSearch);
 
     List<Good> findByIdIn(List<Integer> goodIdList);
+
+    List<Good> findByBrandIdExceptAct(int brandId, int goodScenes);
+
+    /**
+     * 批量设置返利（仅对八级返利有效）
+     *
+     * @param eval       公式
+     * @param goods      要设置的商品列表
+     * @param customerId 商户id
+     * @throws ScriptException
+     */
+    @Transactional
+    void batchSetRebate(String eval, List<Good> goods, int customerId) throws ScriptException;
 }

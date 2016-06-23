@@ -7,19 +7,13 @@
  * 2013-2016. All rights reserved.
  */
 
-package com.huotu.mallutils.service.search;
+package com.huotu.mallutils.service.service.config;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.huotu.mallutils.service.entity.config.MallBaseConfig;
 
 /**
- * Created by allan on 5/21/16.
+ * Created by allan on 6/22/16.
  */
-@Setter
-@Getter
-public class GoodSearch {
-    private String goodName;
-    private int catId;
-    private String goodBn;
-    private int brand;
+public interface MallBaseConfigService {
+    MallBaseConfig findByCustomerId(int customerId);
 }

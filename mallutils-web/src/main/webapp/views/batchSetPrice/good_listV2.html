@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<!--
+  ~ 版权所有:杭州火图科技有限公司
+  ~ 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼在地图中查看
+  ~
+  ~ (c) Copyright Hangzhou Hot Technology Co., Ltd.
+  ~ Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+  ~ 2013-2016. All rights reserved.
+  -->
+
+<html xmlns:th="http://www.thymeleaf.org">
+<!--/*@thymesVar id="goodCatList" type="java.util.List<com.huotu.mallutils.service.entity.good.GoodCat>"*/-->
+<!--/*@thymesVar id="goodBrands" type="java.util.List<com.huotu.mallutils.service.entity.good.GoodBrand>"*/-->
+<head id="Head1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
+    <title>商品列表</title>
+    <link href="../../resource/css/admin.global.css" th:href="@{/resource/css/admin.global.css}" rel="stylesheet" type="text/css"/>
+    <link href="../../resource/css/admin.content.css" th:href="@{/resource/css/admin.content.css}" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="../../resource/scripts/lib/jquery-1.7.2.min.js"
+            th:src="@{/resource/scripts/lib/jquery-1.7.2.min.js}"></script>
+    <script type="text/javascript" src="../../resource/scripts/lib/jquery.utils.js"
+            th:src="@{/resource/scripts/lib/jquery.utils.js}"></script>
+    <link href="../../resource/scripts/lib/jBox/Skins/Green/jbox.css"
+          th:href="@{/resource/scripts/lib/jBox/Skins/Green/jbox.css}" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="../../resource/scripts/lib/jBox/jquery.jBox-2.3.min.js"
+            th:src="@{/resource/scripts/lib/jBox/jquery.jBox-2.3.min.js}"></script>
+    <script type="text/javascript" src="../../resource/scripts/lib/admin.js"
+            th:src="@{/resource/scripts/lib/admin.js}"></script>
+    <link href="../../resource/scripts/lib/omTabs/themes/default/operamasks-ui.min.css"
+          th:href="@{/resource/scripts/lib/omTabs/themes/default/operamasks-ui.min.css}" rel="stylesheet" type="text/css"/>
+    <script src="../../resource/scripts/lib/jqueryui/jquery-ui-1.8.20.min.js"
+            th:src="@{/resource/scripts/lib/jqueryui/jquery-ui-1.8.20.min.js}"></script>
+    <link href="../../resource/scripts/lib/jqueryui/jquery-ui-1.10.3.custom.min.css"
+          th:href="@{/resource/scripts/lib/jqueryui/jquery-ui-1.10.3.custom.min.css}" rel="stylesheet"/>
+    <script type="text/javascript" th:inline="javascript">
+        var ajaxUrl = /*[[@{/batchSetPrice/api/}]]*/ "";
+
+        function search() {
+            $("input[name=pageIndex]").val(1);
+            $("#searchForm").submit();
+        }
+        function searchAll() {
+            window.location.href = /*[[@{/batchSetPrice/goodList}]]*/ "";
+        }
+    </script>
+    <script type="text/javascript">
+        /*<![CDATA[*/
+        var batchSetHandler = {
+            showUserPriceDialog: function () {
+                var savedGoodInfo = $("#savedGoodInfo").val();
+                if (savedGoodInfo.length == 0) {
+                    $.jBox.tip("请选择所要设置的商品");
+                    return;
+                }
+                J.ShowDialog("bulkDiscount_dialog", "批量设置", function () {
+                    var self = this;
+                    var evalInfos = ""; //levelId:priceEval:integralEval,levelId:priceEval:integralEval
+
+                    var chkLevels = $("input[name=chkLevel]:checked");
+                    if (chkLevels.length == 0) {
+                        $.jBox.tip("请选择要设置的等级及相应的公式或具体值");
+                        return;
+                    }
+
+                    chkLevels.each(function () {
+                        var levelId = $(this).val();
+                        var priceEvalStr = $.trim($("#priceEval" + levelId).val());
+                        if (priceEvalStr.length == 0) {
+                            priceEvalStr = "none";
+                        }
+                        var integralEvalStr = $.trim($("#integralEval" + levelId).val());
+                        if (integralEvalStr.length == 0) {
+                            integralEvalStr = "none";
+                        }
+                        evalInfos += levelId + ":" + priceEvalStr + ":" + integralEvalStr + ",";
+                    });
+                    var savedGoodInfoArray = savedGoodInfo.split('|');
+                    var goodListStr = "";
+                    $.each(savedGoodInfoArray, function (o, item) {
+                        var infoArray = item.split(':');
+                        $.each(infoArray[1].split(','), function (o, id) {
+                            goodListStr += id + ",";
+                        });
+                    });
+                    var requestData = {
+                        evalInfos: evalInfos.substring(0, evalInfos.length - 1),
+                        goodListStr: goodListStr.substring(0, goodListStr.length - 1)
+                    };
+                    $.jBox.tip("正在设置...", "loading");
+                    J.GetJsonRespons(ajaxUrl + "batchSetUserPriceByGoods", requestData, function (json) {
+                        if (json.code == 2000) {
+                            $.jBox.tip("设置成功", "success");
+                            $(self).dialog("close");
+                        } else {
+                            if (json.msg == null || json.msg == "") {
+                                json.msg = "请检查输入的公式和值";
+                            }
+                            $.jBox.tip("设置失败:" + json.msg, "error");
+                        }
+                    }, function () {
+                    }, "post");
+                }, function () {
+                    $(this).dialog("close");
+                })
+            },
+            setSavedGoodInfo: function () {
+                var savedGoodInfo = $.trim($("#savedGoodInfo").val());//由于分页,这是设置过的商品id
+
+                var goodListStr = "";
+                $("input[name='chkGoodId']:checked").each(function () {
+                    goodListStr += $(this).val() + ",";
+                });
+
+                goodListStr = goodListStr.substring(0, goodListStr.length - 1); //本页设置的商品
+                var currentPageInfo = goodListStr.length > 0 ? pageIndex + ":" + goodListStr : "";
+
+                if (savedGoodInfo.length > 0) {
+                    //1:1,2|2:3,4
+                    var savedGoodInfoArray = savedGoodInfo.split('|');
+                    var newSavedGoodInfo = "";
+                    var addIndex = true;
+                    $.each(savedGoodInfoArray, function (o, item) {
+                        var info = item;
+                        var infoArray = info.split(':');
+                        if (parseInt(infoArray[0]) == pageIndex) {
+                            addIndex = false;
+                            info = currentPageInfo;
+                        }
+                        if (info.length > 0) {
+                            newSavedGoodInfo += info + "|";
+                        }
+                    });
+                    if (addIndex) {
+                        if (currentPageInfo.length > 0) {
+                            newSavedGoodInfo += currentPageInfo + "|";
+                        }
+                    }
+                    savedGoodInfo = newSavedGoodInfo.substring(0, newSavedGoodInfo.length - 1);
+                } else {
+                    if (goodListStr.length > 0) {
+                        savedGoodInfo = currentPageInfo;
+                    }
+                }
+                $("#savedGoodInfo").val(savedGoodInfo);
+            },
+            bindSavedGoodInfo: function () {
+                var savedGoodInfo = $.trim($("#savedGoodInfo").val());
+                if (savedGoodInfo.length > 0) {
+                    var savedGoodInfoArray = savedGoodInfo.split('|');
+                    $.each(savedGoodInfoArray, function (o, item) {
+                        var infoArray = item.split(':');
+                        if (parseInt(infoArray[0]) == pageIndex) {
+                            var idList = infoArray[1].split(',');
+                            $.each(idList, function (o, id) {
+                                $("input[name=chkGoodId][value=" + id + "]").attr("checked", "checked");
+                            });
+                        }
+                    })
+                }
+            },
+            showRebateDialog: function () {
+                var savedGoodInfo = $("#savedGoodInfo").val();
+                if (savedGoodInfo.length == 0) {
+                    $.jBox.tip("请选择所要设置的商品");
+                    return;
+                }
+
+                J.ShowDialog("batchSetRebate_dialog", "批量设置返利", function () {
+                    var evalStr = $.trim($("#evalStr").val());
+                    if (evalStr.length == 0) {
+                        $.jBox.tip("请输入公式/值");
+                        return;
+                    }
+                    var self = this;
+                    var savedGoodInfoArray = savedGoodInfo.split('|');
+                    var goodListStr = "";
+                    $.each(savedGoodInfoArray, function (o, item) {
+                        var infoArray = item.split(':');
+                        $.each(infoArray[1].split(','), function (o, id) {
+                            goodListStr += id + ",";
+                        });
+                    });
+                    var requestData = {
+                        evalStr: evalStr,
+                        goodListStr: goodListStr.substring(0, goodListStr.length - 1)
+                    };
+                    $.jBox.tip("正在设置...", "loading");
+                    J.GetJsonRespons(ajaxUrl + "batchSetRebateByGoods", requestData, function (json) {
+                        if (json.code == 2000) {
+                            $.jBox.tip("设置成功", "success");
+                            $(self).dialog("close");
+                        } else {
+                            if (json.msg == null || json.msg == "") {
+                                json.msg = "请检查输入的公式和值";
+                            }
+                            $.jBox.tip("设置失败:" + json.msg, "error");
+                        }
+                    }, function () {
+                    }, "post");
+                }, function () {
+                    $(this).dialog('close');
+                });
+
+            }
+        };
+
+        $(function () {
+            batchSetHandler.bindSavedGoodInfo();
+            $("#levelCheckAll").change(function () {
+                if ($(this).attr("checked")) {
+                    $("input[name=chkLevel]").attr("checked", "checked");
+                } else {
+                    $("input[name=chkLevel]").removeAttr("checked", "checked");
+                }
+            });
+
+            $("#checkAll").change(function () {
+                if ($(this).attr("checked")) {
+                    $("input[name=chkGoodId]").attr("checked", "checked");
+                } else {
+                    $("input[name=chkGoodId]").removeAttr("checked", "checked");
+                }
+                batchSetHandler.setSavedGoodInfo();
+            });
+
+            $("#searchAll").click(function () {
+                $("input[name=pageIndex]").val(1);
+                $("#goodName").val("");
+                $("#searchForm").submit();
+            })
+        });
+        /*]]>*/
+    </script>
+</head>
+<body marginwidth="0" marginheight="0">
+
+<div id="bulkDiscount_dialog" style="padding:20px;display: none;">
+    <div th:replace="batchSetPrice/fragments/levels :: levels">
+    </div>
+</div>
+<div id="batchSetRebate_dialog" style="padding: 20px;display:none;">
+    <p>请输入公式/值:<input type="text" id="evalStr"/></p>
+
+    <p style="color: red;">说明:</p>
+
+    <p style="color: red;">1.请输入公式:a表示销售价,b表示成本价,c表示市场价.如会员价为销售价的50%,则公式为a/2</p>
+
+    <p style="color: red;">2.批量设置以后将会批量更新商品及相关货品的返利,请慎重使用</p>
+</div>
+
+<form method="get" th:action="@{/batchSetPrice/goodList}" id="searchForm">
+    <input type="hidden" id="savedGoodInfo" name="savedGoodInfo" th:value="${savedGoodInfo}"/>
+
+    <div class="container">
+        <div class="blank10">
+        </div>
+        <div class="search block">
+            <div class="h">
+                <span class="icon-sprite icon-magnifier"></span>
+
+                <h3>商品筛选</h3>
+
+            </div>
+            <div class="tl corner">
+            </div>
+            <div class="tr corner">
+            </div>
+            <div class="bl corner">
+            </div>
+            <div class="br corner">
+            </div>
+            <div class="cnt-wp">
+                <div class="cnt">
+
+                    <!--/*@thymesVar id="goodSearch" type="com.huotu.mallutils.service.search.GoodSearch"*/-->
+                    <div class="search-bar" th:object="${goodSearch}">
+                        <label class="first ">商品名称：</label>
+                        <input name="goodName" th:value="*{goodName}" type="text" id="goodName" class="input-small" style="width: 120px;"/>
+                        <label class="first ">分类：</label>
+                        <select name="catId" th:selected="*{catId}">
+                            <option value="0">全部</option>
+                            <th:block th:each="goodCat:${goodCatList}">
+                                <option th:value="${goodCat.catId}" th:text="${goodCat.space()}+${goodCat.catName}"></option>
+                            </th:block>
+                        </select>
+                        <label class="first ">商品编号：</label>
+                        <input name="goodBn" th:value="*{goodBn}" type="text" id="goodBn" class="input-small" style="width: 120px;"/>
+
+                        <br/>
+                        <br/>
+                        <label class="first ">品牌：</label>
+                        <select name="brand" th:selected="*{brand}">
+                            <option value="0">全部</option>
+                            <th:block th:each="goodBrand:${goodBrands}">
+                                <option th:value="${goodBrand.brandId}" th:text="${goodBrand.brandName}"></option>
+                            </th:block>
+                        </select>
+
+                        <label><a class="btn-lit btn-middle" id="search" href="javascript:search();"
+                                  style="margin-bottom: 3px;"><span>搜索</span></a></label>
+                        <label><a class="btn-lit btn-middle" id="searchAll" href="javascript:searchAll();"
+                                  style="margin-bottom: 3px;"><span>显示全部</span></a></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="blank10">
+        </div>
+        <div class="block">
+            <div class="h">
+                <span class="icon-sprite icon-list"></span>
+
+                <h3 style="float: left; width: 144px;">商品列表 </h3>
+
+                <div class="bar">
+                    <a th:if="${baseConfig.rebateCompatible==2}" class="btn-lit aucontrol" href="javascript:batchSetHandler.showRebateDialog();">
+                        <span>批量设置返利</span></a>
+
+                    <a class="btn-lit aucontrol" href="javascript:batchSetHandler.showUserPriceDialog();">
+                        <span>批量设置会员价</span></a>
+                </div>
+            </div>
+            <div class="tl corner">
+            </div>
+            <div class="tr corner">
+            </div>
+            <div class="bl corner">
+            </div>
+            <div class="br corner">
+            </div>
+            <div class="cnt-wp">
+
+                <div id="Div1" class="om-tabs om-widget om-widget-content om-corner-all" style="height: auto;">
+                    <div th:replace="batchSetPrice/fragments/header :: header (activeHeader=0)" class="om-tabs-headers om-helper-reset om-helper-clearfix om-widget-header om-corner-all header-no-border"
+                         style="height: 28px;">
+
+                    </div>
+                    <div class="om-tabs-panels om-widget-content om-corner-bottom">
+
+                        <div class="om-widget om-panel ">
+                            <div id="Div2"
+                                 class="om-panel-body om-widget-content om-panel-noheader om-state-nobd">
+                                <div class="cnt">
+                                    <table class="data-table even1" width="100%" border="0" cellspacing="0" cellpadding="0">
+                                        <thead>
+                                        <tr class="even">
+                                            <th scope="col">
+                                                <input type="checkbox" id="checkAll"/>
+                                            </th>
+                                            <th scope="col">商品名称
+                                            </th>
+                                            <th scope="col">商品编号
+                                            </th>
+                                            <th scope="col">销售价
+                                            </th>
+                                            <th scope="col">市场价
+                                            </th>
+                                            <th scope="col">成本价
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        <!--/*@thymesVar id="goods" type="java.util.List<com.huotu.mallutils.service.entity.good.Good>"*/-->
+                                        <tr th:each="good:${goods}">
+                                            <td class="txt40 c">
+                                                <input type="checkbox" onclick="batchSetHandler.setSavedGoodInfo()" name="chkGoodId" th:value="${good.goodId}"/>
+                                            </td>
+                                            <td class="txt80 c" th:text="${good.name}">
+                                            </td>
+                                            <td class="txt40 c" th:text="${good.barcode}">
+                                            </td>
+                                            <td class="txt40 c" th:text="${good.price}">
+                                            </td>
+                                            <td class="txt40 c" th:text="${good.cost}">
+                                            </td>
+                                            <td class="txt40 c" th:text="${good.marketPrice}">
+                                            </td>
+                                        </tr>
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                                <script type="text/javascript" th:inline="javascript">
+                                    /*<![CDATA[*/
+                                    var pageSize = /*[[${pageSize}]]*/ '-1';
+                                    var pageIndex = /*[[${pageIndex}]]*/ '-1';
+                                    var pageCount = /*[[${totalPages}]]*/ '-1';
+                                    var recordCount = /*[[${totalRecords}]]*/ '-1';
+                                    var formName = 'searchForm';
+                                    Pager.Output(formName, 'pageIndex', pageSize, pageIndex, pageCount, recordCount);
+                                    /*]]>*/
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+</body>
+</html>
