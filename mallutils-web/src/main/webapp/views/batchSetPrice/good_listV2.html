@@ -314,7 +314,7 @@
                 <h3 style="float: left; width: 144px;">商品列表 </h3>
 
                 <div class="bar">
-                    <a th:if="${baseConfig.rebateCompatible==2}" class="btn-lit aucontrol" href="javascript:batchSetHandler.showRebateDialog();">
+                    <a th:if="${baseConfig.rebateCompatible!=null and baseConfig.rebateCompatible==2}" class="btn-lit aucontrol" href="javascript:batchSetHandler.showRebateDialog();">
                         <span>批量设置返利</span></a>
 
                     <a class="btn-lit aucontrol" href="javascript:batchSetHandler.showUserPriceDialog();">

@@ -33,5 +33,5 @@ public class MallBaseConfig {
      * 返利模式
      */
     @Column(name = "RebateCompatible")
-    private int rebateCompatible;
+    private Integer rebateCompatible;
 }
