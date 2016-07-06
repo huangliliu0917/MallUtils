@@ -80,4 +80,10 @@ public class Good {
 
     @Column(name = "DisRebate_Desc")
     private List<DisRebateDesc> disRebateDescList;
+
+    /**
+     * 返利配额
+     */
+    @Column(name = "RebateQuatoRatio")
+    private double rebateQuatoRatio;
 }

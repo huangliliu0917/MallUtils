@@ -173,7 +173,7 @@ public class GoodServiceImpl implements GoodService {
                         String priceEval = evalInfo[0];
                         String integralEval = evalInfo[1];
                         if (!StringUtils.isEmpty(priceEval) && !priceEval.equalsIgnoreCase("none")) {
-                            resultPrice = getResultPrice(priceEval, product.getCost(), product.getPrice(), product.getMarketPrice(), scriptEngine);
+                            resultPrice = getResultPrice(priceEval, product.getCost(), product.getPrice(), product.getMarketPrice(), null, scriptEngine);
                             if (resultPrice < 0) {
                                 throw new Exception("不可将会员价设置为负数,请检查输入的公式或值");
                             }
@@ -181,7 +181,7 @@ public class GoodServiceImpl implements GoodService {
                         }
                         goodLvPrice.setPrice(resultPrice);
                         if (!StringUtils.isEmpty(integralEval) && !integralEval.equalsIgnoreCase("none")) {
-                            resultIntegral = (int) getResultPrice(integralEval, product.getCost(), product.getPrice(), product.getMarketPrice(), scriptEngine);
+                            resultIntegral = (int) getResultPrice(integralEval, product.getCost(), product.getPrice(), product.getMarketPrice(), null, scriptEngine);
                             if (resultIntegral < 0) {
                                 throw new Exception("不可将最高可抵用积分设置为负数,请检查输入的公式或值");
                             }
@@ -278,25 +278,44 @@ public class GoodServiceImpl implements GoodService {
 
     @Override
     @Transactional
-    public void batchSetRebate(String eval, List<Good> goods, int customerId) throws ScriptException {
+    public void batchSetRebate(String eval, List<Good> goods, int customerId) throws Exception {
         ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("JavaScript");
         for (Good good : goods) {
-            List<DisRebateDesc> disRebateDescList = new ArrayList<>();
-            for (Product product : good.getProducts()) {
-                double resultValue = getResultPrice(eval, product.getCost(), product.getPrice(), product.getMarketPrice(), scriptEngine);
-                product.setDisRebateMode(0);
-                product.setDisUnifiedRebate(resultValue);
-                productService.save(product);
+            if (good.getRebateQuatoRatio() > 0) {
+                List<DisRebateDesc> disRebateDescList = new ArrayList<>();
+                for (Product product : good.getProducts()) {
+                    double minUserPrice = 0;
+                    //得到最低的会员价
+                    if (product.getGoodLvPriceMap() != null) {
+                        for (Map.Entry<Integer, GoodLvPrice> entry : product.getGoodLvPriceMap().entrySet()) {
+                            GoodLvPrice goodLvPrice = entry.getValue();
+                            if (goodLvPrice.getPrice() > 0) {
+                                if (minUserPrice == 0 || goodLvPrice.getPrice() < minUserPrice) {
+                                    minUserPrice = goodLvPrice.getPrice();
+                                }
+                            }
+                        }
+                    }
+                    //如果minUserPrice不大于0,则会员价就是销售价
+                    minUserPrice = minUserPrice <= 0 ? product.getPrice() : minUserPrice;
+                    double resultValue = getResultPrice(eval, product.getCost(), product.getPrice(), product.getMarketPrice(), minUserPrice, scriptEngine);
+                    if (resultValue < 0) {
+                        throw new Exception("不可将返利设置为负数,请检查输入的公式或值");
+                    }
+                    product.setDisRebateMode(0);
+                    product.setDisUnifiedRebate(resultValue);
+                    productService.save(product);
 
-                //商品冗余序列化字段
-                DisRebateDesc disRebateDesc = new DisRebateDesc();
-                disRebateDesc.setIsCustom(0);
-                disRebateDesc.setAmount(resultValue);
-                disRebateDesc.setProId(product.getProductId());
-                disRebateDescList.add(disRebateDesc);
+                    //商品冗余序列化字段
+                    DisRebateDesc disRebateDesc = new DisRebateDesc();
+                    disRebateDesc.setIsCustom(0);
+                    disRebateDesc.setAmount(resultValue);
+                    disRebateDesc.setProId(product.getProductId());
+                    disRebateDescList.add(disRebateDesc);
+                }
+                good.setDisRebateDescList(disRebateDescList);
+                this.save(good);
             }
-            good.setDisRebateDescList(disRebateDescList);
-            this.save(good);
         }
     }
 
@@ -307,12 +326,16 @@ public class GoodServiceImpl implements GoodService {
      * @param cost        成本价
      * @param price       销售价
      * @param marketPrice 市场价
+     * @param userPrice   会员价（设置返利的时候有效）
      * @return
      */
-    private double getResultPrice(String eval, double cost, double price, double marketPrice, ScriptEngine scriptEngine) throws ScriptException {
+    private double getResultPrice(String eval, double cost, double price, double marketPrice, Double userPrice, ScriptEngine scriptEngine) throws ScriptException {
         eval = eval.replaceAll("a", String.valueOf(price));
         eval = eval.replaceAll("b", String.valueOf(cost));
         eval = eval.replaceAll("c", String.valueOf(marketPrice));
+        if (userPrice != null) {
+            eval = eval.replaceAll("d", String.valueOf(userPrice));
+        }
         double resultPrice = Double.parseDouble(scriptEngine.eval(eval).toString());
         resultPrice = BigDecimal.valueOf(resultPrice).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue(); //目标价格
 

@@ -54,5 +54,5 @@ public interface GoodService {
      * @throws ScriptException
      */
     @Transactional
-    void batchSetRebate(String eval, List<Good> goods, int customerId) throws ScriptException;
+    void batchSetRebate(String eval, List<Good> goods, int customerId) throws Exception;
 }
