@@ -30,15 +30,49 @@ public class AuthorityInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String customerIdStr = CookieHelper.getCookieVal(request, "UserID");
-        if (customerIdStr == null && environment.acceptsProfiles("development")) {
-            customerIdStr = "296";
+        int proType = getRequestParameter(request, "proType", 0);
+
+        Integer customerId;
+        if (proType == 0) {
+            customerId = CookieHelper.getCookieValInteger(request, "UserID");
+
+            if (environment.acceptsProfiles("development")) {
+                customerId = 296;
+            }
+
+            if (customerId == 0) {
+                response.sendRedirect(SysConstant.HUOBANMALL_LOGIN);
+                return false;
+            }
+        } else {
+            customerId = CookieHelper.getCookieValInteger(request, "supplierId");
+
+            if (environment.acceptsProfiles("development")) {
+                customerId = 7297;
+            }
+
+            if (customerId == 0) {
+                response.sendRedirect(SysConstant.SUPPLIER_LOGIN);
+                return false;
+            }
         }
-        if (StringUtils.isEmpty(customerIdStr)) {
-            response.sendRedirect(SysConstant.HUOBANMALL_LOGIN);
-            return false;
-        }
-        request.setAttribute("customerId", customerIdStr);
+        request.setAttribute("customerId", customerId);
         return true;
+    }
+
+    private int getRequestParameter(HttpServletRequest request, String paramName, int defaultValue) {
+        String value = request.getParameter(paramName);
+        if (StringUtils.isEmpty(value)) {
+            return defaultValue;
+        }
+        return Integer.parseInt(value);
+    }
+
+    private String getRequestParameter(HttpServletRequest request, String paramName, String defaultValue) {
+        String value = request.getParameter(paramName);
+        if (StringUtils.isEmpty(value)) {
+            return defaultValue;
+        }
+        return value;
     }
 }

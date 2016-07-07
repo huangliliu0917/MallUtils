@@ -22,6 +22,7 @@ import javax.annotation.PostConstruct;
 public class SysConstant {
     public static final int DEFAULT_PAGE_INDEX = 20;
     public static String HUOBANMALL_LOGIN;
+    public static String SUPPLIER_LOGIN;
 
     @Autowired
     private Environment environment;
@@ -29,5 +30,6 @@ public class SysConstant {
     @PostConstruct
     public void init() {
         HUOBANMALL_LOGIN = environment.getProperty("huobanmall_login", "http://login.huobanplus.com");
+        SUPPLIER_LOGIN = environment.getProperty("supplier_login", "http://gys.huobanplus.com");
     }
 }
