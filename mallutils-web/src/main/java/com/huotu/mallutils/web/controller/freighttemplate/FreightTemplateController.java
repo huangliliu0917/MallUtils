@@ -9,14 +9,19 @@
 
 package com.huotu.mallutils.web.controller.freighttemplate;
 
+import com.alibaba.fastjson.JSON;
 import com.huotu.mallutils.common.annotation.RequestAttribute;
+import com.huotu.mallutils.common.ienum.ResultCode;
+import com.huotu.mallutils.service.entity.config.DeliveryType;
 import com.huotu.mallutils.service.entity.config.FreightTemplate;
 import com.huotu.mallutils.service.service.config.FreightTemplateService;
+import com.huotu.mallutils.web.common.ApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -43,5 +48,32 @@ public class FreightTemplateController {
         model.addAttribute("freightTemplate", freightTemplate);
 
         return "freight/template_detail";
+    }
+
+    @RequestMapping(value = "/api/setDefault", method = RequestMethod.POST)
+    @ResponseBody
+    public ApiResult setDefault(@RequestAttribute Integer customerId, long id) {
+        freightTemplateService.setDefault(id, customerId);
+
+        return ApiResult.resultWith(ResultCode.SUCCESS);
+    }
+
+    @RequestMapping(value = "/api/saveTemplate", method = RequestMethod.POST)
+    @ResponseBody
+    public ApiResult saveTemplate(
+            @RequestAttribute Integer customerId,
+            FreightTemplate freightTemplate,
+            String deliveryTypeJson
+    ) {
+        List<DeliveryType> deliveryTypes = JSON.parseArray(deliveryTypeJson, DeliveryType.class);
+        freightTemplate.setCustomerId(customerId);
+        deliveryTypes.forEach(deliveryType -> {
+            deliveryType.setFreightTemplate(freightTemplate);
+            deliveryType.getDesignatedAreaTemplates().forEach(designatedAreaTemplate -> designatedAreaTemplate.setDeliveryType(deliveryType));
+        });
+        freightTemplate.setDeliveryTypes(deliveryTypes);
+        freightTemplateService.save(freightTemplate);
+
+        return ApiResult.resultWith(ResultCode.SUCCESS);
     }
 }

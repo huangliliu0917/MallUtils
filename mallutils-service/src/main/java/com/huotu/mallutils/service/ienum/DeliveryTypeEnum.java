@@ -14,7 +14,7 @@ import com.huotu.mallutils.common.ienum.ICommonEnum;
 /**
  * Created by allan on 7/7/16.
  */
-public enum DeliveryType implements ICommonEnum {
+public enum DeliveryTypeEnum implements ICommonEnum {
     EXPRESS(0, "快递");
 
     //其他配送方式可能会有:物流,自提等
@@ -22,7 +22,7 @@ public enum DeliveryType implements ICommonEnum {
     private Integer code;
     private String value;
 
-    DeliveryType(Integer code, String value) {
+    DeliveryTypeEnum(Integer code, String value) {
         this.code = code;
         this.value = value;
     }

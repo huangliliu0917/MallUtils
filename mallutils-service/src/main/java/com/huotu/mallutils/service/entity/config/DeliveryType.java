@@ -9,40 +9,35 @@
 
 package com.huotu.mallutils.service.entity.config;
 
+import com.huotu.mallutils.service.ienum.DeliveryTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
- * 指定地区运费模板
+ * 运送方式,关联运费模板
+ * <p>
  * Created by allan on 7/7/16.
  */
 @Entity
-@Table(name = "Mall_DesignatedArea_Template")
+@Table(name = "Mall_Delivery_Type")
 @Setter
 @Getter
-public class DesignatedAreaTemplate {
+public class DeliveryType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "Delivery_Type_Id", referencedColumnName = "Id")
-    private DeliveryType deliveryType;
+    @JoinColumn(name = "Freight_Template_Id", referencedColumnName = "Id")
+    private FreightTemplate freightTemplate;
     /**
-     * 配送至
+     * 运送方式
      */
-    @Lob
-    @Column(name = "Area_Desc")
-    private String areaDesc;
-    /**
-     * 配送地区代码集合
-     * |100000|100001|
-     */
-    @Lob
-    @Column(name = "AreaId_Group")
-    private String areaIdGroup;
+    @Column(name = "Delivery_Type")
+    private DeliveryTypeEnum deliveryType;
     /**
      * 几件内或者多少重内,根据计价方式
      */
@@ -63,4 +58,7 @@ public class DesignatedAreaTemplate {
      */
     @Column(name = "Next_Freight")
     private int nextFreight;
+
+    @OneToMany(mappedBy = "deliveryType", orphanRemoval = true, cascade = {CascadeType.PERSIST})
+    private List<DesignatedAreaTemplate> designatedAreaTemplates;
 }

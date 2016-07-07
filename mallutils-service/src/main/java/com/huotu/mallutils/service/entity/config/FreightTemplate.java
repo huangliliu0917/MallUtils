@@ -9,7 +9,6 @@
 
 package com.huotu.mallutils.service.entity.config;
 
-import com.huotu.mallutils.service.ienum.DeliveryType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -48,28 +47,6 @@ public class FreightTemplate {
      */
     @Column(name = "Valuation_Way")
     private int valuationWay;
-    @Column(name = "Delivery_Type")
-    private DeliveryType deliveryType;
-    /**
-     * 几件内或者多少重内,根据计价方式
-     */
-    @Column(name = "First_Item")
-    private double firstItem;
-    /**
-     * 对应firstItem的运费
-     */
-    @Column(name = "First_Freight")
-    private double firstFreight;
-    /**
-     * 每增加几件或者多少重,根据计价方式
-     */
-    @Column(name = "Next_Item")
-    private double nextItem;
-    /**
-     * 对应nextItem的运费
-     */
-    @Column(name = "Next_Freight")
-    private double nextFreight;
     /**
      * 商户ID
      */
@@ -82,6 +59,7 @@ public class FreightTemplate {
      */
     @Column(name = "Template_Desc")
     private String description;
+
     @OneToMany(mappedBy = "freightTemplate", orphanRemoval = true, cascade = {CascadeType.PERSIST})
-    private List<DesignatedAreaTemplate> designatedAreaTemplates;
+    private List<DeliveryType> deliveryTypes;
 }
