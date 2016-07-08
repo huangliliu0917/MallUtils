@@ -14,7 +14,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 
 /**
  * 运送方式,关联运费模板
@@ -22,10 +21,10 @@ import java.util.List;
  * Created by allan on 7/7/16.
  */
 @Entity
-@Table(name = "Mall_Delivery_Type")
+@Table(name = "Mall_Freight_Template_Detail")
 @Setter
 @Getter
-public class DeliveryType {
+public class FreightTemplateDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
@@ -39,10 +38,28 @@ public class DeliveryType {
     @Column(name = "Delivery_Type")
     private DeliveryTypeEnum deliveryType;
     /**
+     * 是否是默认运费
+     */
+    @Column(name = "Is_Default")
+    private boolean isDefault;
+    /**
+     * 配送至
+     */
+    @Lob
+    @Column(name = "Area_Desc")
+    private String areaDesc;
+    /**
+     * 配送地区代码集合
+     * |100000|100001|
+     */
+    @Lob
+    @Column(name = "AreaId_Group")
+    private String areaIdGroup;
+    /**
      * 几件内或者多少重内,根据计价方式
      */
     @Column(name = "First_Item")
-    private int firstItem;
+    private double firstItem;
     /**
      * 对应firstItem的运费
      */
@@ -52,13 +69,10 @@ public class DeliveryType {
      * 每增加几件或者多少重,根据计价方式
      */
     @Column(name = "Next_Item")
-    private int nextItem;
+    private double nextItem;
     /**
      * 对应nextItem的运费
      */
     @Column(name = "Next_Freight")
-    private int nextFreight;
-
-    @OneToMany(mappedBy = "deliveryType", orphanRemoval = true, cascade = {CascadeType.PERSIST})
-    private List<DesignatedAreaTemplate> designatedAreaTemplates;
+    private double nextFreight;
 }

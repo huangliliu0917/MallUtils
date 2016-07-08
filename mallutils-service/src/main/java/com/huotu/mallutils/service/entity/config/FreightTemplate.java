@@ -61,5 +61,5 @@ public class FreightTemplate {
     private String description;
 
     @OneToMany(mappedBy = "freightTemplate", orphanRemoval = true, cascade = {CascadeType.PERSIST})
-    private List<DeliveryType> deliveryTypes;
+    private List<FreightTemplateDetail> freightTemplateDetails;
 }

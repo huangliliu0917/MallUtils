@@ -10,16 +10,15 @@
 package com.huotu.mallutils.service.service.config;
 
 import com.huotu.mallutils.service.ServiceTestBase;
-import com.huotu.mallutils.service.entity.config.DeliveryType;
-import com.huotu.mallutils.service.entity.config.DesignatedAreaTemplate;
 import com.huotu.mallutils.service.entity.config.FreightTemplate;
-import com.huotu.mallutils.service.repository.config.DesignatedAreaTemplateRepository;
+import com.huotu.mallutils.service.entity.config.FreightTemplateDetail;
 import com.huotu.mallutils.service.repository.config.FreightTemplateRepository;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -27,11 +26,7 @@ import java.util.UUID;
  */
 public class FreightTemplateServiceTest extends ServiceTestBase {
     @Autowired
-    private FreightTemplateService freightTemplateService;
-    @Autowired
     private FreightTemplateRepository freightTemplateRepository;
-    @Autowired
-    private DesignatedAreaTemplateRepository designatedAreaTemplateRepository;
 
     @Test
     @Rollback(false)
@@ -40,35 +35,23 @@ public class FreightTemplateServiceTest extends ServiceTestBase {
         freightTemplate.setName(UUID.randomUUID().toString());
 
 
-        DeliveryType deliveryType = new DeliveryType();
-        deliveryType.setFreightTemplate(freightTemplate);
+        FreightTemplateDetail freightTemplateDetail = new FreightTemplateDetail();
+        freightTemplateDetail.setFreightTemplate(freightTemplate);
+        freightTemplateDetail.setDefault(true);
 
+        FreightTemplateDetail freightTemplateDetail1 = new FreightTemplateDetail();
+        freightTemplateDetail.setFreightTemplate(freightTemplate);
+        freightTemplateDetail.setDefault(true);
 
-        DesignatedAreaTemplate designatedAreaTemplate = new DesignatedAreaTemplate();
-        designatedAreaTemplate.setDeliveryType(deliveryType);
-
-        deliveryType.setDesignatedAreaTemplates(Arrays.asList(designatedAreaTemplate));
-
-        freightTemplate.setDeliveryTypes(Arrays.asList(deliveryType));
+        freightTemplate.setFreightTemplateDetails(Arrays.asList(freightTemplateDetail, freightTemplateDetail1));
 
         freightTemplate = freightTemplateRepository.saveAndFlush(freightTemplate);
-
-        FreightTemplate freightTemplate1 = new FreightTemplate();
-        freightTemplate1.setId(freightTemplate.getId());
-
-        DeliveryType deliveryType1 = new DeliveryType();
-        deliveryType1.setFreightTemplate(freightTemplate);
-        deliveryType1.setId(deliveryType.getId());
-
-        freightTemplate1.setDeliveryTypes(Arrays.asList(deliveryType1));
-
-        freightTemplate1 = freightTemplateRepository.saveAndFlush(freightTemplate1);
     }
 
     @Test
     @Rollback(false)
     public void testFindByCustomerId() throws Exception {
-
+        List<FreightTemplate> freightTemplates = freightTemplateRepository.findAll();
     }
 
     @Test

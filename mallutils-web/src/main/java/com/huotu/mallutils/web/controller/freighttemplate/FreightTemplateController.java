@@ -12,8 +12,8 @@ package com.huotu.mallutils.web.controller.freighttemplate;
 import com.alibaba.fastjson.JSON;
 import com.huotu.mallutils.common.annotation.RequestAttribute;
 import com.huotu.mallutils.common.ienum.ResultCode;
-import com.huotu.mallutils.service.entity.config.DeliveryType;
 import com.huotu.mallutils.service.entity.config.FreightTemplate;
+import com.huotu.mallutils.service.entity.config.FreightTemplateDetail;
 import com.huotu.mallutils.service.service.config.FreightTemplateService;
 import com.huotu.mallutils.web.common.ApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,13 +65,10 @@ public class FreightTemplateController {
             FreightTemplate freightTemplate,
             String deliveryTypeJson
     ) {
-        List<DeliveryType> deliveryTypes = JSON.parseArray(deliveryTypeJson, DeliveryType.class);
+        List<FreightTemplateDetail> freightTemplateDetails = JSON.parseArray(deliveryTypeJson, FreightTemplateDetail.class);
         freightTemplate.setCustomerId(customerId);
-        deliveryTypes.forEach(deliveryType -> {
-            deliveryType.setFreightTemplate(freightTemplate);
-            deliveryType.getDesignatedAreaTemplates().forEach(designatedAreaTemplate -> designatedAreaTemplate.setDeliveryType(deliveryType));
-        });
-        freightTemplate.setDeliveryTypes(deliveryTypes);
+        freightTemplateDetails.forEach(deliveryType -> deliveryType.setFreightTemplate(freightTemplate));
+        freightTemplate.setFreightTemplateDetails(freightTemplateDetails);
         freightTemplateService.save(freightTemplate);
 
         return ApiResult.resultWith(ResultCode.SUCCESS);
