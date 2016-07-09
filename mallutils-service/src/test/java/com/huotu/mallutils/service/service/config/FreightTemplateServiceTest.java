@@ -12,12 +12,12 @@ package com.huotu.mallutils.service.service.config;
 import com.huotu.mallutils.service.ServiceTestBase;
 import com.huotu.mallutils.service.entity.config.FreightTemplate;
 import com.huotu.mallutils.service.entity.config.FreightTemplateDetail;
+import com.huotu.mallutils.service.ienum.DeliveryTypeEnum;
 import com.huotu.mallutils.service.repository.config.FreightTemplateRepository;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,13 +37,15 @@ public class FreightTemplateServiceTest extends ServiceTestBase {
 
         FreightTemplateDetail freightTemplateDetail = new FreightTemplateDetail();
         freightTemplateDetail.setFreightTemplate(freightTemplate);
+        freightTemplateDetail.setDeliveryType(DeliveryTypeEnum.EXPRESS);
         freightTemplateDetail.setDefault(true);
 
         FreightTemplateDetail freightTemplateDetail1 = new FreightTemplateDetail();
         freightTemplateDetail.setFreightTemplate(freightTemplate);
-        freightTemplateDetail.setDefault(true);
+        freightTemplateDetail1.setDeliveryType(DeliveryTypeEnum.EXPRESS);
+        freightTemplateDetail.setDefault(false);
 
-        freightTemplate.setFreightTemplateDetails(Arrays.asList(freightTemplateDetail, freightTemplateDetail1));
+//        freightTemplate.setFreightTemplateDetails(Arrays.asList(freightTemplateDetail, freightTemplateDetail1));
 
         freightTemplate = freightTemplateRepository.saveAndFlush(freightTemplate);
     }

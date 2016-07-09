@@ -8,7 +8,11 @@
   ~ 2013-2016. All rights reserved.
   -->
 
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+
+<!--/*@thymesVar id="deliveryTypes" type="com.huotu.mallutils.service.ienum.DeliveryTypeEnum[]"*/-->
+<!--/*@thymesVar id="freightTemplate" type="com.huotu.mallutils.service.entity.config.FreightTemplate"*/-->
+
 <head>
     <meta charset="UTF-8">
     <title>新增运费模板</title>
@@ -16,110 +20,84 @@
     <link rel="stylesheet" href="../../resource/css/freight.css">
 </head>
 <body>
-<div id="content">
+
+<div id="content" th:object="${freightTemplate}">
     <h4>新增运费模板</h4>
 
     <form name="tplForm" id="tplForm">
         <div class="from-group">
             <label class="label">模板名称：</label>
-            <input type="text" name="tplName" id="tplName"/>
+            <input type="text" name="name" th:value="*{name}"/>
         </div>
         <div class="from-group">
             <label class="label">是否包邮：</label>
 
             <div class="check-group">
-                <p><input class="input-check" type="radio" name="isFree" value="buyer" checked="checked"/>买家承担运费</p>
+                <p><input class="input-check" type="radio" name="Is_ShippingFree" value="0"
+                          th:checked="${freightTemplate == null} or *{isShippingFree==0}" checked="checked"/>买家承担运费</p>
 
-                <p><input class="input-check" type="radio" name="isFree" value="seller"/>卖家承担运费</p>
+                <p><input class="input-check" type="radio" name="Is_ShippingFree" th:checked="*{isShippingFree==1}" value="1"/>卖家承担运费</p>
             </div>
         </div>
         <div class="from-group">
             <label class="label">计价方式：</label>
 
             <div class="check-group">
-                <p><input class="input-check" type="radio" name="valuation" value="buyer" checked="checked"/>按件计价</p>
+                <p><input class="input-check" type="radio" name="valuationWay" value="0"
+                          th:checked="${freightTemplate == null} or *{valuationWay==0}" checked="checked"/>按件计价</p>
 
-                <p><input class="input-check" type="radio" name="valuation" value="seller"/>按重计价（KG）</p>
-            </div>
-        </div>
-        <div class="from-group">
-            <label class="label"> 运送方式：</label>
-
-            <p class="text-group gray">除指定地区外，其余地区的运费采用“默认运费”。至少要选择一项运送方式。</p>
-        </div>
-        <div class="from-group">
-            <div>
-                <p class="text-group" style="padding-left: 124px;"><input type="checkbox" name="deliveryType" value="0"/>快递</p>
-
-                <p class="text-group mixture gray">
-                    <span class="char">默认运费</span>
-                    <input type="text" value="1" name="express_start">
-                    <span class="char">件内，</span>
-                    <input type="text" name="express_postage">
-                    <span class="char">元，</span>
-                    <span class="char">每增加</span>
-                    <input type="text" value="1" name="express_plus">
-                    <span class="char">件，</span>
-                    <span class="char">增加运费</span>
-                    <input type="text" name="express_postageplus">
-                    <span class="char">元</span>
-                </p>
-                <table class="addTpl" cellspacing="0">
-                    <thead>
-                    <tr>
-                        <th>运送到</th>
-                        <th>首件(件)</th>
-                        <th>远费(元)</th>
-                        <th>续件(件)</th>
-                        <th>续费(元)</th>
-                        <th>操作</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-                <p class="addOne">
-                    <a href="javascript:;" class="addRule">为指定地区城市设置运费</a>
-                </p>
-            </div>
-        </div>
-        <div class="from-group">
-            <div>
-                <p class="text-group" style="padding-left: 124px;"><input type="checkbox" name="deliveryType" value="0"/>快递</p>
-
-                <p class="text-group mixture gray">
-                    <span class="char">默认运费</span>
-                    <input type="text" value="1" name="express_start">
-                    <span class="char">件内，</span>
-                    <input type="text" name="express_postage">
-                    <span class="char">元，</span>
-                    <span class="char">每增加</span>
-                    <input type="text" value="1" name="express_plus">
-                    <span class="char">件，</span>
-                    <span class="char">增加运费</span>
-                    <input type="text" name="express_postageplus">
-                    <span class="char">元</span>
-                </p>
-                <table class="addTpl" cellspacing="0">
-                    <thead>
-                    <tr>
-                        <th>运送到</th>
-                        <th>首件(件)</th>
-                        <th>远费(元)</th>
-                        <th>续件(件)</th>
-                        <th>续费(元)</th>
-                        <th>操作</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-                <p class="addOne">
-                    <a href="javascript:;" class="addRule">为指定地区城市设置运费</a>
-                </p>
+                <p><input class="input-check" type="radio" name="valuationWay" th:checked="*{valuationWay==1}" value="1"/>按重计价（g）</p>
             </div>
         </div>
     </form>
+    <div class="from-group">
+        <label class="label"> 运送方式：</label>
+
+        <p class="text-group gray">除指定地区外，其余地区的运费采用“默认运费”。至少要选择一项运送方式。</p>
+    </div>
+
+    <div class="from-group" th:each="deliveryType:${deliveryTypes}">
+        <div>
+            <p class="text-group" style="padding-left: 124px;">
+                <input class="chkDeliveryType" type="checkbox" name="deliveryType" value="0" th:value="${deliveryType.code}"/>
+                <span th:text="${deliveryType.code}">快递</span>
+            </p>
+
+            <div style="display: none;">
+                <p class="text-group mixture gray">
+                    <span class="char">默认运费</span>
+                    <input type="text" value="1" name="express_start">
+                    <span class="char">件内，</span>
+                    <input type="text" name="express_postage">
+                    <span class="char">元，</span>
+                    <span class="char">每增加</span>
+                    <input type="text" value="1" name="express_plus">
+                    <span class="char">件，</span>
+                    <span class="char">增加运费</span>
+                    <input type="text" name="express_postageplus">
+                    <span class="char">元</span>
+                </p>
+                <table class="addTpl" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>运送到</th>
+                        <th>首件(件)</th>
+                        <th>远费(元)</th>
+                        <th>续件(件)</th>
+                        <th>续费(元)</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <p class="addOne">
+                    <a href="javascript:;" class="addRule">为指定地区城市设置运费</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
     <div class="btn-group">
         <input class="btn submit" type="button" value="保存"> <input class="btn cancel" type="button" value="提交">
     </div>
@@ -136,6 +114,14 @@
             var tr = $("#detail_template").html(); //newTabel();
             $(this).parent().parent().find('tbody').append(tr);
         });
+
+        $(".chkDeliveryType").change(function () {
+            if ($(this).is(':checked')) {
+                $(this).parent().parent().find('div').show();
+            } else {
+                $(this).parent().parent().find('div').hide();
+            }
+        })
     });
 </script>
 </html>
@@ -144,7 +130,7 @@
     <tr>
         <td>
             <input type="hidden" value="0"/>
-            <input type="hidden" value=""/>
+            <input type="hidden" name="areaIdGroup{deliveryType}"/>
 
             <div class="city-picker"><input readonly="readonly" type="text" placeholder="请选择省/市" name="express_areas" class="input-area"></div>
         </td>

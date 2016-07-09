@@ -15,7 +15,8 @@ import com.huotu.mallutils.common.ienum.ICommonEnum;
  * Created by allan on 7/7/16.
  */
 public enum DeliveryTypeEnum implements ICommonEnum {
-    EXPRESS(0, "快递");
+    EXPRESS(0, "快递"),
+    WULIU(1, "物流");
 
     //其他配送方式可能会有:物流,自提等
 

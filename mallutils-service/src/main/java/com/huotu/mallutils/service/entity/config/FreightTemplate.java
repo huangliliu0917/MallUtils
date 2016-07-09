@@ -9,11 +9,13 @@
 
 package com.huotu.mallutils.service.entity.config;
 
+import com.huotu.mallutils.service.ienum.DeliveryTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 运费模板实体
@@ -39,7 +41,7 @@ public class FreightTemplate {
      * 1:卖家承担运费
      */
     @Column(name = "Is_ShippingFree")
-    private boolean isShippingFree;
+    private int isShippingFree;
     /**
      * 计价方式
      * 0:按件计价
@@ -62,4 +64,26 @@ public class FreightTemplate {
 
     @OneToMany(mappedBy = "freightTemplate", orphanRemoval = true, cascade = {CascadeType.PERSIST})
     private List<FreightTemplateDetail> freightTemplateDetails;
+
+
+    /**
+     * 得到指定运送方式的默认运费设置
+     *
+     * @param deliveryType 运送方式{@link DeliveryTypeEnum}
+     * @return
+     */
+    public FreightTemplateDetail defaultDetail(int deliveryType) {
+        for (FreightTemplateDetail freightTemplateDetail : freightTemplateDetails) {
+            if (freightTemplateDetail.getDeliveryType().getCode() == deliveryType && freightTemplateDetail.isDefault()) {
+                return freightTemplateDetail;
+            }
+        }
+        return null;
+    }
+
+    public List<FreightTemplateDetail> designatedDetails(int deliveryType) {
+        return freightTemplateDetails.stream()
+                .filter(p -> !p.isDefault() && p.getDeliveryType().getCode() == deliveryType)
+                .collect(Collectors.toList());
+    }
 }
