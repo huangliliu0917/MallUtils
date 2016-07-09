@@ -63,9 +63,9 @@ public class FreightTemplateController {
     public ApiResult saveTemplate(
             @RequestAttribute Integer customerId,
             FreightTemplate freightTemplate,
-            String deliveryTypeJson
+            String detailJson
     ) {
-        List<FreightTemplateDetail> freightTemplateDetails = JSON.parseArray(deliveryTypeJson, FreightTemplateDetail.class);
+        List<FreightTemplateDetail> freightTemplateDetails = JSON.parseArray(detailJson, FreightTemplateDetail.class);
         freightTemplate.setCustomerId(customerId);
         freightTemplateDetails.forEach(deliveryType -> deliveryType.setFreightTemplate(freightTemplate));
         freightTemplate.setFreightTemplateDetails(freightTemplateDetails);
