@@ -1,0 +1,225 @@
+/*
+ * 版权所有:杭州火图科技有限公司
+ * 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼在地图中查看
+ *
+ * (c) Copyright Hangzhou Hot Technology Co., Ltd.
+ * Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+ * 2013-2016. All rights reserved.
+ */
+
+body {
+    font: 12px/1.5 "Microsoft YaHei", sans-serif;
+    min-width: 1040px;
+}
+
+#content {
+    margin: 0 20px;
+}
+
+a {
+    text-decoration: none;
+    color: #0088cc;
+}
+
+a:hover {
+    color: #005580;
+}
+
+p {
+    padding: 0;
+    margin: 0;
+}
+
+h4 {
+    padding-bottom: 10px;
+    text-indent: 20px;
+    font-weight: normal;
+    border-bottom: 1px solid #999;
+}
+
+ul {
+    list-style: none;
+}
+
+.error {
+    color: #CA030A;
+}
+
+.clearfix::after, .clearfix:before {
+    display: table;
+    content: " ";
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.center {
+    text-align: center;
+}
+
+.button {
+    text-align: right;
+}
+
+.btn {
+    display: inline-block;
+    padding: 6px 10px 6px;
+    margin-bottom: 0;
+    font-size: 14px;
+    color: #333;
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    cursor: pointer;
+    outline: none;
+}
+
+.btn:hover {
+    color: #333;
+    background-color: #e6e6e6;
+}
+
+.horizonal {
+    float: right;
+}
+
+.horizonal li {
+    float: left;
+}
+
+#tplForm {
+    border: 1px solid #e6e6e6;
+}
+
+.from-group {
+    padding: 6px 0;
+}
+
+.from-group .label {
+    display: block;
+    float: left;
+    padding: 4px 0;
+    margin-right: 5px;
+    width: 120px;
+    line-height: 20px;
+    text-align: right;
+    font-weight: bold;
+}
+
+textarea, input[type="text"] {
+    display: inline-block;
+    padding: 4px 6px;
+    height: 18px;
+    line-height: 18px;
+    font-size: 12px;
+    color: #555;
+    border-radius: 3px;
+    vertical-align: middle;
+}
+
+textarea, input[type="text"] {
+    background-color: #fff;
+    border: 1px solid #ccc;
+}
+
+.input-check {
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+.check-group, .text-group {
+    display: inline-block;
+    padding: 4px 6px 4px 0;
+    height: 18px;
+    line-height: 18px;
+}
+
+.check-group p {
+    float: left;
+    width: 110px;
+}
+
+.text-group {
+    display: block;
+    margin-bottom: 5px;
+    line-height: 20px;
+}
+
+.text-group input {
+    margin: 0 3px;
+}
+
+.mixture {
+    margin-left: 125px;
+    height: 30px;
+    line-height: 30px;
+    overflow: hidden;
+}
+
+.gray, .gray span {
+    color: #999;
+}
+
+table {
+    border: 0;
+    margin: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.addTpl {
+    margin-left: 125px;
+    width: 850px;
+}
+
+table th, table td {
+    padding: 8px;
+    line-height: 18px;
+}
+
+table th {
+    background-color: #eceeef;
+}
+
+label.express_areas {
+    font-weight: normal;
+    text-align: left;
+}
+
+.city-select-content {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.input-area {
+    width: 260px;
+}
+
+.input-mini {
+    width: 80px;
+}
+
+.addOne {
+    margin-top: 10px;
+}
+
+.addRule {
+    margin-left: 125px;
+}
+
+.btn-group {
+    padding-top: 10px;
+    text-align: center;
+}
+
+.submit, .cancel {
+    margin: 0 10px;
+    padding-left: 16px;
+    padding-right: 16px;
+}
