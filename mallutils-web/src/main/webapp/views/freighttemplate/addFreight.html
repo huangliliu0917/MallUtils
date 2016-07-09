@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<!--
+  ~ 版权所有:杭州火图科技有限公司
+  ~ 地址:浙江省杭州市滨江区西兴街道阡陌路智慧E谷B幢4楼在地图中查看
+  ~
+  ~ (c) Copyright Hangzhou Hot Technology Co., Ltd.
+  ~ Floor 4,Block B,Wisdom E Valley,Qianmo Road,Binjiang District
+  ~ 2013-2016. All rights reserved.
+  -->
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新增运费模板</title>
+    <link rel="stylesheet" href="http://resali.huobanplus.com/cdn/normalize/4.2.0/normalize.css">
+    <link rel="stylesheet" href="../../resource/css/freight.css">
+</head>
+<body>
+<div id="content">
+    <h4>新增运费模板</h4>
+
+    <form name="tplForm" id="tplForm">
+        <div class="from-group">
+            <label class="label">模板名称：</label>
+            <input type="text" name="tplName" id="tplName"/>
+        </div>
+        <div class="from-group">
+            <label class="label">是否包邮：</label>
+
+            <div class="check-group">
+                <p><input class="input-check" type="radio" name="isFree" value="buyer" checked="checked"/>买家承担运费</p>
+
+                <p><input class="input-check" type="radio" name="isFree" value="seller"/>卖家承担运费</p>
+            </div>
+        </div>
+        <div class="from-group">
+            <label class="label">计价方式：</label>
+
+            <div class="check-group">
+                <p><input class="input-check" type="radio" name="valuation" value="buyer" checked="checked"/>按件计价</p>
+
+                <p><input class="input-check" type="radio" name="valuation" value="seller"/>按重计价（KG）</p>
+            </div>
+        </div>
+        <div class="from-group">
+            <label class="label"> 运送方式：</label>
+
+            <p class="text-group gray">除指定地区外，其余地区的运费采用“默认运费”。至少要选择一项运送方式。</p>
+        </div>
+        <div class="from-group">
+            <div>
+                <p class="text-group" style="padding-left: 124px;"><input type="checkbox" name="deliveryType" value="0"/>快递</p>
+
+                <p class="text-group mixture gray">
+                    <span class="char">默认运费</span>
+                    <input type="text" value="1" name="express_start">
+                    <span class="char">件内，</span>
+                    <input type="text" name="express_postage">
+                    <span class="char">元，</span>
+                    <span class="char">每增加</span>
+                    <input type="text" value="1" name="express_plus">
+                    <span class="char">件，</span>
+                    <span class="char">增加运费</span>
+                    <input type="text" name="express_postageplus">
+                    <span class="char">元</span>
+                </p>
+                <table class="addTpl" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>运送到</th>
+                        <th>首件(件)</th>
+                        <th>远费(元)</th>
+                        <th>续件(件)</th>
+                        <th>续费(元)</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <p class="addOne">
+                    <a href="javascript:;" class="addRule">为指定地区城市设置运费</a>
+                </p>
+            </div>
+        </div>
+        <div class="from-group">
+            <div>
+                <p class="text-group" style="padding-left: 124px;"><input type="checkbox" name="deliveryType" value="0"/>快递</p>
+
+                <p class="text-group mixture gray">
+                    <span class="char">默认运费</span>
+                    <input type="text" value="1" name="express_start">
+                    <span class="char">件内，</span>
+                    <input type="text" name="express_postage">
+                    <span class="char">元，</span>
+                    <span class="char">每增加</span>
+                    <input type="text" value="1" name="express_plus">
+                    <span class="char">件，</span>
+                    <span class="char">增加运费</span>
+                    <input type="text" name="express_postageplus">
+                    <span class="char">元</span>
+                </p>
+                <table class="addTpl" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>运送到</th>
+                        <th>首件(件)</th>
+                        <th>远费(元)</th>
+                        <th>续件(件)</th>
+                        <th>续费(元)</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <p class="addOne">
+                    <a href="javascript:;" class="addRule">为指定地区城市设置运费</a>
+                </p>
+            </div>
+        </div>
+    </form>
+    <div class="btn-group">
+        <input class="btn submit" type="button" value="保存"> <input class="btn cancel" type="button" value="提交">
+    </div>
+</div>
+</body>
+<script src="http://resali.huobanplus.com/cdn/jquery/1.9.1/jquery.min.js"></script>
+<script>
+    $(function () {
+        $('.addTpl').on('click', '.areaFeeDelete', function () {
+            $(this).parentsUntil('tbody').empty();
+        });
+
+        $('.addRule').click(function () {
+            var tr = $("#detail_template").html(); //newTabel();
+            $(this).parent().parent().find('tbody').append(tr);
+        });
+    });
+</script>
+</html>
+
+<script type="text/html" id="detail_template">
+    <tr>
+        <td>
+            <input type="hidden" value="0"/>
+            <input type="hidden" value=""/>
+
+            <div class="city-picker"><input readonly="readonly" type="text" placeholder="请选择省/市" name="express_areas" class="input-area"></div>
+        </td>
+        <td class="center"><input type="text" value="1" name="post_start" class="input-text input-mini"/></td>
+        <td class="center"><input type="text" name="post_postage" class="input-text input-mini"/></td>
+        <td class="center"><input type="text" value="1" name="post_plus" class="input-text input-mini"/></td>
+        <td class="center"><input type="text" name="post_postageplus" class="input-text input-mini"/></td>
+        <td class="center"><a class="areaFeeDelete" href="javascript:;">删除</a></td>
+    </tr>
+</script>
