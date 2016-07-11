@@ -11,25 +11,20 @@ body {
     font: 12px/1.5 "Microsoft YaHei", sans-serif;
     min-width: 1040px;
 }
-
 #content {
     margin: 0 20px;
 }
-
 a {
     text-decoration: none;
     color: #0088cc;
 }
-
 a:hover {
     color: #005580;
 }
-
 p {
     padding: 0;
     margin: 0;
 }
-
 h4 {
     padding-bottom: 10px;
     text-indent: 20px;
@@ -37,35 +32,33 @@ h4 {
     border-bottom: 1px solid #999;
 }
 
+h5, ul {
+    padding: 0;
+    margin: 0;
+}
 ul {
     list-style: none;
 }
-
 .error {
-    color: #CA030A;
+    color: #ca030a;
 }
-
 .clearfix::after, .clearfix:before {
     display: table;
     content: " ";
 }
-
 .left {
     float: left;
 }
-
 .right {
     float: right;
 }
-
 .center {
     text-align: center;
 }
-
 .button {
+    margin-right: 82px;
     text-align: right;
 }
-
 .btn {
     display: inline-block;
     padding: 6px 10px 6px;
@@ -78,28 +71,28 @@ ul {
     cursor: pointer;
     outline: none;
 }
-
 .btn:hover {
     color: #333;
     background-color: #e6e6e6;
 }
-
 .horizonal {
-    float: right;
+    padding: 5px 0;
 }
-
 .horizonal li {
     float: left;
+    margin-right: 16px;
 }
 
-/*#tplForm {*/
-/*border: 1px solid #e6e6e6;*/
-/*}*/
+.active {
+    color: #ca030a;
+}
 
+#tplForm {
+    border: 1px solid #e6e6e6;
+}
 .from-group {
     padding: 6px 0;
 }
-
 .from-group .label {
     display: block;
     float: left;
@@ -110,7 +103,6 @@ ul {
     text-align: right;
     font-weight: bold;
 }
-
 textarea, input[type="text"] {
     display: inline-block;
     padding: 4px 6px;
@@ -121,12 +113,10 @@ textarea, input[type="text"] {
     border-radius: 3px;
     vertical-align: middle;
 }
-
 textarea, input[type="text"] {
     background-color: #fff;
     border: 1px solid #ccc;
 }
-
 .input-check {
     margin-right: 5px;
     vertical-align: middle;
@@ -138,29 +128,24 @@ textarea, input[type="text"] {
     height: 18px;
     line-height: 18px;
 }
-
 .check-group p {
     float: left;
     width: 110px;
 }
-
 .text-group {
     display: block;
     margin-bottom: 5px;
     line-height: 20px;
 }
-
 .text-group input {
     margin: 0 3px;
 }
-
 .mixture {
     margin-left: 125px;
     height: 30px;
     line-height: 30px;
     overflow: hidden;
 }
-
 .gray, .gray span {
     color: #999;
 }
@@ -172,20 +157,17 @@ table {
     border-spacing: 0;
 }
 
-.addTpl {
+#addTpl {
     margin-left: 125px;
     width: 850px;
 }
-
 table th, table td {
     padding: 8px;
     line-height: 18px;
 }
-
 table th {
     background-color: #eceeef;
 }
-
 label.express_areas {
     font-weight: normal;
     text-align: left;
@@ -196,23 +178,18 @@ label.express_areas {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
-
 .input-area {
     width: 260px;
 }
-
 .input-mini {
     width: 80px;
 }
-
 .addOne {
     margin-top: 10px;
 }
-
 .addRule {
     margin-left: 125px;
 }
-
 .btn-group {
     padding-top: 10px;
     text-align: center;
@@ -224,6 +201,30 @@ label.express_areas {
     padding-right: 16px;
 }
 
+.red {
+    color: #fff;
+    background: #e60012;
+}
+
+.red:hover {
+    background: #b60012;
+}
+
+.freight-list {
+    margin-top: 20px;
+}
+
+.table {
+    margin-bottom: 30px;
+}
+
+.table td {
+    text-align: center;
+}
+
+.table-th h5 {
+    padding: 5px 0 5px 62px;
+}
 .validate-error {
     border-color: #CA030A !important;
 }
