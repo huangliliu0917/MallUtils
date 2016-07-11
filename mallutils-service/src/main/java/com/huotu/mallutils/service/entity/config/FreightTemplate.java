@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,9 +53,9 @@ public class FreightTemplate {
     /**
      * 商户ID
      */
-    @Column(name = "Customer_Id")
+    @Column(name = "Customer_Id", updatable = false)
     private int customerId;
-    @Column(name = "Is_Default")
+    @Column(name = "Is_Default", updatable = false)
     private boolean isDefault;
     /**
      * 模板说明
@@ -62,28 +63,30 @@ public class FreightTemplate {
     @Column(name = "Template_Desc")
     private String description;
 
-    @OneToMany(mappedBy = "freightTemplate", orphanRemoval = true, cascade = {CascadeType.PERSIST})
-    private List<FreightTemplateDetail> freightTemplateDetails;
+    @OneToMany(mappedBy = "freightTemplate", orphanRemoval = true, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<FreightTemplateDetail> freightTemplateDetails = new ArrayList<>();
 
 
     /**
      * 得到指定运送方式的默认运费设置
      *
-     * @param deliveryType 运送方式{@link DeliveryTypeEnum}
      * @return
      */
-    public FreightTemplateDetail defaultDetail(int deliveryType) {
-        for (FreightTemplateDetail freightTemplateDetail : freightTemplateDetails) {
-            if (freightTemplateDetail.getDeliveryType().getCode() == deliveryType && freightTemplateDetail.isDefault()) {
-                return freightTemplateDetail;
-            }
-        }
-        return null;
+    public List<FreightTemplateDetail> defaultDetails() {
+//        if (freightTemplateDetails == null) {
+//            return new ArrayList<>();
+//        }
+        return freightTemplateDetails.stream()
+                .filter(p -> p.getIsDefault() == 1)
+                .collect(Collectors.toList());
     }
 
-    public List<FreightTemplateDetail> designatedDetails(int deliveryType) {
+    public List<FreightTemplateDetail> designatedDetails(DeliveryTypeEnum deliveryType) {
+//        if (freightTemplateDetails == null) {
+//            return new ArrayList<>();
+//        }
         return freightTemplateDetails.stream()
-                .filter(p -> !p.isDefault() && p.getDeliveryType().getCode() == deliveryType)
+                .filter(p -> p.getIsDefault() == 0 && p.getDeliveryType() == deliveryType)
                 .collect(Collectors.toList());
     }
 }

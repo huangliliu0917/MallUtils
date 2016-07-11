@@ -9,6 +9,8 @@
 
 package com.huotu.mallutils.service.entity.config;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.huotu.mallutils.service.ienum.DeliveryTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,17 +33,19 @@ public class FreightTemplateDetail {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "Freight_Template_Id", referencedColumnName = "Id")
+    @JSONField(deserialize = false, serialize = false)
     private FreightTemplate freightTemplate;
     /**
      * 运送方式
      */
     @Column(name = "Delivery_Type")
+    @JSONField(serialzeFeatures = {SerializerFeature.WriteEnumUsingName})
     private DeliveryTypeEnum deliveryType;
     /**
      * 是否是默认运费
      */
     @Column(name = "Is_Default")
-    private boolean isDefault;
+    private int isDefault;
     /**
      * 配送至
      */

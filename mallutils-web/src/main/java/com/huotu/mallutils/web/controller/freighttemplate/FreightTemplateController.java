@@ -14,6 +14,7 @@ import com.huotu.mallutils.common.annotation.RequestAttribute;
 import com.huotu.mallutils.common.ienum.ResultCode;
 import com.huotu.mallutils.service.entity.config.FreightTemplate;
 import com.huotu.mallutils.service.entity.config.FreightTemplateDetail;
+import com.huotu.mallutils.service.ienum.DeliveryTypeEnum;
 import com.huotu.mallutils.service.service.config.FreightTemplateService;
 import com.huotu.mallutils.web.common.ApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -39,15 +41,21 @@ public class FreightTemplateController {
         List<FreightTemplate> freightTemplates = freightTemplateService.findByCustomerId(customerId);
         model.addAttribute("freightTemplates", freightTemplates);
 
-        return "freight/template_list";
+        return "freighttemplate/template_list";
     }
 
     @RequestMapping(value = "/templateDetail", method = RequestMethod.GET)
-    public String templateDetail(long id, Model model) {
-        FreightTemplate freightTemplate = freightTemplateService.findById(id);
+    public String templateDetail(@RequestParam(required = false, defaultValue = "0") long id, Model model) {
+        FreightTemplate freightTemplate = new FreightTemplate();
+        if (id > 0) {
+            freightTemplate = freightTemplateService.findById(id);
+        }
         model.addAttribute("freightTemplate", freightTemplate);
+        model.addAttribute("templateId", id);
+        model.addAttribute("deliveryTypes", DeliveryTypeEnum.values());
+        model.addAttribute("defaultDetailJson", JSON.toJSON(freightTemplate.defaultDetails()));
 
-        return "freight/template_detail";
+        return "freighttemplate/template_detail";
     }
 
     @RequestMapping(value = "/api/setDefault", method = RequestMethod.POST)
@@ -66,6 +74,7 @@ public class FreightTemplateController {
             String detailJson
     ) {
         List<FreightTemplateDetail> freightTemplateDetails = JSON.parseArray(detailJson, FreightTemplateDetail.class);
+
         freightTemplate.setCustomerId(customerId);
         freightTemplateDetails.forEach(deliveryType -> deliveryType.setFreightTemplate(freightTemplate));
         freightTemplate.setFreightTemplateDetails(freightTemplateDetails);

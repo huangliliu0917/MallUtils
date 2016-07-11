@@ -38,12 +38,12 @@ public class FreightTemplateServiceTest extends ServiceTestBase {
         FreightTemplateDetail freightTemplateDetail = new FreightTemplateDetail();
         freightTemplateDetail.setFreightTemplate(freightTemplate);
         freightTemplateDetail.setDeliveryType(DeliveryTypeEnum.EXPRESS);
-        freightTemplateDetail.setDefault(true);
+        freightTemplateDetail.setIsDefault(1);
 
         FreightTemplateDetail freightTemplateDetail1 = new FreightTemplateDetail();
         freightTemplateDetail.setFreightTemplate(freightTemplate);
         freightTemplateDetail1.setDeliveryType(DeliveryTypeEnum.EXPRESS);
-        freightTemplateDetail.setDefault(false);
+        freightTemplateDetail.setIsDefault(0);
 
 //        freightTemplate.setFreightTemplateDetails(Arrays.asList(freightTemplateDetail, freightTemplateDetail1));
 

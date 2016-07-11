@@ -223,3 +223,7 @@ label.express_areas {
     padding-left: 16px;
     padding-right: 16px;
 }
+
+.validate-error {
+    border-color: #CA030A !important;
+}

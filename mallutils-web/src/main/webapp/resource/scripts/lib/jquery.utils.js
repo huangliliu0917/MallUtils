@@ -49,8 +49,8 @@ $.extend(
         PostMethod: "post",
         GetMethod: "get",
         PageSize: 20,
-        IsIE: $.browser.msie != undefined,
-        IsIE6: $.browser.msie && parseInt($.browser.version) === 6,
+        //IsIE: $.browser.msie != undefined,
+        //IsIE6: $.browser.msie && parseInt($.browser.version) === 6,
 
         CopyText: function (obj) {
             var str = J.IsElement(obj) ? obj.value : ($(obj).size() > 0 ? $(obj).val() : obj);
