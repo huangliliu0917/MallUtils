@@ -268,7 +268,11 @@
                 };
 
                 J.GetJsonRespons(ajaxUrl, requestData, function (json) {
-
+                    if (json.code == 2000) {
+                        $.jBox.tip("保存成功", "success");
+                    } else {
+                        $.jBox.tip("保存失败--" + json.msg, "error")
+                    }
                 }, function () {
                 }, "post");
             }, function () {
