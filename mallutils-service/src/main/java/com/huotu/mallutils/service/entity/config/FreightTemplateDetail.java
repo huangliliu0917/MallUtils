@@ -63,7 +63,7 @@ public class FreightTemplateDetail {
      * 几件内或者多少重内,根据计价方式
      */
     @Column(name = "First_Item")
-    private double firstItem;
+    private int firstItem;
     /**
      * 对应firstItem的运费
      */
@@ -73,7 +73,7 @@ public class FreightTemplateDetail {
      * 每增加几件或者多少重,根据计价方式
      */
     @Column(name = "Next_Item")
-    private double nextItem;
+    private int nextItem;
     /**
      * 对应nextItem的运费
      */

@@ -20,7 +20,6 @@
     <link rel="stylesheet" href="../../resource/css/freight.css" th:href="@{/resource/css/freight.css}"/>
 </head>
 <body>
-
 <div id="content" th:object="${freightTemplate}">
     <h4>新增运费模板</h4>
 
@@ -40,145 +39,151 @@
                 <p><input class="input-check" type="radio" name="Is_ShippingFree" th:checked="*{isShippingFree==1}" value="1"/>卖家承担运费</p>
             </div>
         </div>
-        <div class="from-group notFree">
-            <label class="label">计价方式：</label>
+        <div class="notFree" th:styleappend="*{isShippingFree==0}?'displya:block':'display:none'">
+            <div class="from-group notFree">
+                <label class="label">计价方式：</label>
 
-            <div class="check-group">
-                <p><input class="input-check" type="radio" name="valuationWay" value="0"
-                          th:checked="${freightTemplate == null} or *{valuationWay==0}" checked="checked"/>按件计价</p>
+                <div class="check-group">
+                    <p><input class="input-check" type="radio" name="valuationWay" value="0"
+                              th:checked="${freightTemplate == null} or *{valuationWay==0}" checked="checked"/>按件计价</p>
 
-                <p><input class="input-check" type="radio" name="valuationWay" th:checked="*{valuationWay==1}" value="1"/>按重计价（g）</p>
+                    <p><input class="input-check" type="radio" name="valuationWay" th:checked="*{valuationWay==1}" value="1"/>按重计价（g）</p>
+                </div>
             </div>
-        </div>
-        <div class="from-group notFree">
-            <label class="label"> 运送方式：</label>
+            <div class="from-group notFree">
+                <label class="label"> 运送方式：</label>
 
-            <p class="text-group gray">除指定地区外，其余地区的运费采用“默认运费”。至少要选择一项运送方式。</p>
-        </div>
+                <p class="text-group gray">除指定地区外，其余地区的运费采用“默认运费”。至少要选择一项运送方式。</p>
+            </div>
 
-        <div class="from-group notFree" th:each="deliveryType:${deliveryTypes}">
-            <div>
-                <p class="text-group" style="padding-left: 124px;">
-                    <input class="chkDeliveryType" type="checkbox" name="deliveryType" value="0" th:value="${deliveryType}"/>
-                    <span th:text="${deliveryType.value}">快递</span>
-                </p>
-
-                <div style="display: none;" class="detailSet">
-                    <p class="text-group mixture gray">
-                        <input type="hidden" name="detailId0" id="default0"
-                               th:name="'detailId'+${deliveryType}" th:id="'def_detailId'+${deliveryType}" value="0"/>
-                        <input type="hidden" name="areaIdGroup0" th:name="'areaIdGroup'+${deliveryType}"/>
-                        <input type="hidden" name="areaDesc0" th:name="'areaDesc'+${deliveryType}"/>
-                        <input type="hidden" name="isDefault0" th:name="'isDefault'+${deliveryType}" value="1"/>
-
-                        <span class="char">默认运费</span>
-                        <input type="text" value="1" name="firstItem0" validate="required" title="首件"
-                               th:attrappend="validate-place='def_firstItem_msg'+${deliveryType}"
-                               th:name="'firstItem'+${deliveryType}" th:id="'def_firstItem'+${deliveryType}"/>
-                        <span class="char"><span class="unit">件</span>内，</span>
-                        <input type="text" name="firstFreight0" validate="required" title="首费"
-                               th:attrappend="validate-place='def_firstFreight_msg'+${deliveryType}"
-                               th:name="'firstFreight'+${deliveryType}" th:id="'def_firstFreight'+${deliveryType}"/>
-                        <span class="char">元，</span>
-                        <span class="char">每增加</span>
-                        <input type="text" value="1" name="nextItem0" validate="required" title="续件"
-                               th:attrappend="validate-place='def_nextItem_msg'+${deliveryType}"
-                               th:name="'nextItem'+${deliveryType}" th:id="'def_nextItem'+${deliveryType}"/>
-                        <span class="char"><span class="unit">件</span>，</span>
-                        <span class="char">增加运费</span>
-                        <input type="text" name="nextFreight0" validate="required" title="续费"
-                               th:attrappend="validate-place='def_nextFreight_msg'+${deliveryType}"
-                               th:name="'nextFreight'+${deliveryType}" th:id="'def_nextFreight'+${deliveryType}"/>
-                        <span class="char">元</span>
+            <div class="from-group notFree" th:each="deliveryType:${deliveryTypes}">
+                <div>
+                    <p class="text-group" style="padding-left: 124px;">
+                        <input class="chkDeliveryType" type="checkbox" name="deliveryType" value="0" th:value="${deliveryType}"/>
+                        <span th:text="${deliveryType.value}">快递</span>
                     </p>
 
-                    <div style="width: 1000px;">
-                        <p style="margin-left: 178px;width: 138px;float: left;" th:id="'def_firstItem_msg'+${deliveryType}"></p>
+                    <div style="display: none;" class="detailSet">
+                        <p class="text-group mixture gray">
+                            <input type="hidden" name="detailId0" id="default0"
+                                   th:name="'detailId'+${deliveryType}" th:id="'def_detailId'+${deliveryType}" value="0"/>
+                            <input type="hidden" name="areaIdGroup0" th:name="'areaIdGroup'+${deliveryType}"/>
+                            <input type="hidden" name="areaDesc0" th:name="'areaDesc'+${deliveryType}"/>
+                            <input type="hidden" name="isDefault0" th:name="'isDefault'+${deliveryType}" value="1"/>
 
-                        <p style="margin-left: 49px;width: 138px;float: left;" th:id="'def_firstFreight_msg'+${deliveryType}"></p>
+                            <span class="char">默认运费</span>
+                            <input type="text" value="1" name="firstItem0" validate="required" title="首件" class="num_int"
+                                   th:attrappend="validate-place='def_firstItem_msg'+${deliveryType}"
+                                   th:name="'firstItem'+${deliveryType}" th:id="'def_firstItem'+${deliveryType}"/>
+                            <span class="char"><span class="unit">件</span>内，</span>
+                            <input type="text" name="firstFreight0" validate="required" title="首费" class="num_float"
+                                   th:attrappend="validate-place='def_firstFreight_msg'+${deliveryType}"
+                                   th:name="'firstFreight'+${deliveryType}" th:id="'def_firstFreight'+${deliveryType}"/>
+                            <span class="char">元，</span>
+                            <span class="char">每增加</span>
+                            <input type="text" value="1" name="nextItem0" validate="required" title="续件" class="num_int"
+                                   th:attrappend="validate-place='def_nextItem_msg'+${deliveryType}"
+                                   th:name="'nextItem'+${deliveryType}" th:id="'def_nextItem'+${deliveryType}"/>
+                            <span class="char"><span class="unit">件</span>，</span>
+                            <span class="char">增加运费</span>
+                            <input type="text" name="nextFreight0" validate="required" title="续费" class="num_float"
+                                   th:attrappend="validate-place='def_nextFreight_msg'+${deliveryType}"
+                                   th:name="'nextFreight'+${deliveryType}" th:id="'def_nextFreight'+${deliveryType}"/>
+                            <span class="char">元</span>
+                        </p>
 
-                        <p style="margin-left: 75px;width: 138px;float: left;" th:id="'def_nextItem_msg'+${deliveryType}"></p>
+                        <div style="width: 1000px;">
+                            <p style="margin-left: 178px;width: 138px;float: left;" th:id="'def_firstItem_msg'+${deliveryType}"></p>
 
-                        <p style="margin-left: 87px;width: 138px;float: left;" th:id="'def_nextFreight_msg'+${deliveryType}"></p>
-                    </div>
+                            <p style="margin-left: 49px;width: 138px;float: left;" th:id="'def_firstFreight_msg'+${deliveryType}"></p>
+
+                            <p style="margin-left: 75px;width: 138px;float: left;" th:id="'def_nextItem_msg'+${deliveryType}"></p>
+
+                            <p style="margin-left: 87px;width: 138px;float: left;" th:id="'def_nextFreight_msg'+${deliveryType}"></p>
+                        </div>
 
 
-                    <table class="addTpl" cellspacing="0">
-                        <thead>
-                        <tr>
-                            <th>运送到</th>
-                            <th>首<span class="unit">件</span></th>
-                            <th>远费(元)</th>
-                            <th>续<span class="unit">件</span></th>
-                            <th>续费(元)</th>
-                            <th>操作</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="freightDetail:${freightTemplate.designatedDetails(deliveryType)}">
-                            <td>
-                                <input type="hidden" name="detailId{deliveryType}" value="0" th:value="${freightDetail.id}" th:name="'detailId'+${deliveryType}"/>
-                                <input type="hidden" name="areaIdGroup{deliveryType}" th:name="'areaIdGroup'+${deliveryType}" th:value="${freightDetail.areaIdGroup}"/>
-                                <input type="hidden" name="isDefault{deliveryType}" value="0"/>
+                        <table class="addTpl" cellspacing="0">
+                            <thead>
+                            <tr>
+                                <th>运送到</th>
+                                <th>首<span class="unit">件</span></th>
+                                <th>远费(元)</th>
+                                <th>续<span class="unit">件</span></th>
+                                <th>续费(元)</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="freightDetail:${freightTemplate.designatedDetails(deliveryType)}">
+                                <td>
+                                    <input type="hidden" name="detailId{deliveryType}" value="0" th:value="${freightDetail.id}" th:name="'detailId'+${deliveryType}"/>
+                                    <input type="hidden" name="areaIdGroup{deliveryType}"
+                                           th:id="'areaIdGroup_'+${deliveryType}+'_'+${freightDetailStat.index}"
+                                           th:name="'areaIdGroup'+${deliveryType}" th:value="${freightDetail.areaIdGroup}"/>
+                                    <input type="hidden" th:name="'isDefault'+${deliveryType}" name="isDefault{deliveryType}" value="0"/>
 
-                                <div class="city-picker">
-                                    <input readonly="readonly" th:value="${freightDetail.areaDesc}" type="text" placeholder="请选择省/市" title="配送区域"
-                                           th:attrappend="validate-place='areaDesc_msg_'+${deliveryType}+'_'+${freightDetailStat.index}"
-                                           name="areaDesc{deliveryType}" th:name="'areaDesc'+${freightDetail.areaDesc}" class="input-area" validate="required"/>
+                                    <div class="city-picker">
+                                        <input readonly="readonly" th:value="${freightDetail.areaDesc}" type="text" placeholder="请选择省/市" title="配送区域"
+                                               th:attrappend="validate-place='areaDesc_msg_'+${deliveryType}+'_'+${freightDetailStat.index}"
+                                               th:id="'areaDesc_'+${deliveryType}+'_'+${freightDetailStat.index}"
+                                               name="areaDesc{deliveryType}" th:name="'areaDesc'+${deliveryType}" class="input-area" validate="required"
+                                               th:onclick="|freightHandler.selectRegion('${deliveryType}',${freightDetailStat.index})|" onclick="freightHandler.selectRegion()"/>
+                                        <br/><br/>
+                                        <span th:id="'areaDesc_msg_'+${deliveryType}+'_'+${freightDetailStat.index}"></span>
+                                    </div>
+                                </td>
+                                <td class="center">
+                                    <input type="text" value="1" name="firstItem{deliveryType}" title="首件"
+                                           th:value="${freightDetail.firstItem}" th:name="'firstItem'+${deliveryType}"
+                                           th:attrappend="validate-place='firstItem_msg_'+${deliveryType}+'_'+${freightDetailStat.index}"
+                                           class="input-text input-mini for-shipping-change num_int" validate="required"/>
                                     <br/><br/>
-                                    <span th:id="'areaDesc_msg_'+${deliveryType}+'_'+${freightDetailStat.index}"></span>
-                                </div>
-                            </td>
-                            <td class="center">
-                                <input type="text" value="1" name="firstItem{deliveryType}" title="首件"
-                                       th:value="${freightDetail.firstItem}" th:name="'firstItem'+${deliveryType}"
-                                       th:attrappend="validate-place='firstItem_msg_'+${deliveryType}+'_'+${freightDetailStat.index}"
-                                       class="input-text input-mini for-shipping-change" validate="required"/>
-                                <br/><br/>
-                                <span th:id="'firstItem_msg_'+${deliveryType}+'_'+${freightDetailStat.index}"></span>
-                            </td>
-                            <td class="center">
-                                <input type="text" name="firstFreight{deliveryType}" title="首费"
-                                       th:value="${freightDetail.firstFreight}" th:name="'firstFreight'+${deliveryType}"
-                                       th:attrappend="validate-place='firstFreight_msg_'+${deliveryType}+'_'+${freightDetailStat.index}"
-                                       class="input-text input-mini" validate="required"/>
-                                <br/><br/>
-                                <span th:id="'firstFreight_msg_'+${deliveryType}+'_'+${freightDetailStat.index}"></span>
-                            </td>
-                            <td class="center">
-                                <input type="text" value="1" name="nextItem{deliveryType}" title="续件"
-                                       th:value="${freightDetail.nextItem}" th:name="'nextItem'+${deliveryType}"
-                                       th:attrappend="validate-place='nextItem_msg_'+${deliveryType}+'_'+${freightDetailStat.index}"
-                                       class="input-text input-mini for-shipping-change" validate="required"/>
-                                <br/><br/>
-                                <span th:id="'nextItem_msg_'+${deliveryType}+'_'+${freightDetailStat.index}"></span>
-                            </td>
-                            <td class="center">
-                                <input type="text" name="nextFreight{deliveryType}" title="续费"
-                                       th:value="${freightDetail.nextFreight}" th:name="'nextFreight'+${deliveryType}"
-                                       th:attrappend="validate-place='nextFreight_msg_'+${deliveryType}+'_'+${freightDetailStat.index}"
-                                       class="input-text input-mini" validate="required"/>
-                                <br/><br/>
-                                <span th:id="'nextFreight_msg_'+${deliveryType}+'_'+${freightDetailStat.index}"></span>
-                            </td>
-                            <td class="center">
-                                <a class="areaFeeDelete" href="javascript:;">删除</a>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <p class="addOne">
-                        <a style="cursor: pointer;" onclick="freightHandler.addRule(this,0);" class="addRule">为指定地区城市设置运费</a>
-                    </p>
+                                    <span th:id="'firstItem_msg_'+${deliveryType}+'_'+${freightDetailStat.index}"></span>
+                                </td>
+                                <td class="center">
+                                    <input type="text" name="firstFreight{deliveryType}" title="首费"
+                                           th:value="${freightDetail.firstFreight}" th:name="'firstFreight'+${deliveryType}"
+                                           th:attrappend="validate-place='firstFreight_msg_'+${deliveryType}+'_'+${freightDetailStat.index}"
+                                           class="input-text input-mini num_float" validate="required"/>
+                                    <br/><br/>
+                                    <span th:id="'firstFreight_msg_'+${deliveryType}+'_'+${freightDetailStat.index}"></span>
+                                </td>
+                                <td class="center">
+                                    <input type="text" value="1" name="nextItem{deliveryType}" title="续件"
+                                           th:value="${freightDetail.nextItem}" th:name="'nextItem'+${deliveryType}"
+                                           th:attrappend="validate-place='nextItem_msg_'+${deliveryType}+'_'+${freightDetailStat.index}"
+                                           class="input-text input-mini for-shipping-change num_int" validate="required"/>
+                                    <br/><br/>
+                                    <span th:id="'nextItem_msg_'+${deliveryType}+'_'+${freightDetailStat.index}"></span>
+                                </td>
+                                <td class="center">
+                                    <input type="text" name="nextFreight{deliveryType}" title="续费"
+                                           th:value="${freightDetail.nextFreight}" th:name="'nextFreight'+${deliveryType}"
+                                           th:attrappend="validate-place='nextFreight_msg_'+${deliveryType}+'_'+${freightDetailStat.index}"
+                                           class="input-text input-mini num_float" validate="required"/>
+                                    <br/><br/>
+                                    <span th:id="'nextFreight_msg_'+${deliveryType}+'_'+${freightDetailStat.index}"></span>
+                                </td>
+                                <td class="center">
+                                    <a class="areaFeeDelete" href="javascript:;">删除</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <p class="addOne">
+                            <a style="cursor: pointer;" th:onclick="|freightHandler.addRule(this,'${deliveryType}')|" onclick="freightHandler.addRule(this,0);" class="addRule">为指定地区城市设置运费</a>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
-
         <div class="btn-group">
             <input class="btn submit" id="btn_save" type="button" onclick="freightHandler.submitForm();" value="保存"/>
         </div>
     </form>
 </div>
+
 </body>
 <script type="text/javascript" src="../../resource/scripts/lib/jquery-1.7.2.min.js"
         th:src="@{/resource/scripts/lib/jquery-1.7.2.min.js}"></script>
@@ -188,13 +193,19 @@
       th:href="@{/resource/scripts/lib/jBox/Skins/Green/jbox.css}" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../resource/scripts/lib/jBox/jquery.jBox-2.3.min.js"
         th:src="@{/resource/scripts/lib/jBox/jquery.jBox-2.3.min.js}"></script>
+<script type="text/javascript" src="../../resource/scripts/lib/regionNode.js"
+        th:src="@{/resource/scripts/lib/regionNode.js}"></script>
+<script src="http://resali.huobanplus.com/cdn/layer/2.3/layer.js" type="text/javascript"></script>
+
 <script type="text/javascript" th:inline="javascript">
     var defaultDetails = /*[[${defaultDetailJson}]]*/ [];
     var templateId = /*[[${templateId}]]*/ 0;
     var ajaxUrl = /*[[@{/freight/api/saveTemplate}]]*/ "";
 </script>
+
 <script type="text/javascript">
     /*<![CDATA[*/
+    var regionDialog;
     var freightHandler = {
         pageInit: function () {
             $.each(defaultDetails, function (o, item) {
@@ -209,8 +220,6 @@
                 $("#def_nextItem" + item.deliveryType).val(item.nextItem);
                 $("#def_nextFreight" + item.deliveryType).val(item.nextFreight);
             });
-
-
         },
         addRule: function (obj, deliveryType) {
             var trCount = $(obj).parent().parent().find('tbody').find('tr').length;
@@ -219,16 +228,36 @@
             tr = tr.replace(/{stateIndex}/g, trCount);
             $(obj).parent().parent().find('tbody').append(tr);
         },
+        selectRegion: function (deliveryType, stateIndex) {
+            var dialogHtml = regionTemplate;
+            var areaIdGroup = $("#areaIdGroup_" + deliveryType + "_" + stateIndex).val();
+            dialogHtml = dialogHtml.replace("{deliveryType}", deliveryType);
+            dialogHtml = dialogHtml.replace("{stateIndex}", stateIndex);
+            var $temp = $('<div></div>');
+            $temp.html(dialogHtml);
+
+            var areaIdGroupArray = areaIdGroup.substring(1, areaIdGroup.length - 1).split('|');
+            $.each(areaIdGroupArray, function (o, areaId) {
+                $temp.find("input[name=chkArea][value=" + areaId + "]").attr("checked", "checked");
+            });
+
+            regionDialog = layer.open({
+                type: 1,
+                area: ['720px', '400px'],
+                content: $temp.html()
+            });
+        },
         submitForm: function () {
             validateHandler.validate(function () {
                 var chkDeliveryTypes = $("input[name=deliveryType]:checked");
-                if (chkDeliveryTypes.length == 0) {
+                var isShippingFree = $("input[name=Is_ShippingFree]:checked").val();
+                if (chkDeliveryTypes.length == 0 && isShippingFree == 0) {
                     $.jBox.tip("请选择运送方式");
                     return;
                 }
                 $.jBox.tip("正在保存", "loading");
                 var name = $("input[name=name]").val();
-                var isShippingFree = $("input[name=Is_ShippingFree]:checked").val();
+
                 var valuationWay = $("input[name=valuationWay]:checked").val();
                 var freightTemplateDetails = [];
 
@@ -287,12 +316,7 @@
             $(".validate-error").removeClass("validate-error");
             $("input[validate=required]").each(function () {
                 var element = $(this);
-                if (validateHandler.validateElement(element)) {
-                    errorCount--;
-                    if (errorCount < 0) {
-                        errorCount = 0;
-                    }
-                } else {
+                if (!validateHandler.validateElement(element)) {
                     errorCount++;
                 }
             });
@@ -341,10 +365,10 @@
             $(this).parentsUntil('tbody').remove();
         });
 
-        $("#tplForm").on('blur', 'input[validate=required]', function () {
-            var element = $(this);
-            validateHandler.validateElement(element);
-        });
+//        $("#tplForm").on('blur', 'input[validate=required]', function () {
+//            var element = $(this);
+//            validateHandler.validateElement(element);
+//        });
 
         $(".chkDeliveryType").change(function () {
             if ($(this).is(':checked')) {
@@ -358,7 +382,7 @@
             if ($("input[name=valuationWay]:checked").val() == "0") {
                 $(".unit").html("件");
             } else {
-                $(".unit").html("重");
+                $(".unit").html("重(g)");
             }
         });
 
@@ -369,22 +393,135 @@
                 $(".notFree").hide();
             }
         });
+
+        regionHandler.initRegion();
+    });
+
+    $(document).on('keydown', ".num_float", function () {
+        J.CertainNumberContainPoint(event);
+    });
+
+    $(document).on('keydown', ".num_int", function () {
+        J.CertainNumber(event);
     });
     /*]]>*/
 </script>
-</html>
+<script type="text/javascript">
+    $(document).on('click', '.caret', function () {
+        var $dom = $(this).parents('.area-select-head').next();
+        $dom.toggle();
+        if ($dom.is(':hidden')) {
+            $(this).parents('.area-select-wrapper').removeClass('selected');
+        } else {
+            $(this).parents('.area-select-wrapper').addClass('selected');
+        }
+    });
+    $(document).on('click', '.close', function () {
+        $(this).parents('.area-select-body').hide();
+        $(this).parents('.area-select-wrapper').removeClass('selected');
+    });
 
+    $(document).on('click', '.J_Submit', function () {
+        var areaDesc = regionHandler.getAreaDesc();
+        var areaIdGroup = regionHandler.getAreaIdGroup();
+        if (areaIdGroup.length == 0) {
+            $.jBox.tip("请选择地区");
+            return;
+        }
+        var deliveryType = $("#reg_hd_deliveryType").val();
+        var stateIndex = $("#reg_hd_stateIndex").val();
+
+        $("#areaIdGroup_" + deliveryType + "_" + stateIndex).val(areaIdGroup);
+        $("#areaDesc_" + deliveryType + "_" + stateIndex).val(areaDesc);
+
+        layer.close(regionDialog);
+    });
+    $(document).on('click', '.J_cancel', function () {
+        layer.close(regionDialog);
+    });
+
+    var regionTemplate;
+
+    var regionHandler = {
+        initRegion: function () {
+            var provinces = regionProvider.getByPId(0);
+            var pHtml = "";
+            $.each(provinces, function (o, province) {
+                var pTempHtml = $("#province_template").html();
+                pTempHtml = pTempHtml.replace(/{id}/g, province.id);
+                pTempHtml = pTempHtml.replace(/{provinceName}/g, province.name);
+
+                //如果不是是直辖市,找下一级
+                var cHtml = "";
+                var cities = regionProvider.getByPId(province.id);
+                $.each(cities, function (o, city) {
+                    var cTempHtml = $("#city_template").html();
+                    cTempHtml = cTempHtml.replace(/{id}/g, city.id);
+                    cTempHtml = cTempHtml.replace("{cityName}", city.name);
+                    cTempHtml = cTempHtml.replace("{pId}", city.pId);
+                    cHtml += cTempHtml;
+                });
+                pTempHtml = pTempHtml.replace("{cities}", cHtml);
+                pTempHtml = pTempHtml.replace("{childCount}", cities.length);
+                pTempHtml = pTempHtml.replace("{childrenShow}", cities.length == 0 ? '' : '<span class="caret"></span>');
+                pHtml += pTempHtml;
+            });
+
+            var regions = $('<ul class="area_content"></ul>');
+            regions.html(pHtml);
+            $("#region_template").prepend(regions);
+
+            regionTemplate = $('#region_template').html();
+            $("#region_template").remove();
+        },
+        proChange: function (chkRegion) {
+            var $chkRegion = $(chkRegion);
+            if ($chkRegion.is(':checked')) {
+                $("input[parent-id=" + $chkRegion.val() + "]").attr("checked", "checked");
+            } else {
+                $("input[parent-id=" + $chkRegion.val() + "]").removeAttr("checked");
+            }
+        },
+        cityChange: function (chkCity) {
+            var $chkCity = $(chkCity);
+            var pId = $chkCity.attr("parent-id")
+            var $chkCities = $("input[parent-id=" + pId + "]:checked");
+            if ($chkCities.length > 0) {
+                $("#J_Province_" + pId).attr("checked", "checked");
+            } else {
+                $("#J_Province_" + pId).removeAttr("checked");
+            }
+        },
+        getAreaDesc: function () {
+            var areaDesc = "";
+            $(".J_Province:checked").each(function () {
+                areaDesc += $(this).attr("title") + ",";
+            });
+            return areaDesc.substring(0, areaDesc.length - 1);
+        },
+        getAreaIdGroup: function () {
+            var areaIdGroup = "|";
+            $("input[name=chkArea]:checked").each(function () {
+                areaIdGroup += $(this).val() + '|';
+            });
+            return areaIdGroup;
+        }
+    }
+</script>
+</html>
 <script type="text/html" id="detail_template">
     <tr>
         <td>
             <input type="hidden" name="detailId{deliveryType}" value="0"/>
-            <input type="hidden" name="areaIdGroup{deliveryType}"/>
+            <input type="hidden" name="areaIdGroup{deliveryType}" id="areaIdGroup_{deliveryType}_{stateIndex}"/>
             <input type="hidden" name="isDefault{deliveryType}" value="0"/>
 
             <div class="city-picker">
                 <input readonly="readonly" type="text" placeholder="请选择省/市" title="配送区域"
                        validate-place="areaDesc_msg_{deliveryType}_{stateIndex}"
-                       name="areaDesc{deliveryType}" class="input-area" validate="required"/>
+                       id="areaDesc_{deliveryType}_{stateIndex}"
+                       name="areaDesc{deliveryType}" class="input-area" validate="required"
+                       onclick="freightHandler.selectRegion('{deliveryType}',{stateIndex})"/>
                 <br/><br/>
                 <span id="areaDesc_msg_{deliveryType}_{stateIndex}"></span>
             </div>
@@ -392,28 +529,28 @@
         <td class="center">
             <input type="text" value="1" name="firstItem{deliveryType}" title="首件"
                    validate-place="firstItem_msg_{deliveryType}_{stateIndex}"
-                   class="input-text input-mini for-shipping-change" validate="required"/>
+                   class="input-text input-mini for-shipping-change num_int" validate="required"/>
             <br/><br/>
             <span id="firstItem_msg_{deliveryType}_{stateIndex}"></span>
         </td>
         <td class="center">
             <input type="text" name="firstFreight{deliveryType}" title="首费"
                    validate-place="firstFreight_msg_{deliveryType}_{stateIndex}"
-                   class="input-text input-mini" validate="required"/>
+                   class="input-text input-mini num_float" validate="required"/>
             <br/><br/>
             <span id="firstFreight_msg_{deliveryType}_{stateIndex}"></span>
         </td>
         <td class="center">
             <input type="text" value="1" name="nextItem{deliveryType}" title="续件"
                    validate-place="nextItem_msg_{deliveryType}_{stateIndex}"
-                   class="input-text input-mini for-shipping-change" validate="required"/>
+                   class="input-text input-mini for-shipping-change num_int" validate="required"/>
             <br/><br/>
             <span id="nextItem_msg_{deliveryType}_{stateIndex}"></span>
         </td>
         <td class="center">
             <input type="text" name="nextFreight{deliveryType}" title="续费"
                    validate-place="nextFreight_msg_{deliveryType}_{stateIndex}"
-                   class="input-text input-mini" validate="required"/>
+                   class="input-text input-mini num_float" validate="required"/>
             <br/><br/>
             <span id="nextFreight_msg_{deliveryType}_{stateIndex}"></span>
         </td>
@@ -422,3 +559,37 @@
         </td>
     </tr>
 </script>
+
+<script type="text/html" id="province_template">
+    <li class="area-select-wrapper">
+        <div class="area-select-head">
+            <label for="J_Province_{id}" class="inline-label master-label">
+                <input type="checkbox" onchange="regionHandler.proChange(this)" value="{id}" id="J_Province_{id}"
+                       title="{provinceName}" name="chkArea"
+                       class="input-check J_Province" style="cursor:default"/>{provinceName}
+                <span id="child_count_{id}" style="color:red;display: none;">({childCount})</span>
+            </label>
+            {childrenShow}
+        </div>
+        <div class="area-select-body">
+            {cities}
+            <p><a href="javascript:;" class="close">×</a></p>
+        </div>
+    </li>
+</script>
+<script type="text/html" id="city_template">
+    <label for="J_City_{id}">
+        <input type="checkbox" name="chkArea" onchange="regionHandler.cityChange(this)" value="{id}" id="J_City_{id}" parent-id="{pId}" class="input-check J_City"/>{cityName}
+    </label>
+</script>
+
+<script type="text/html" id="region_template">
+    <div class="area_btn">
+        <a href="javascript:;" class="btn btn-primary J_Submit">确定</a>
+        <a href="javascript:;" class="btn J_cancel">取消</a>
+    </div>
+    <input type="hidden" id="reg_hd_deliveryType" value="{deliveryType}"/>
+    <input type="hidden" id="reg_hd_stateIndex" value="{stateIndex}"/>
+</script>
+
+

@@ -26,15 +26,16 @@
         <button class="btn" type="button">新建运费模板</button>
     </div>
     <div class="freight-list">
-        <table class="table" th:each="freightTemplate:${freightTemplates}">
+        <table class="table active" th:each="freightTemplate:${freightTemplates}">
             <thead>
             <tr>
-                <th colspan="7" class="table-th">
+                <th colspan="6" class="table-th">
                     <div class="clearfix">
+                        <h5 class="left" th:text="${freightTemplate.name}"></h5>
                         <h5 class="left" th:if="${freightTemplate.isShippingFree==1}">包邮</h5>
                         <ul class="horizonal right">
                             <li th:if="${!freightTemplate.isDefault()}"><a href="javascript:;">设为默认</a></li>
-                            <li><a href="#">修改</a></li>
+                            <li><a href="javascript:;" th:href="@{/freight/templateDetail(id=${freightTemplate.id})}">修改</a></li>
                             <li><a href="javascript:;">删除</a></li>
                         </ul>
                     </div>
@@ -50,13 +51,21 @@
                 <td width="150px">续件（件）</td>
                 <td width="150px">运费（元）</td>
             </tr>
-            <tr th:each="detail:${freightTemplate.freightTemplateDetails}">
+            <tr th:each="detail:${freightTemplate.freightTemplateDetails}" th:if="${freightTemplate.isShippingFree==0}">
                 <td th:text="${detail.deliveryType.value}">快递公司</td>
                 <td th:text="${detail.isDefault==1}?'中国':${detail.areaDesc}">中国</td>
                 <td th:text="${detail.firstItem}">1</td>
                 <td th:text="${detail.firstFreight}">2</td>
                 <td th:text="${detail.nextItem}">1</td>
                 <td th:text="${detail.nextFreight}">2</td>
+            </tr>
+            <tr th:if="${freightTemplate.isShippingFree==1}">
+                <td>快递公司</td>
+                <td>中国</td>
+                <td>1</td>
+                <td>0</td>
+                <td>1</td>
+                <td>0</td>
             </tr>
             </tbody>
         </table>

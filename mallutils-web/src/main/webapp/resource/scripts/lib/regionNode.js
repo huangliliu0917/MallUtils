@@ -8352,4 +8352,27 @@ var _znodes = [{"id": "110000", "name": "北京市", "pId": "0", "depth": "1"}, 
     "name": "路氹城",
     "pId": "820300",
     "depth": "3"
-}]
+}];
+
+
+var regionProvider = {
+    getByPId: function (pId) {
+        var regions = [];
+        $.each(_znodes, function (o, item) {
+            if (parseInt(item.pId) == parseInt(pId)) {
+                regions.push(item);
+            }
+        });
+        return regions;
+    },
+    //是否是直辖市
+    isDirect: function (id) {
+        var regionId = parseInt(id);
+        if (regionId == 110000 || regionId == 120000 || regionId == 310000 || regionId == 500000) {
+            return true;
+        }
+        return false;
+    }
+};
+
+
