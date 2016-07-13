@@ -9,6 +9,7 @@
 
 package com.huotu.mallutils.service.entity.good;
 
+import com.huotu.mallutils.service.entity.config.FreightTemplate;
 import com.huotu.mallutils.service.model.DisRebateDesc;
 import lombok.Getter;
 import lombok.Setter;
@@ -62,6 +63,14 @@ public class Good {
     private Integer customerId;
     @Column(name = "Supplier_Id")
     private Integer supplierId;
+
+    /**
+     * 运费模板
+     */
+    @ManyToOne
+    @JoinColumn(name = "Freight_Template_Id", referencedColumnName = "Id")
+    private FreightTemplate freightTemplate;
+
     @Column(name = "Name")
     private String name;
     @Column(name = "Disabled")

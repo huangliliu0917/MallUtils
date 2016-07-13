@@ -39,7 +39,9 @@ public class FreightTemplateController {
     @RequestMapping(value = "/templateList", method = RequestMethod.GET)
     public String templateList(@RequestAttribute Integer customerId, Model model) {
         List<FreightTemplate> freightTemplates = freightTemplateService.findByCustomerId(customerId);
+        List<long[]> freightTemplateUsedInfo = freightTemplateService.freightTemplateUsedInfo(customerId);
         model.addAttribute("freightTemplates", freightTemplates);
+        model.addAttribute("freightTemplateUsedInfo", JSON.toJSON(freightTemplateUsedInfo));
 
         return "freighttemplate/template_list";
     }
@@ -81,5 +83,16 @@ public class FreightTemplateController {
         freightTemplateService.save(freightTemplate);
 
         return ApiResult.resultWith(ResultCode.SUCCESS);
+    }
+
+    @RequestMapping(value = "/api/deleteTemplate", method = RequestMethod.POST)
+    @ResponseBody
+    public ApiResult deleteTemplate(long id) {
+        if (freightTemplateService.isUsed(id)) {
+            return ApiResult.resultWith(ResultCode.ERROR, "使用中的运费模板无法删除", null);
+        } else {
+            freightTemplateService.delete(id);
+            return ApiResult.resultWith(ResultCode.SUCCESS);
+        }
     }
 }

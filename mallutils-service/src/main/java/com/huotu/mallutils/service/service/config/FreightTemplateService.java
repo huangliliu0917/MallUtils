@@ -68,4 +68,21 @@ public interface FreightTemplateService {
      */
     @Transactional
     void delete(long id);
+
+    /**
+     * 得到运费模板的使用情况
+     * long[]中索引0为模板id,索引1为数量
+     *
+     * @param customerId
+     * @return
+     */
+    List<long[]> freightTemplateUsedInfo(int customerId);
+
+    /**
+     * 运费是否使用
+     *
+     * @param id 运费模板主键id
+     * @return
+     */
+    boolean isUsed(long id);
 }

@@ -34,4 +34,12 @@ public interface FreightTemplateRepository extends JpaRepository<FreightTemplate
     @Query("update FreightTemplate set isDefault=true where id=?1")
     @Modifying
     void setDefault(long id);
+
+    @Query("select good.freightTemplate.id,count(good) from Good good " +
+            "where good.freightTemplate is not null and good.customerId=?1 " +
+            "group by good.freightTemplate")
+    List<long[]> freightTemplateUsedInfo(int customerId);
+
+    @Query("select count(good) from Good good where good.freightTemplate.id=?1")
+    long isUsed(long id);
 }

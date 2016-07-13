@@ -62,4 +62,12 @@ public class FreightTemplateServiceImpl implements FreightTemplateService {
     public void delete(long id) {
         freightTemplateRepository.delete(id);
     }
+
+    public List<long[]> freightTemplateUsedInfo(int customerId) {
+        return freightTemplateRepository.freightTemplateUsedInfo(customerId);
+    }
+
+    public boolean isUsed(long id) {
+        return freightTemplateRepository.isUsed(id) > 0;
+    }
 }

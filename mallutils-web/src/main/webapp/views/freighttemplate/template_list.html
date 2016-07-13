@@ -18,25 +18,28 @@
     <link rel="stylesheet" href="http://resali.huobanplus.com/cdn/normalize/4.2.0/normalize.css"/>
     <link rel="stylesheet" href="../../resource/css/freight.css" th:href="@{/resource/css/freight.css}"/>
 </head>
-<body>
+<body style="background-color: #fff;">
 <div id="content">
     <h4>运费模板</h4>
 
     <div class="button">
-        <button class="btn" type="button">新建运费模板</button>
+        <button th:onclick="|javascript:window.location.href='@{/freight/templateDetail}'|" class="btn" type="button">新建运费模板</button>
     </div>
     <div class="freight-list">
-        <table class="table active" th:each="freightTemplate:${freightTemplates}">
+        <table class="table" style="width: 100%;" th:each="freightTemplate:${freightTemplates}" th:id="'template_'+${freightTemplate.id}">
             <thead>
             <tr>
                 <th colspan="6" class="table-th">
                     <div class="clearfix">
-                        <h5 class="left" th:text="${freightTemplate.name}"></h5>
+                        <h5 style="font-size: 15px;margin-left: -30px;" class="left" th:text="${freightTemplate.name}"></h5>
                         <h5 class="left" th:if="${freightTemplate.isShippingFree==1}">包邮</h5>
                         <ul class="horizonal right">
-                            <li th:if="${!freightTemplate.isDefault()}"><a href="javascript:;">设为默认</a></li>
+                            <li th:if="${!freightTemplate.isDefault()}">
+                                <a th:href="|javascript:templateListHandler.setDefault(${freightTemplate.id});|"
+                                   href="javascript:templateListHandler.setDefault(0);">设为默认</a></li>
                             <li><a href="javascript:;" th:href="@{/freight/templateDetail(id=${freightTemplate.id})}">修改</a></li>
-                            <li><a href="javascript:;">删除</a></li>
+                            <li><a th:href="|javascript:templateListHandler.deleteTemplate(${freightTemplate.id});|"
+                                   href="javascript:templateListHandler.deleteTemplate(0);">删除</a></li>
                         </ul>
                     </div>
                 </th>
@@ -46,9 +49,10 @@
             <tr>
                 <td width="150px">运送方式</td>
                 <td>运送至</td>
-                <td width="150px">首件（件）</td>
+                <td width="150px" th:text="${freightTemplate.valuationWay==0}?'首件（件）':'首重（g）'">
+                </td>
                 <td width="150px">运费（元）</td>
-                <td width="150px">续件（件）</td>
+                <td width="150px" th:text="${freightTemplate.valuationWay==0}?'续件（件）':'续重（g）'">续件（件）</td>
                 <td width="150px">运费（元）</td>
             </tr>
             <tr th:each="detail:${freightTemplate.freightTemplateDetails}" th:if="${freightTemplate.isShippingFree==0}">
@@ -80,4 +84,58 @@
       th:href="@{/resource/scripts/lib/jBox/Skins/Green/jbox.css}" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../resource/scripts/lib/jBox/jquery.jBox-2.3.min.js"
         th:src="@{/resource/scripts/lib/jBox/jquery.jBox-2.3.min.js}"></script>
+
+<script type="text/javascript" th:inline="javascript">
+    var ajaxUrl = /*[[@{/freight/api/}]]*/ "";
+    var usedInfo = /*[[${freightTemplateUsedInfo}]]*/ [];
+    /*<![CDATA[*/
+    var templateListHandler = {
+        setDefault: function (templateId) {
+            J.GetJsonRespons(ajaxUrl + "setDefault", {
+                id: templateId
+            }, function (json) {
+                if (json.code == 2000) {
+                    window.location.reload();
+                } else {
+                    $.jBox.tip("操作失败--" + json.msg, "error");
+                }
+            }, function () {
+            }, "post");
+        },
+        bindUsed: function () {
+            $.each(usedInfo, function (o, item) {
+                if (item[1] > 0) {
+                    $("#template_" + item[0]).addClass("active");
+                } else {
+                    $("#template_" + item[1]).removeClass("active");
+                }
+            });
+        },
+        deleteTemplate: function (templateId) {
+            J.jboxConfirm("确定要删除该模板?", function () {
+                $.jBox.tip("正在删除...", "loading");
+                setTimeout(function () {
+                    J.GetJsonRespons(ajaxUrl + "deleteTemplate", {
+                        id: templateId
+                    }, function (json) {
+                        if (json.code == 2000) {
+                            $.jBox.tip("删除成功", "success");
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 100);
+                        } else {
+                            $.jBox.tip("删除失败--" + json.msg, "error");
+                        }
+                    }, function () {
+                    }, "post");
+                }, 400);
+            });
+        }
+    };
+
+    $(function () {
+        templateListHandler.bindUsed();
+    });
+    /*]]>*/
+</script>
 </html>
