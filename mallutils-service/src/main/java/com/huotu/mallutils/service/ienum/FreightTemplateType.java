@@ -12,21 +12,22 @@ package com.huotu.mallutils.service.ienum;
 import com.huotu.mallutils.common.ienum.ICommonEnum;
 
 /**
- * Created by allan on 7/7/16.
+ * Created by allan on 7/14/16.
  */
-public enum DeliveryTypeEnum implements ICommonEnum {
-    EXPRESS(0, "快递");
-
-    //其他配送方式可能会有:物流,自提等
+public enum FreightTemplateType implements ICommonEnum {
+    HUOBAN_MALL(0, "伙伴商城"),
+    SUPPLIER(1, "供应商"),
+    AGENT(2, "代理商");
 
     private Integer code;
     private String value;
 
-    DeliveryTypeEnum(Integer code, String value) {
+    FreightTemplateType(Integer code, String value) {
         this.code = code;
         this.value = value;
     }
 
+    @Override
     public Integer getCode() {
         return code;
     }
@@ -35,6 +36,7 @@ public enum DeliveryTypeEnum implements ICommonEnum {
         this.code = code;
     }
 
+    @Override
     public String getValue() {
         return value;
     }

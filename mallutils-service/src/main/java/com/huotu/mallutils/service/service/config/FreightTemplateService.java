@@ -34,7 +34,7 @@ public interface FreightTemplateService {
      * @param customerId 商户id
      * @return
      */
-    List<FreightTemplate> findByCustomerId(int customerId);
+    List<FreightTemplate> findByCustomerId(int customerId, int freightTemplateType);
 
     /**
      * 得到某个模板实体

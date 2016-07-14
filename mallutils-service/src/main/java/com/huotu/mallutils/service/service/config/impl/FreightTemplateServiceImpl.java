@@ -33,8 +33,8 @@ public class FreightTemplateServiceImpl implements FreightTemplateService {
     }
 
     @Override
-    public List<FreightTemplate> findByCustomerId(int customerId) {
-        return freightTemplateRepository.findByCustomerId(customerId);
+    public List<FreightTemplate> findByCustomerId(int customerId, int freightTemplateType) {
+        return freightTemplateRepository.findByCustomerIdAndFreightTemplateType(customerId, freightTemplateType);
     }
 
     @Override

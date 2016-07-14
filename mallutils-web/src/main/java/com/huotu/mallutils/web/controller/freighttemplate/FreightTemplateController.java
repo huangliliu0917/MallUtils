@@ -37,17 +37,25 @@ public class FreightTemplateController {
     private FreightTemplateService freightTemplateService;
 
     @RequestMapping(value = "/templateList", method = RequestMethod.GET)
-    public String templateList(@RequestAttribute Integer customerId, Model model) {
-        List<FreightTemplate> freightTemplates = freightTemplateService.findByCustomerId(customerId);
+    public String templateList(
+            @RequestAttribute Integer customerId,
+            @RequestParam(required = false, defaultValue = "0") int templateType,
+            Model model) {
+        List<FreightTemplate> freightTemplates = freightTemplateService.findByCustomerId(customerId, templateType);
         List<long[]> freightTemplateUsedInfo = freightTemplateService.freightTemplateUsedInfo(customerId);
         model.addAttribute("freightTemplates", freightTemplates);
+        model.addAttribute("templateType", templateType);
         model.addAttribute("freightTemplateUsedInfo", JSON.toJSON(freightTemplateUsedInfo));
 
         return "freighttemplate/template_list";
     }
 
     @RequestMapping(value = "/templateDetail", method = RequestMethod.GET)
-    public String templateDetail(@RequestParam(required = false, defaultValue = "0") long id, Model model) {
+    public String templateDetail(
+            @RequestParam(required = false, defaultValue = "0") long id,
+            @RequestParam(required = false, defaultValue = "0") int templateType,
+            Model model
+    ) {
         FreightTemplate freightTemplate = new FreightTemplate();
         if (id > 0) {
             freightTemplate = freightTemplateService.findById(id);
@@ -55,6 +63,7 @@ public class FreightTemplateController {
         model.addAttribute("freightTemplate", freightTemplate);
         model.addAttribute("templateId", id);
         model.addAttribute("deliveryTypes", DeliveryTypeEnum.values());
+        model.addAttribute("templateType", templateType);
         model.addAttribute("defaultDetailJson", JSON.toJSON(freightTemplate.defaultDetails()));
 
         return "freighttemplate/template_detail";
@@ -62,7 +71,10 @@ public class FreightTemplateController {
 
     @RequestMapping(value = "/api/setDefault", method = RequestMethod.POST)
     @ResponseBody
-    public ApiResult setDefault(@RequestAttribute Integer customerId, long id) {
+    public ApiResult setDefault(
+            @RequestAttribute Integer customerId,
+            long id
+    ) {
         freightTemplateService.setDefault(id, customerId);
 
         return ApiResult.resultWith(ResultCode.SUCCESS);
@@ -73,11 +85,13 @@ public class FreightTemplateController {
     public ApiResult saveTemplate(
             @RequestAttribute Integer customerId,
             FreightTemplate freightTemplate,
-            String detailJson
+            String detailJson,
+            @RequestParam(required = false, defaultValue = "0") int templateType
     ) {
         List<FreightTemplateDetail> freightTemplateDetails = JSON.parseArray(detailJson, FreightTemplateDetail.class);
 
         freightTemplate.setCustomerId(customerId);
+        freightTemplate.setFreightTemplateType(templateType);
         freightTemplateDetails.forEach(deliveryType -> deliveryType.setFreightTemplate(freightTemplate));
         freightTemplate.setFreightTemplateDetails(freightTemplateDetails);
         freightTemplateService.save(freightTemplate);

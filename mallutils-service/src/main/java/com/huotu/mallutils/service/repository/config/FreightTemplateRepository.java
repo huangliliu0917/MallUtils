@@ -22,7 +22,7 @@ import java.util.List;
  */
 @Repository
 public interface FreightTemplateRepository extends JpaRepository<FreightTemplate, Long> {
-    List<FreightTemplate> findByCustomerId(int customerId);
+    List<FreightTemplate> findByCustomerIdAndFreightTemplateType(int customerId, int freightTemplateType);
 
     @Query("select templ from FreightTemplate templ where templ.customerId=?1 and templ.isDefault=true ")
     FreightTemplate findDefaultTemplate(int customerId);

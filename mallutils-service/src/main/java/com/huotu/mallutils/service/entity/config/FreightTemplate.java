@@ -55,6 +55,16 @@ public class FreightTemplate {
      */
     @Column(name = "Customer_Id", updatable = false)
     private int customerId;
+
+    /**
+     * 商户类型
+     * 0:伙伴商城
+     * 1:供应商
+     * 2:代理商
+     */
+    @Column(name = "Template_Type", updatable = false)
+    private int freightTemplateType;
+
     @Column(name = "Is_Default", updatable = false)
     private boolean isDefault;
     /**
