@@ -39,12 +39,12 @@ public class FreightTemplateController {
     @RequestMapping(value = "/templateList", method = RequestMethod.GET)
     public String templateList(
             @RequestAttribute Integer customerId,
-            @RequestParam(required = false, defaultValue = "0") int templateType,
+            @RequestParam(required = false, defaultValue = "0") int proType,
             Model model) {
-        List<FreightTemplate> freightTemplates = freightTemplateService.findByCustomerId(customerId, templateType);
+        List<FreightTemplate> freightTemplates = freightTemplateService.findByCustomerId(customerId, proType);
         List<long[]> freightTemplateUsedInfo = freightTemplateService.freightTemplateUsedInfo(customerId);
         model.addAttribute("freightTemplates", freightTemplates);
-        model.addAttribute("templateType", templateType);
+        model.addAttribute("proType", proType);
         model.addAttribute("freightTemplateUsedInfo", JSON.toJSON(freightTemplateUsedInfo));
 
         return "freighttemplate/template_list";
@@ -53,7 +53,7 @@ public class FreightTemplateController {
     @RequestMapping(value = "/templateDetail", method = RequestMethod.GET)
     public String templateDetail(
             @RequestParam(required = false, defaultValue = "0") long id,
-            @RequestParam(required = false, defaultValue = "0") int templateType,
+            @RequestParam(required = false, defaultValue = "0") int proType,
             Model model
     ) {
         FreightTemplate freightTemplate = new FreightTemplate();
@@ -63,7 +63,7 @@ public class FreightTemplateController {
         model.addAttribute("freightTemplate", freightTemplate);
         model.addAttribute("templateId", id);
         model.addAttribute("deliveryTypes", DeliveryTypeEnum.values());
-        model.addAttribute("templateType", templateType);
+        model.addAttribute("proType", proType);
         model.addAttribute("defaultDetailJson", JSON.toJSON(freightTemplate.defaultDetails()));
 
         return "freighttemplate/template_detail";
@@ -86,12 +86,12 @@ public class FreightTemplateController {
             @RequestAttribute Integer customerId,
             FreightTemplate freightTemplate,
             String detailJson,
-            @RequestParam(required = false, defaultValue = "0") int templateType
+            @RequestParam(required = false, defaultValue = "0") int proType
     ) {
         List<FreightTemplateDetail> freightTemplateDetails = JSON.parseArray(detailJson, FreightTemplateDetail.class);
 
         freightTemplate.setCustomerId(customerId);
-        freightTemplate.setFreightTemplateType(templateType);
+        freightTemplate.setFreightTemplateType(proType);
         freightTemplateDetails.forEach(deliveryType -> deliveryType.setFreightTemplate(freightTemplate));
         freightTemplate.setFreightTemplateDetails(freightTemplateDetails);
         freightTemplateService.save(freightTemplate);

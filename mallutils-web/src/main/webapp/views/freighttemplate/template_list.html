@@ -23,7 +23,7 @@
     <h4>运费模板</h4>
 
     <div class="button">
-        <button th:onclick="|javascript:window.location.href='@{/freight/templateDetail}'|" class="btn" type="button">新建运费模板</button>
+        <button th:onclick="|javascript:window.location.href='@{/freight/templateDetail(proType=${proType})}'|" class="btn" type="button">新建运费模板</button>
     </div>
     <div class="freight-list">
         <table class="table" style="width: 100%;" th:each="freightTemplate:${freightTemplates}" th:id="'template_'+${freightTemplate.id}">
@@ -37,7 +37,7 @@
                             <!--<li th:if="${!freightTemplate.isDefault()}">-->
                             <!--<a th:href="|javascript:templateListHandler.setDefault(${freightTemplate.id});|"-->
                             <!--href="javascript:templateListHandler.setDefault(0);">设为默认</a></li>-->
-                            <li><a href="javascript:;" th:href="@{/freight/templateDetail(id=${freightTemplate.id})}">修改</a></li>
+                            <li><a href="javascript:;" th:href="@{/freight/templateDetail(id=${freightTemplate.id},proType=${proType})}">修改</a></li>
                             <li><a th:href="|javascript:templateListHandler.deleteTemplate(${freightTemplate.id});|"
                                    href="javascript:templateListHandler.deleteTemplate(0);">删除</a></li>
                         </ul>

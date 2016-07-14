@@ -207,8 +207,8 @@
     var defaultDetails = /*[[${defaultDetailJson}]]*/ [];
     var templateId = /*[[${templateId}]]*/ 0;
     var ajaxUrl = /*[[@{/freight/api/saveTemplate}]]*/ "";
-    var listUrl = /*[[@{/freight/templateList}]]*/ "";
-    var templateType = /*[[${templateType}]]*/ 0;
+    var listUrl = /*[[@{/freight/templateList(proType=${proType})}]]*/ "";
+    var proType = /*[[${proType}]]*/ 0;
 </script>
 
 <script type="text/javascript">
@@ -302,7 +302,7 @@
                     isShippingFree: isShippingFree,
                     valuationWay: valuationWay,
                     detailJson: JSON.stringify(freightTemplateDetails),
-                    templateType: templateType
+                    proType: proType
                 };
                 $.jBox.tip("正在保存", "loading");
                 setTimeout(function () {
