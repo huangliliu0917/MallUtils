@@ -34,9 +34,9 @@
                         <h5 style="font-size: 15px;margin-left: -30px;" class="left" th:text="${freightTemplate.name}"></h5>
                         <h5 class="left" th:if="${freightTemplate.isShippingFree==1}">包邮</h5>
                         <ul class="horizonal right">
-                            <li th:if="${!freightTemplate.isDefault()}">
-                                <a th:href="|javascript:templateListHandler.setDefault(${freightTemplate.id});|"
-                                   href="javascript:templateListHandler.setDefault(0);">设为默认</a></li>
+                            <!--<li th:if="${!freightTemplate.isDefault()}">-->
+                            <!--<a th:href="|javascript:templateListHandler.setDefault(${freightTemplate.id});|"-->
+                            <!--href="javascript:templateListHandler.setDefault(0);">设为默认</a></li>-->
                             <li><a href="javascript:;" th:href="@{/freight/templateDetail(id=${freightTemplate.id})}">修改</a></li>
                             <li><a th:href="|javascript:templateListHandler.deleteTemplate(${freightTemplate.id});|"
                                    href="javascript:templateListHandler.deleteTemplate(0);">删除</a></li>

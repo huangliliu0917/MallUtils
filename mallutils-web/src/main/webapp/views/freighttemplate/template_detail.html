@@ -373,6 +373,7 @@
 
     $(function () {
         freightHandler.pageInit();
+        changeUnit();
 
         $('.addTpl').on('click', '.areaFeeDelete', function () {
             $(this).parentsUntil('tbody').remove();
@@ -392,11 +393,7 @@
         });
 
         $("input[name=valuationWay]").change(function () {
-            if ($("input[name=valuationWay]:checked").val() == "0") {
-                $(".unit").html("件");
-            } else {
-                $(".unit").html("重(g)");
-            }
+            changeUnit();
         });
 
         $("input[name=Is_ShippingFree]").change(function () {
@@ -417,6 +414,14 @@
     $(document).on('keydown', ".num_int", function () {
         J.CertainNumber(event);
     });
+
+    function changeUnit() {
+        if ($("input[name=valuationWay]:checked").val() == "0") {
+            $(".unit").html("件");
+        } else {
+            $(".unit").html("重(g)");
+        }
+    }
     /*]]>*/
 </script>
 <script type="text/javascript">
