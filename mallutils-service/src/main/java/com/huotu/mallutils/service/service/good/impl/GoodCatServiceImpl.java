@@ -9,8 +9,8 @@
 
 package com.huotu.mallutils.service.service.good.impl;
 
-import com.huotu.mallutils.service.entity.good.GoodCat;
-import com.huotu.mallutils.service.repository.good.GoodCatRepository;
+import com.hot.datacenter.entity.good.GoodCat;
+import com.hot.datacenter.repository.good.GoodCatRepository;
 import com.huotu.mallutils.service.service.good.GoodCatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

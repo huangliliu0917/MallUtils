@@ -9,8 +9,9 @@
 
 package com.huotu.mallutils.service.service.good;
 
-import com.huotu.mallutils.service.entity.good.Good;
-import com.huotu.mallutils.service.search.GoodSearch;
+import com.hot.datacenter.entity.good.Good;
+import com.hot.datacenter.search.GoodSearch;
+import com.hot.datacenter.service.CrudService;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,10 +22,7 @@ import java.util.Map;
 /**
  * Created by allan on 5/16/16.
  */
-public interface GoodService {
-    @Transactional
-    Good save(Good good);
-
+public interface GoodService extends CrudService<Good, Integer, GoodSearch> {
     @Transactional
     void batchSetUserPrice(Map<Integer, String> levelsToSet, List<Good> goods, int customerId) throws Exception;
 
@@ -39,7 +37,7 @@ public interface GoodService {
 
     List<Good> findByCatIdExceptAct(String catId, int goodScenes);
 
-    Page<Good> findAll(int pageIndex, int pageSize, int customerId, GoodSearch goodSearch);
+    Page<Good> findAll(int pageIndex, int pageSize, GoodSearch goodSearch);
 
     List<Good> findByIdIn(List<Integer> goodIdList);
 

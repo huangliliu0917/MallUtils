@@ -9,24 +9,19 @@
 
 package com.huotu.mallutils.service.repository.config;
 
-import com.huotu.mallutils.service.entity.config.FreightTemplate;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.hot.datacenter.repository.config.FreightTemplateRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+
 /**
  * Created by allan on 7/7/16.
  */
 @Repository
-public interface FreightTemplateRepository extends JpaRepository<FreightTemplate, Long> {
-    List<FreightTemplate> findByCustomerIdAndFreightTemplateType(int customerId, int freightTemplateType);
-
-    @Query("select templ from FreightTemplate templ where templ.customerId=?1 and templ.isDefault=true ")
-    FreightTemplate findDefaultTemplate(int customerId);
-
+public interface CusFreightTemplateRepository extends FreightTemplateRepository {
     @Query("update FreightTemplate set isDefault=false where customerId=?1 and isDefault=true ")
     @Modifying
     void removeDefaultTemplate(int customerId);

@@ -10,13 +10,10 @@
 package com.huotu.mallutils.service.service.good;
 
 import com.huotu.mallutils.service.ServiceTestBase;
-import com.huotu.mallutils.service.entity.good.Good;
-import com.huotu.mallutils.service.repository.config.FreightTemplateRepository;
-import com.huotu.mallutils.service.repository.good.GoodRepository;
+import com.huotu.mallutils.service.repository.config.CusFreightTemplateRepository;
+import com.huotu.mallutils.service.repository.good.CusGoodRepository;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
@@ -27,9 +24,9 @@ public class GoodServiceTest extends ServiceTestBase {
     @Autowired
     private GoodService goodService;
     @Autowired
-    private GoodRepository goodRepository;
+    private CusGoodRepository goodRepository;
     @Autowired
-    private FreightTemplateRepository freightTemplateRepository;
+    private CusFreightTemplateRepository freightTemplateRepository;
     @Autowired
     private GoodBrandService goodBrandService;
     @Autowired
@@ -53,7 +50,6 @@ public class GoodServiceTest extends ServiceTestBase {
 //            Assert.assertEquals(0, disabledCount);
 //        });
 
-        Page<Good> goods = goodRepository.findAll(new PageRequest(0, 20));
 
         List<long[]> objects = freightTemplateRepository.freightTemplateUsedInfo(296);
 

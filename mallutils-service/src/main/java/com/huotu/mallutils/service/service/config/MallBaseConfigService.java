@@ -9,7 +9,8 @@
 
 package com.huotu.mallutils.service.service.config;
 
-import com.huotu.mallutils.service.entity.config.MallBaseConfig;
+
+import com.hot.datacenter.entity.config.MallBaseConfig;
 
 /**
  * Created by allan on 6/22/16.

@@ -9,14 +9,14 @@
 
 package com.huotu.mallutils.web.controller.priceset;
 
+import com.hot.datacenter.entity.client.UserLevel;
+import com.hot.datacenter.entity.config.MallBaseConfig;
+import com.hot.datacenter.entity.good.Good;
+import com.hot.datacenter.entity.good.GoodBrand;
+import com.hot.datacenter.entity.good.GoodCat;
+import com.hot.datacenter.search.GoodSearch;
 import com.huotu.mallutils.common.SysConstant;
 import com.huotu.mallutils.common.annotation.RequestAttribute;
-import com.huotu.mallutils.service.entity.config.MallBaseConfig;
-import com.huotu.mallutils.service.entity.good.Good;
-import com.huotu.mallutils.service.entity.good.GoodBrand;
-import com.huotu.mallutils.service.entity.good.GoodCat;
-import com.huotu.mallutils.service.entity.user.Level;
-import com.huotu.mallutils.service.search.GoodSearch;
 import com.huotu.mallutils.service.service.config.MallBaseConfigService;
 import com.huotu.mallutils.service.service.good.GoodBrandService;
 import com.huotu.mallutils.service.service.good.GoodCatService;
@@ -72,7 +72,8 @@ public class BatchSetPriceController {
             @ModelAttribute(value = "goodSearch") GoodSearch goodSearch,
             Model model
     ) {
-        Page<Good> goods = goodService.findAll(pageIndex, SysConstant.DEFAULT_PAGE_INDEX, customerId, goodSearch);
+        goodSearch.setCustomerId(customerId);
+        Page<Good> goods = goodService.findAll(pageIndex, SysConstant.DEFAULT_PAGE_INDEX, goodSearch);
 
         List<GoodCat> goodCatList = goodCatService.findByCustomerId(customerId);
         List<GoodBrand> goodBrands = goodBrandService.findByCustomerId(customerId);
@@ -89,7 +90,7 @@ public class BatchSetPriceController {
     }
 
     @ModelAttribute(value = "levels")
-    public List<Level> levels(@RequestAttribute Integer customerId) {
+    public List<UserLevel> levels(@RequestAttribute Integer customerId) {
         return levelService.findByCustomerIdWithOrder(customerId);
     }
 

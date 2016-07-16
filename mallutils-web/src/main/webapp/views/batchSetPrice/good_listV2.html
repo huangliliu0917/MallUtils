@@ -9,8 +9,8 @@
   -->
 
 <html xmlns:th="http://www.thymeleaf.org">
-<!--/*@thymesVar id="goodCatList" type="java.util.List<com.huotu.mallutils.service.entity.good.GoodCat>"*/-->
-<!--/*@thymesVar id="goodBrands" type="java.util.List<com.huotu.mallutils.service.entity.good.GoodBrand>"*/-->
+<!--/*@thymesVar id="goodCatList" type="java.util.List<com.hot.datacenter.entity.good.GoodCat>"*/-->
+<!--/*@thymesVar id="goodBrands" type="java.util.List<com.hot.datacenter.entity.good.GoodBrand>"*/-->
 <head id="Head1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
@@ -273,15 +273,15 @@
             <div class="cnt-wp">
                 <div class="cnt">
 
-                    <!--/*@thymesVar id="goodSearch" type="com.huotu.mallutils.service.search.GoodSearch"*/-->
+                    <!--/*@thymesVar id="goodSearch" type="com.hot.datacenter.search.GoodSearch"*/-->
                     <div class="search-bar" th:object="${goodSearch}">
                         <label class="first ">商品名称：</label>
                         <input name="goodName" th:value="*{goodName}" type="text" id="goodName" class="input-small" style="width: 120px;"/>
                         <label class="first ">分类：</label>
-                        <select name="catId" th:selected="*{catId}">
+                        <select name="catId">
                             <option value="0">全部</option>
                             <th:block th:each="goodCat:${goodCatList}">
-                                <option th:value="${goodCat.catId}" th:text="${goodCat.space()}+${goodCat.catName}"></option>
+                                <option th:selected="*{catId}==${goodCat.catId}" th:value="${goodCat.catId}" th:text="${goodCat.space()}+${goodCat.catName}"></option>
                             </th:block>
                         </select>
                         <label class="first ">商品编号：</label>
@@ -290,10 +290,10 @@
                         <br/>
                         <br/>
                         <label class="first ">品牌：</label>
-                        <select name="brand" th:selected="*{brand}">
+                        <select name="brand">
                             <option value="0">全部</option>
                             <th:block th:each="goodBrand:${goodBrands}">
-                                <option th:value="${goodBrand.brandId}" th:text="${goodBrand.brandName}"></option>
+                                <option th:selected="*{brand}==${goodBrand.brandId}" th:value="${goodBrand.brandId}" th:text="${goodBrand.brandName}"></option>
                             </th:block>
                         </select>
 
@@ -362,7 +362,7 @@
                                         </thead>
                                         <tbody>
 
-                                        <!--/*@thymesVar id="goods" type="java.util.List<com.huotu.mallutils.service.entity.good.Good>"*/-->
+                                        <!--/*@thymesVar id="goods" type="java.util.List<com.hot.datacenter.entity.good.Good>"*/-->
                                         <tr th:each="good:${goods}">
                                             <td class="txt40 c">
                                                 <input type="checkbox" onclick="batchSetHandler.setSavedGoodInfo()" name="chkGoodId" th:value="${good.goodId}"/>

@@ -9,11 +9,11 @@
 
 package com.huotu.mallutils.service.service.config;
 
+import com.hot.datacenter.entity.config.FreightTemplate;
+import com.hot.datacenter.entity.config.FreightTemplateDetail;
+import com.hot.datacenter.ienum.DeliveryTypeEnum;
 import com.huotu.mallutils.service.ServiceTestBase;
-import com.huotu.mallutils.service.entity.config.FreightTemplate;
-import com.huotu.mallutils.service.entity.config.FreightTemplateDetail;
-import com.huotu.mallutils.service.ienum.DeliveryTypeEnum;
-import com.huotu.mallutils.service.repository.config.FreightTemplateRepository;
+import com.huotu.mallutils.service.repository.config.CusFreightTemplateRepository;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
@@ -26,7 +26,7 @@ import java.util.UUID;
  */
 public class FreightTemplateServiceTest extends ServiceTestBase {
     @Autowired
-    private FreightTemplateRepository freightTemplateRepository;
+    private CusFreightTemplateRepository freightTemplateRepository;
 
     @Test
     @Rollback(false)

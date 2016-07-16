@@ -9,9 +9,9 @@
 
 package com.huotu.mallutils.web.controller.priceset.handler;
 
+import com.hot.datacenter.entity.good.Good;
 import com.huotu.mallutils.common.annotation.RequestAttribute;
 import com.huotu.mallutils.common.ienum.ResultCode;
-import com.huotu.mallutils.service.entity.good.Good;
 import com.huotu.mallutils.service.service.good.GoodService;
 import com.huotu.mallutils.web.common.ApiResult;
 import org.springframework.beans.factory.annotation.Autowired;

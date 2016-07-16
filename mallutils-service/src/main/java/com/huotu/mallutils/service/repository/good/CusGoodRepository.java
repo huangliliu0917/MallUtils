@@ -9,25 +9,26 @@
 
 package com.huotu.mallutils.service.repository.good;
 
-import com.huotu.mallutils.service.entity.good.Good;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import com.hot.datacenter.entity.good.Good;
+import com.hot.datacenter.repository.good.GoodRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+
 /**
  * Created by allan on 5/16/16.
  */
 @Repository
-public interface GoodRepository extends JpaRepository<Good, Integer>, JpaSpecificationExecutor<Good> {
+public interface CusGoodRepository extends GoodRepository {
+
     @Query("select good from Good good where good.disabled=false and good.goodScenes=?2 and good.goodCat.catPath like %?1%")
-    List<Good> findByGoodCat_CatIdAndGoodScenes(String catId, int goodScenes);
+    List<Good> findByGoodCat_CatIdAndGoodScenes(String var1, int var2);
 
     @Query("select good from Good good where good.goodId in ?1")
-    List<Good> findByGoodIdIn(List<Integer> goodIdList);
+    List<Good> findByGoodIdIn(List<Integer> var1);
 
     @Query("select good from Good good where good.disabled=false and good.brandId=?1 and good.goodScenes=?2")
-    List<Good> findByBrandIdAndGoodScenes(int brandId, int goodScenes);
+    List<Good> findByBrandIdAndGoodScenes(int var1, int var2);
 }
