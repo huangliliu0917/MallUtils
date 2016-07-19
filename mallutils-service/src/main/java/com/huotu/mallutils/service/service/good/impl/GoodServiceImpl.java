@@ -281,41 +281,39 @@ public class GoodServiceImpl implements GoodService {
     public void batchSetRebate(String eval, List<Good> goods, int customerId) throws Exception {
         ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("JavaScript");
         for (Good good : goods) {
-            if (good.getRebateQuatoRatio() > 0) {
-                List<DisRebateDesc> disRebateDescList = new ArrayList<>();
-                for (Product product : good.getProducts()) {
-                    double minUserPrice = 0;
-                    //得到最低的会员价
-                    if (product.getGoodLvPriceMap() != null) {
-                        for (Map.Entry<Integer, GoodLvPrice> entry : product.getGoodLvPriceMap().entrySet()) {
-                            GoodLvPrice goodLvPrice = entry.getValue();
-                            if (goodLvPrice.getPrice() > 0) {
-                                if (minUserPrice == 0 || goodLvPrice.getPrice() < minUserPrice) {
-                                    minUserPrice = goodLvPrice.getPrice();
-                                }
+            List<DisRebateDesc> disRebateDescList = new ArrayList<>();
+            for (Product product : good.getProducts()) {
+                double minUserPrice = 0;
+                //得到最低的会员价
+                if (product.getGoodLvPriceMap() != null) {
+                    for (Map.Entry<Integer, GoodLvPrice> entry : product.getGoodLvPriceMap().entrySet()) {
+                        GoodLvPrice goodLvPrice = entry.getValue();
+                        if (goodLvPrice.getPrice() > 0) {
+                            if (minUserPrice == 0 || goodLvPrice.getPrice() < minUserPrice) {
+                                minUserPrice = goodLvPrice.getPrice();
                             }
                         }
                     }
-                    //如果minUserPrice不大于0,则会员价就是销售价
-                    minUserPrice = minUserPrice <= 0 ? product.getPrice() : minUserPrice;
-                    double resultValue = getResultPrice(eval, product.getCost(), product.getPrice(), product.getMarketPrice(), minUserPrice, scriptEngine);
-                    if (resultValue < 0) {
-                        throw new Exception("不可将返利设置为负数,请检查输入的公式或值");
-                    }
-                    product.setDisRebateMode(0);
-                    product.setDisUnifiedRebate(resultValue);
-                    productService.save(product);
-
-                    //商品冗余序列化字段
-                    DisRebateDesc disRebateDesc = new DisRebateDesc();
-                    disRebateDesc.setIsCustom(0);
-                    disRebateDesc.setAmount(resultValue);
-                    disRebateDesc.setProId(product.getProductId());
-                    disRebateDescList.add(disRebateDesc);
                 }
-                good.setDisRebateDescList(disRebateDescList);
-                this.save(good);
+                //如果minUserPrice不大于0,则会员价就是销售价
+                minUserPrice = minUserPrice <= 0 ? product.getPrice() : minUserPrice;
+                double resultValue = getResultPrice(eval, product.getCost(), product.getPrice(), product.getMarketPrice(), minUserPrice, scriptEngine);
+                if (resultValue < 0) {
+                    throw new Exception("不可将返利设置为负数,请检查输入的公式或值");
+                }
+                product.setDisRebateMode(0);
+                product.setDisUnifiedRebate(resultValue);
+                productService.save(product);
+
+                //商品冗余序列化字段
+                DisRebateDesc disRebateDesc = new DisRebateDesc();
+                disRebateDesc.setIsCustom(0);
+                disRebateDesc.setAmount(resultValue);
+                disRebateDesc.setProId(product.getProductId());
+                disRebateDescList.add(disRebateDesc);
             }
+            good.setDisRebateDescList(disRebateDescList);
+            this.save(good);
         }
     }
 
