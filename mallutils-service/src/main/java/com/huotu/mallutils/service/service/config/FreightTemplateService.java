@@ -76,8 +76,7 @@ public interface FreightTemplateService {
      * @param customerId
      * @return
      */
-    List<long[]> freightTemplateUsedInfo(int customerId);
-
+    List<long[]> freightTemplateUsedInfo(int customerId, int proType);
     /**
      * 运费是否使用
      *

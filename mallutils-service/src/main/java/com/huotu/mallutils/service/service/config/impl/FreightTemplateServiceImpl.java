@@ -10,6 +10,7 @@
 package com.huotu.mallutils.service.service.config.impl;
 
 import com.huotu.mallutils.service.entity.config.FreightTemplate;
+import com.huotu.mallutils.service.ienum.ProType;
 import com.huotu.mallutils.service.repository.config.FreightTemplateRepository;
 import com.huotu.mallutils.service.service.config.FreightTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,9 +64,14 @@ public class FreightTemplateServiceImpl implements FreightTemplateService {
         freightTemplateRepository.delete(id);
     }
 
-    public List<long[]> freightTemplateUsedInfo(int customerId) {
-        return freightTemplateRepository.freightTemplateUsedInfo(customerId);
+    public List<long[]> freightTemplateUsedInfo(int customerId, int proType) {
+        if (proType == ProType.HUOBAN_MALL.getCode()) {
+            return freightTemplateRepository.freightTemplateUsedInfoForCustomer(customerId);
+        } else {
+            return freightTemplateRepository.freightTempolateUseInfoForSupplier(customerId);
+        }
     }
+
 
     public boolean isUsed(long id) {
         return freightTemplateRepository.isUsed(id) > 0;

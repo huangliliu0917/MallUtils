@@ -12,17 +12,17 @@ package com.huotu.mallutils.service.ienum;
 import com.huotu.mallutils.common.ienum.ICommonEnum;
 
 /**
- * Created by allan on 7/14/16.
+ * 产品类型
+ * Created by allan on 7/19/16.
  */
-public enum FreightTemplateType implements ICommonEnum {
+public enum ProType implements ICommonEnum {
     HUOBAN_MALL(0, "伙伴商城"),
     SUPPLIER(1, "供应商"),
     AGENT(2, "代理商");
-
     private Integer code;
     private String value;
 
-    FreightTemplateType(Integer code, String value) {
+    ProType(Integer code, String value) {
         this.code = code;
         this.value = value;
     }
