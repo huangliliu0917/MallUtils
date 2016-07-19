@@ -48,10 +48,10 @@ public class BatchSetPriceApiController {
     public ApiResult batchSetUserPriceByCats(String evalInfos, String cateIdList, @RequestAttribute Integer customerId) throws Exception {
         String[] cateIdArray = cateIdList.split(",");
         String[] evalInfoArray = evalInfos.split(",");
-        Map<Integer, String[]> levelsToSet = new HashMap<>(); //设置的等级及公式列表
+        Map<Long, String[]> levelsToSet = new HashMap<>(); //设置的等级及公式列表
         for (String evalInfo : evalInfoArray) {
             String[] info = evalInfo.split(":");
-            levelsToSet.put(Integer.valueOf(info[0]), new String[]{info[1], info[2]});
+            levelsToSet.put(Long.valueOf(info[0]), new String[]{info[1], info[2]});
         }
         for (String cateIdStr : cateIdArray) {
             List<Good> goodsBeans = goodService.findByCatIdExceptAct("|" + cateIdStr + "|", 0);
@@ -85,10 +85,10 @@ public class BatchSetPriceApiController {
     public ApiResult batchSetByBrands(String evalInfos, String brandIdList, @RequestAttribute Integer customerId) throws Exception {
         String[] brandIdArray = brandIdList.split(",");
         String[] evalInfoArray = evalInfos.split(",");
-        Map<Integer, String[]> levelsToSet = new HashMap<>(); //设置的等级及公式列表
+        Map<Long, String[]> levelsToSet = new HashMap<>(); //设置的等级及公式列表
         for (String evalInfo : evalInfoArray) {
             String[] info = evalInfo.split(":");
-            levelsToSet.put(Integer.valueOf(info[0]), new String[]{info[1], info[2]});
+            levelsToSet.put(Long.valueOf(info[0]), new String[]{info[1], info[2]});
         }
         for (String brandIdStr : brandIdArray) {
             List<Good> goodsBeans = goodService.findByBrandIdExceptAct(Integer.parseInt(brandIdStr), 0);
@@ -121,14 +121,14 @@ public class BatchSetPriceApiController {
     public ApiResult bachSetByGoods(String evalInfos, String goodListStr, @RequestAttribute Integer customerId) throws Exception {
         String[] goodIdArray = goodListStr.split(",");
         String[] evalInfoArray = evalInfos.split(",");
-        Map<Integer, String[]> levelsToSet = new HashMap<>(); //设置的等级及公式列表
+        Map<Long, String[]> levelsToSet = new HashMap<>(); //设置的等级及公式列表
         for (String evalInfo : evalInfoArray) {
             String[] info = evalInfo.split(":");
-            levelsToSet.put(Integer.valueOf(info[0]), new String[]{info[1], info[2]});
+            levelsToSet.put(Long.valueOf(info[0]), new String[]{info[1], info[2]});
         }
-        List<Integer> goodIdList = new ArrayList<>();
+        List<Long> goodIdList = new ArrayList<>();
         for (String goodIdStr : goodIdArray) {
-            goodIdList.add(Integer.valueOf(goodIdStr));
+            goodIdList.add(Long.valueOf(goodIdStr));
         }
         List<Good> goods = goodService.findByIdIn(goodIdList);
         goodService.batchSetUserPriceV2(levelsToSet, goods, customerId);
@@ -139,9 +139,9 @@ public class BatchSetPriceApiController {
     @ResponseBody
     public ApiResult batchSetRebateByGoods(String evalStr, String goodListStr, @RequestAttribute Integer customerId) throws Exception {
         String[] goodIdArray = goodListStr.split(",");
-        List<Integer> goodIdList = new ArrayList<>();
+        List<Long> goodIdList = new ArrayList<>();
         for (String goodIdStr : goodIdArray) {
-            goodIdList.add(Integer.valueOf(goodIdStr));
+            goodIdList.add(Long.valueOf(goodIdStr));
         }
         List<Good> goods = goodService.findByIdIn(goodIdList);
         goodService.batchSetRebate(evalStr, goods, customerId);

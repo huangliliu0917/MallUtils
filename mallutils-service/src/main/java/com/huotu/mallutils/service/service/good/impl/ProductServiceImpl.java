@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
  * Created by allan on 5/16/16.
  */
 @Service
-public class ProductServiceImpl extends AbstractCrudService<Product, Integer, Void> implements ProductService {
+public class ProductServiceImpl extends AbstractCrudService<Product, Long, Void> implements ProductService {
     @Override
     public Specification<Product> specification(Void aVoid) {
         return null;

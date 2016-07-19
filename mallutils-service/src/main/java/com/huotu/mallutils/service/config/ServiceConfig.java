@@ -13,7 +13,6 @@ import com.hot.datacenter.config.DataCenterConfig;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
@@ -25,7 +24,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         basePackages = "com.huotu.mallutils.service.repository"
 )
 @Import(DataCenterConfig.class)
-@ImportResource({"classpath:datasource_prod.xml", "classpath:datasource_test.xml"})
 public class ServiceConfig {
 
 }

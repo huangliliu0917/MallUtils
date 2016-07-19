@@ -14,8 +14,8 @@ import com.hot.datacenter.entity.client.UserLevel;
 import com.hot.datacenter.entity.good.Good;
 import com.hot.datacenter.entity.good.GoodLvPrice;
 import com.hot.datacenter.entity.good.Product;
-import com.hot.datacenter.model.DisRebateDesc;
-import com.hot.datacenter.model.PriceLevelDesc;
+import com.hot.datacenter.model.good.DisRebateDesc;
+import com.hot.datacenter.model.good.PriceLevelDesc;
 import com.hot.datacenter.search.GoodSearch;
 import com.hot.datacenter.service.AbstractCusCrudService;
 import com.huotu.mallutils.service.repository.good.CusGoodRepository;
@@ -46,7 +46,7 @@ import java.util.Map;
  * Created by allan on 5/16/16.
  */
 @Service
-public class GoodServiceImpl extends AbstractCusCrudService<Good, Integer, GoodSearch> implements GoodService {
+public class GoodServiceImpl extends AbstractCusCrudService<Good, Long, GoodSearch> implements GoodService {
     @Autowired
     private CusGoodRepository goodRepository;
     @Autowired
@@ -149,15 +149,15 @@ public class GoodServiceImpl extends AbstractCusCrudService<Good, Integer, GoodS
 
     @Override
     @Transactional
-    public void batchSetUserPriceV2(Map<Integer, String[]> levelsToSet, List<Good> goods, int customerId) throws Exception {
+    public void batchSetUserPriceV2(Map<Long, String[]> levelsToSet, List<Good> goods, int customerId) throws Exception {
         ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("JavaScript");
         List<UserLevel> levels = levelService.findByCustomerId(customerId);
         for (Good good : goods) {
-            Map<Integer, PriceLevelDesc> priceLevelDescMap = new HashMap<>();
+            Map<Long, PriceLevelDesc> priceLevelDescMap = new HashMap<>();
             for (Product product : good.getProducts()) {
                 String userPriceInfo = "";
 
-                Map<Integer, GoodLvPrice> goodLvPriceMap = new HashMap<>();
+                Map<Long, GoodLvPrice> goodLvPriceMap = new HashMap<>();
                 for (UserLevel level : levels) {
                     double resultPrice = -1;
                     int resultIntegral = 0;
@@ -242,7 +242,7 @@ public class GoodServiceImpl extends AbstractCusCrudService<Good, Integer, GoodS
 
     @Override
     public List<Good> findByCatIdExceptAct(String catId, int goodScenes) {
-        return goodRepository.findByGoodCat_CatIdAndGoodScenes(catId, goodScenes);
+        return goodRepository.findByGoodCatAndGoodScenes(catId, goodScenes);
     }
 
     @Override
@@ -251,12 +251,12 @@ public class GoodServiceImpl extends AbstractCusCrudService<Good, Integer, GoodS
     }
 
     @Override
-    public List<Good> findByIdIn(List<Integer> goodIdList) {
+    public List<Good> findByIdIn(List<Long> goodIdList) {
         return goodRepository.findByGoodIdIn(goodIdList);
     }
 
     @Override
-    public List<Good> findByBrandIdExceptAct(int brandId, int goodScenes) {
+    public List<Good> findByBrandIdExceptAct(long brandId, int goodScenes) {
         return goodRepository.findByBrandIdAndGoodScenes(brandId, goodScenes);
     }
 
@@ -271,7 +271,7 @@ public class GoodServiceImpl extends AbstractCusCrudService<Good, Integer, GoodS
                     double minUserPrice = 0;
                     //得到最低的会员价
                     if (product.getGoodLvPriceMap() != null) {
-                        for (Map.Entry<Integer, GoodLvPrice> entry : product.getGoodLvPriceMap().entrySet()) {
+                        for (Map.Entry<Long, GoodLvPrice> entry : product.getGoodLvPriceMap().entrySet()) {
                             GoodLvPrice goodLvPrice = entry.getValue();
                             if (goodLvPrice.getPrice() > 0) {
                                 if (minUserPrice == 0 || goodLvPrice.getPrice() < minUserPrice) {

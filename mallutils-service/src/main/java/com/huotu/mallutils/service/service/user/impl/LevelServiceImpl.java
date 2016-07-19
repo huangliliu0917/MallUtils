@@ -10,7 +10,7 @@
 package com.huotu.mallutils.service.service.user.impl;
 
 import com.hot.datacenter.entity.client.UserLevel;
-import com.hot.datacenter.repository.user.UserLevelRepository;
+import com.hot.datacenter.repository.client.UserLevelRepository;
 import com.huotu.mallutils.service.service.user.LevelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

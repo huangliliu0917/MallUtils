@@ -16,5 +16,5 @@ import com.hot.datacenter.service.CrudService;
 /**
  * Created by allan on 5/16/16.
  */
-public interface ProductService extends CrudService<Product, Integer, Void> {
+public interface ProductService extends CrudService<Product, Long, Void> {
 }

@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * Created by allan on 5/16/16.
  */
-public interface GoodService extends CrudService<Good, Integer, GoodSearch> {
+public interface GoodService extends CrudService<Good, Long, GoodSearch> {
     @Transactional
     void batchSetUserPrice(Map<Integer, String> levelsToSet, List<Good> goods, int customerId) throws Exception;
 
@@ -33,15 +33,15 @@ public interface GoodService extends CrudService<Good, Integer, GoodSearch> {
      * @param goods       要应用设置的商品列表
      */
     @Transactional
-    void batchSetUserPriceV2(Map<Integer, String[]> levelsToSet, List<Good> goods, int customerId) throws Exception;
+    void batchSetUserPriceV2(Map<Long, String[]> levelsToSet, List<Good> goods, int customerId) throws Exception;
 
     List<Good> findByCatIdExceptAct(String catId, int goodScenes);
 
     Page<Good> findAll(int pageIndex, int pageSize, GoodSearch goodSearch);
 
-    List<Good> findByIdIn(List<Integer> goodIdList);
+    List<Good> findByIdIn(List<Long> goodIdList);
 
-    List<Good> findByBrandIdExceptAct(int brandId, int goodScenes);
+    List<Good> findByBrandIdExceptAct(long brandId, int goodScenes);
 
     /**
      * 批量设置返利（仅对八级返利有效）

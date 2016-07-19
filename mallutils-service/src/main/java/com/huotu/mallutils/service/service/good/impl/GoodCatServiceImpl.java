@@ -40,7 +40,7 @@ public class GoodCatServiceImpl implements GoodCatService {
         return result;
     }
 
-    private void findChild(List<GoodCat> result, int parentId, List<GoodCat> allCate) {
+    private void findChild(List<GoodCat> result, long parentId, List<GoodCat> allCate) {
         List<GoodCat> children = allCate.stream().filter(p -> p.getParentId() == parentId).collect(Collectors.toList());
         for (GoodCat child : children) {
             result.add(child);
