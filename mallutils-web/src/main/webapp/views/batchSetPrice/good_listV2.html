@@ -11,6 +11,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <!--/*@thymesVar id="goodCatList" type="java.util.List<com.hot.datacenter.entity.good.GoodCat>"*/-->
 <!--/*@thymesVar id="goodBrands" type="java.util.List<com.hot.datacenter.entity.good.GoodBrand>"*/-->
+<!--/*@thymesVar id="rootTypes" type="java.util.List<com.hot.datacenter.entity.good.GoodType>"*/-->
 <head id="Head1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
@@ -275,6 +276,34 @@
 
                     <!--/*@thymesVar id="goodSearch" type="com.hot.datacenter.search.GoodSearch"*/-->
                     <div class="search-bar" th:object="${goodSearch}">
+                        <div>
+                            <div style="float: left; padding: 3px 0px">
+                                <label class="first ">商品标准类目：&nbsp;</label>
+                            </div>
+                            <div class="cc-listwrap" style="float: left">
+                                <div style="float: left; padding: 0px 1px;">
+                                    <select name="parent_0" id="parent_0" onchange="stdGoodTypeHandler.stdTypeChange(this)">
+                                        <option value="0">--请选择--</option>
+
+                                        <th:block th:each="standardType:${rootTypes}">
+                                            <option th:value="${standardType.getStandardTypeId()}" th:text="${standardType.getName()}"></option>
+                                        </th:block>
+                                    </select>
+                                </div>
+                                <div id="parent_0_div" style="float: left; padding: 0px 1px;"></div>
+                            </div>
+                            <input name="standardTypeId" type="text" id="standardTypeId" class="input-small" style="width: 120px; display: none" value="">
+                        </div>
+                        <p style="clear: both; height: 18px;"></p>
+
+                        <label class="first ">自定义商品类型：</label>
+                        <select name="goodTypeId">
+                            <option value="0">全部类型</option>
+                            <th:block>
+
+                            </th:block>
+                        </select>
+
                         <label class="first ">商品名称：</label>
                         <input name="goodName" th:value="*{goodName}" type="text" id="goodName" class="input-small" style="width: 120px;"/>
                         <label class="first ">分类：</label>
