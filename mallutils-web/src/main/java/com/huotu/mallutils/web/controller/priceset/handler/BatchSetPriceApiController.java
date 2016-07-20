@@ -10,9 +10,11 @@
 package com.huotu.mallutils.web.controller.priceset.handler;
 
 import com.hot.datacenter.entity.good.Good;
+import com.hot.datacenter.entity.good.GoodType;
 import com.huotu.mallutils.common.annotation.RequestAttribute;
 import com.huotu.mallutils.common.ienum.ResultCode;
 import com.huotu.mallutils.service.service.good.GoodService;
+import com.huotu.mallutils.service.service.good.GoodTypeService;
 import com.huotu.mallutils.web.common.ApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,6 +35,8 @@ import java.util.Map;
 public class BatchSetPriceApiController {
     @Autowired
     private GoodService goodService;
+    @Autowired
+    private GoodTypeService goodTypeService;
 
     /**
      * 通过分类设置会员价
@@ -147,5 +151,13 @@ public class BatchSetPriceApiController {
         goodService.batchSetRebate(evalStr, goods, customerId);
 
         return ApiResult.resultWith(ResultCode.SUCCESS);
+    }
+
+    @RequestMapping("/getStandardTypeByParent")
+    @ResponseBody
+    public ApiResult getStandardTypeByParent(String parentTypeId) {
+        List<GoodType> goodTypes = goodTypeService.findByParentStandardType(parentTypeId);
+
+        return ApiResult.resultWith(ResultCode.SUCCESS, goodTypes);
     }
 }
