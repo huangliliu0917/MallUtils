@@ -26,6 +26,6 @@ public interface CusGoodRepository extends GoodRepository {
     @Query("select good from Good good where good.disabled=false and good.goodScenes=?2 and good.goodCat.catPath like %?1%")
     List<Good> findByGoodCatAndGoodScenes(String catId, int goodScenes);
 
-    @Query("select good from Good good where good.disabled=false and good.brandId=?1 and good.goodScenes=?2")
+    @Query("select good from Good good where good.disabled=false and good.goodBrand.brandId=?1 and good.goodScenes=?2")
     List<Good> findByBrandIdAndGoodScenes(long brandId, int goodScenes);
 }
