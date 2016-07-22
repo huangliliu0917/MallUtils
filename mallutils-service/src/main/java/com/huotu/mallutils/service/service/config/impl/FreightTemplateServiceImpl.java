@@ -10,6 +10,7 @@
 package com.huotu.mallutils.service.service.config.impl;
 
 import com.hot.datacenter.entity.config.FreightTemplate;
+import com.hot.datacenter.ienum.ProType;
 import com.hot.datacenter.service.AbstractCusCrudService;
 import com.huotu.mallutils.service.repository.config.CusFreightTemplateRepository;
 import com.huotu.mallutils.service.service.config.FreightTemplateService;
@@ -59,8 +60,12 @@ public class FreightTemplateServiceImpl extends AbstractCusCrudService<FreightTe
         freightTemplateRepository.setDefault(id);
     }
 
-    public List<long[]> freightTemplateUsedInfo(int customerId) {
-        return freightTemplateRepository.freightTemplateUsedInfo(customerId);
+    public List<long[]> freightTemplateUsedInfo(int customerId, int proType) {
+        if (proType == ProType.HUOBAN_MALL.getCode()) {
+            return freightTemplateRepository.freightTemplateUsedInfoForCustomer(customerId);
+        } else {
+            return freightTemplateRepository.freightTempolateUseInfoForSupplier(customerId);
+        }
     }
 
     public boolean isUsed(long id) {

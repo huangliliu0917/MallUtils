@@ -225,7 +225,7 @@
                     return;
                 }
 
-                J.GetJsonRespons(this.ajaxUrl + "getStandardTypeByParent", {
+                J.GetJsonRespons(ajaxUrl + "getStandardTypeByParent", {
                     parentTypeId: selType
                 }, function (json) {
                     if (json.data.length > 0) {
@@ -262,7 +262,7 @@
                 return selStdTypes.substring(0, selStdTypes.length - 1);
             },
             bindSearchCondition: function () {
-                if (stdTypes.length > 0) {
+                if (stdTypes != null && stdTypes.length > 0) {
                     //开始绑定
                     var stdTypesArray = stdTypes.split('|');
                     $("#parent_0").val(stdTypesArray[0]);
@@ -349,7 +349,7 @@
                             </div>
                             <div class="cc-listwrap" style="float: left">
                                 <div style="float: left; padding: 0px 1px;">
-                                    <select name="parent_0" id="parent_0" onchange="stdGoodTypeHandler.stdTypeChange(this)">
+                                    <select name="parent_0" id="parent_0" parent-id="0" onchange="stdGoodTypeHandler.stdTypeChange(this)">
                                         <option value="0">--请选择--</option>
 
                                         <th:block th:each="standardType:${rootTypes}">

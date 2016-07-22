@@ -321,7 +321,7 @@ public class GoodServiceImpl extends AbstractCusCrudService<Good, Long, GoodSear
             }
             if (!StringUtils.isEmpty(goodSearch.getStandardTypePath())) {
                 String[] stdTypesArray = goodSearch.getStandardTypePath().split("\\|");
-                predicates.add(cb.equal(root.get("standardTypePath").as(String.class), "%|" + stdTypesArray[stdTypesArray.length - 1] + "|%"));
+                predicates.add(cb.like(root.get("standardTypePath").as(String.class), "%|" + stdTypesArray[stdTypesArray.length - 1] + "|%"));
             }
             if (goodSearch.getGoodTypeId() > 0) {
                 predicates.add(cb.equal(root.get("typeId").as(Long.class), goodSearch.getGoodTypeId()));

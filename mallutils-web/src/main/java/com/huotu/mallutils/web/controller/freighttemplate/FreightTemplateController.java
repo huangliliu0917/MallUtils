@@ -42,7 +42,7 @@ public class FreightTemplateController {
             @RequestParam(required = false, defaultValue = "0") int proType,
             Model model) {
         List<FreightTemplate> freightTemplates = freightTemplateService.findByCustomerId(customerId, proType);
-        List<long[]> freightTemplateUsedInfo = freightTemplateService.freightTemplateUsedInfo(customerId);
+        List<long[]> freightTemplateUsedInfo = freightTemplateService.freightTemplateUsedInfo(customerId, proType);
         model.addAttribute("freightTemplates", freightTemplates);
         model.addAttribute("proType", proType);
         model.addAttribute("freightTemplateUsedInfo", JSON.toJSON(freightTemplateUsedInfo));

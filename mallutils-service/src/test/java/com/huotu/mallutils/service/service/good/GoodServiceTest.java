@@ -15,8 +15,6 @@ import com.huotu.mallutils.service.repository.good.CusGoodRepository;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-
 /**
  * Created by allan on 7/4/16.
  */
@@ -51,7 +49,7 @@ public class GoodServiceTest extends ServiceTestBase {
 //        });
 
 
-        List<long[]> objects = freightTemplateRepository.freightTemplateUsedInfo(296);
+//        List<long[]> objects = freightTemplateRepository.freightTemplateUsedInfo(296);
 
         System.out.println(111);
     }

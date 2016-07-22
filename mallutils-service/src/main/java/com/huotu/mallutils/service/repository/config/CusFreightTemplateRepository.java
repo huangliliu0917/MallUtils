@@ -33,7 +33,12 @@ public interface CusFreightTemplateRepository extends FreightTemplateRepository 
     @Query("select good.freightTemplate.id,count(good) from Good good " +
             "where good.freightTemplate is not null and good.customerId=?1 " +
             "group by good.freightTemplate")
-    List<long[]> freightTemplateUsedInfo(int customerId);
+    List<long[]> freightTemplateUsedInfoForCustomer(int customerId);
+
+    @Query("select good.freightTemplate.id,count(good) from Good good " +
+            "where good.freightTemplate is not null and good.supplierId=?1 " +
+            "group by good.freightTemplate")
+    List<long[]> freightTempolateUseInfoForSupplier(int supplierId);
 
     @Query("select count(good) from Good good where good.freightTemplate.id=?1")
     long isUsed(long id);

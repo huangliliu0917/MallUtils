@@ -52,7 +52,7 @@ public interface FreightTemplateService extends CrudService<FreightTemplate, Lon
      * @param customerId
      * @return
      */
-    List<long[]> freightTemplateUsedInfo(int customerId);
+    List<long[]> freightTemplateUsedInfo(int customerId, int proType);
 
     /**
      * 运费是否使用
