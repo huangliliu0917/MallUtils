@@ -10,11 +10,11 @@
 package com.huotu.mallutils.web.controller.freighttemplate;
 
 import com.alibaba.fastjson.JSON;
+import com.hot.datacenter.entity.config.FreightTemplate;
+import com.hot.datacenter.entity.config.FreightTemplateDetail;
+import com.hot.datacenter.ienum.DeliveryTypeEnum;
 import com.huotu.mallutils.common.annotation.RequestAttribute;
 import com.huotu.mallutils.common.ienum.ResultCode;
-import com.huotu.mallutils.service.entity.config.FreightTemplate;
-import com.huotu.mallutils.service.entity.config.FreightTemplateDetail;
-import com.huotu.mallutils.service.ienum.DeliveryTypeEnum;
 import com.huotu.mallutils.service.service.config.FreightTemplateService;
 import com.huotu.mallutils.web.common.ApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +58,7 @@ public class FreightTemplateController {
     ) {
         FreightTemplate freightTemplate = new FreightTemplate();
         if (id > 0) {
-            freightTemplate = freightTemplateService.findById(id);
+            freightTemplate = freightTemplateService.findOne(id);
         }
         model.addAttribute("freightTemplate", freightTemplate);
         model.addAttribute("templateId", id);

@@ -9,7 +9,8 @@
 
 package com.huotu.mallutils.service.service.good;
 
-import com.huotu.mallutils.service.entity.good.GoodBrand;
+
+import com.hot.datacenter.entity.good.GoodBrand;
 
 import java.util.List;
 

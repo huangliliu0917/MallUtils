@@ -9,8 +9,8 @@
 
 package com.huotu.mallutils.service.service.config.impl;
 
-import com.huotu.mallutils.service.entity.config.MallBaseConfig;
-import com.huotu.mallutils.service.repository.config.MallBaseConfigRepository;
+import com.hot.datacenter.entity.config.MallBaseConfig;
+import com.hot.datacenter.repository.config.MallBaseConfigRepository;
 import com.huotu.mallutils.service.service.config.MallBaseConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

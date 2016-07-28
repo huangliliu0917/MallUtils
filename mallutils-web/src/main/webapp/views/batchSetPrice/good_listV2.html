@@ -9,8 +9,10 @@
   -->
 
 <html xmlns:th="http://www.thymeleaf.org">
-<!--/*@thymesVar id="goodCatList" type="java.util.List<com.huotu.mallutils.service.entity.good.GoodCat>"*/-->
-<!--/*@thymesVar id="goodBrands" type="java.util.List<com.huotu.mallutils.service.entity.good.GoodBrand>"*/-->
+<!--/*@thymesVar id="goodCatList" type="java.util.List<com.hot.datacenter.entity.good.GoodCat>"*/-->
+<!--/*@thymesVar id="goodBrands" type="java.util.List<com.hot.datacenter.entity.good.GoodBrand>"*/-->
+<!--/*@thymesVar id="rootTypes" type="java.util.List<com.hot.datacenter.entity.good.GoodType>"*/-->
+<!--/*@thymesVar id="customTypes" type="java.util.List<com.hot.datacenter.entity.good.GoodType>"*/-->
 <head id="Head1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
@@ -35,9 +37,11 @@
           th:href="@{/resource/scripts/lib/jqueryui/jquery-ui-1.10.3.custom.min.css}" rel="stylesheet"/>
     <script type="text/javascript" th:inline="javascript">
         var ajaxUrl = /*[[@{/batchSetPrice/api/}]]*/ "";
+        var stdTypes = /*[[${goodSearch.standardTypePath}]]*/ "";
 
         function search() {
             $("input[name=pageIndex]").val(1);
+            $("input[name=standardTypePath]").val(stdGoodTypeHandler.getSelSdtTypes());
             $("#searchForm").submit();
         }
         function searchAll() {
@@ -205,8 +209,71 @@
             }
         };
 
+        var stdGoodTypeHandler = {
+            stdTypeChange: function (selObj) {
+                var $selObj = $(selObj);
+                var parentId = $selObj.attr("parent-id");
+                var selType = $selObj.val();
+                this.getStdTypesByParent(selType, parentId, [], 0);
+            },
+            //selType:选中的值,parentId:当前类目的父类目,selStdTypes:选中的类目path，是个数组
+            getStdTypesByParent: function (selType, parentId, selStdTypes, selIndex) {
+                var $subDiv = $("#parent_" + parentId + "_div");
+
+                if (selType == "0") {
+                    $subDiv.html("");
+                    return;
+                }
+
+                J.GetJsonRespons(ajaxUrl + "getStandardTypeByParent", {
+                    parentTypeId: selType
+                }, function (json) {
+                    if (json.data.length > 0) {
+                        //从索引1开始
+                        var appendHtml = $("#stdType_template").html();
+                        appendHtml = appendHtml.replace(/{parentId}/g, selType);
+                        var options = "";
+                        $.each(json.data, function (o, item) {
+                            options += '<option value="' + item.standardTypeId + '">' + item.name + '</option>';
+                        });
+                        appendHtml = appendHtml.replace("{subStdTypes}", options);
+                        $subDiv.html("");
+                        $subDiv.html(appendHtml);
+                        if (selStdTypes.length > 1) {
+                            //绑定选中并寻找下一个
+                            if (selIndex <= selStdTypes.length - 1) {
+                                $("#parent_" + selType).val(selStdTypes[selIndex]);
+                                stdGoodTypeHandler.getStdTypesByParent(selStdTypes[selIndex], selType, selStdTypes, selIndex + 1);
+                            }
+                        }
+                    }
+                }, function () {
+                }, "post");
+            },
+            getSelSdtTypes: function () {
+                var selStdTypes = "";
+
+                $("select[name=parent_0]").each(function () {
+                    var selStdType = $(this).val();
+                    if (selStdType > 0) {
+                        selStdTypes += selStdType + "|";
+                    }
+                });
+                return selStdTypes.substring(0, selStdTypes.length - 1);
+            },
+            bindSearchCondition: function () {
+                if (stdTypes != null && stdTypes.length > 0) {
+                    //开始绑定
+                    var stdTypesArray = stdTypes.split('|');
+                    $("#parent_0").val(stdTypesArray[0]);
+                    this.getStdTypesByParent(stdTypesArray[0], 0, stdTypesArray, 1);
+                }
+            }
+        };
+
         $(function () {
             batchSetHandler.bindSavedGoodInfo();
+            stdGoodTypeHandler.bindSearchCondition();
             $("#levelCheckAll").change(function () {
                 if ($(this).attr("checked")) {
                     $("input[name=chkLevel]").attr("checked", "checked");
@@ -228,7 +295,8 @@
                 $("input[name=pageIndex]").val(1);
                 $("#goodName").val("");
                 $("#searchForm").submit();
-            })
+            });
+
         });
         /*]]>*/
     </script>
@@ -273,8 +341,39 @@
             <div class="cnt-wp">
                 <div class="cnt">
 
-                    <!--/*@thymesVar id="goodSearch" type="com.huotu.mallutils.service.search.GoodSearch"*/-->
+                    <!--/*@thymesVar id="goodSearch" type="com.hot.datacenter.search.GoodSearch"*/-->
                     <div class="search-bar" th:object="${goodSearch}">
+                        <div>
+                            <div style="float: left; padding: 3px 0px">
+                                <label class="first ">商品标准类目：&nbsp;</label>
+                            </div>
+                            <div class="cc-listwrap" style="float: left">
+                                <div style="float: left; padding: 0px 1px;">
+                                    <select name="parent_0" id="parent_0" parent-id="0" onchange="stdGoodTypeHandler.stdTypeChange(this)">
+                                        <option value="0">--请选择--</option>
+
+                                        <th:block th:each="standardType:${rootTypes}">
+                                            <option th:value="${standardType.standardTypeId}" th:text="${standardType.name}"></option>
+                                        </th:block>
+                                    </select>
+                                    <input type="hidden" name="standardTypePath"/>
+                                </div>
+                                <div id="parent_0_div" style="float: left; padding: 0px 1px;"></div>
+                            </div>
+                        </div>
+                        <p style="clear: both; height: 18px;"></p>
+
+                        <label class="first ">自定义商品类型：</label>
+                        <select name="goodTypeId">
+                            <option value="0">全部类型</option>
+
+                            <th:block th:each="customType:${customTypes}">
+                                <option th:value="${customType.typeId}"
+                                        th:selected="*{goodTypeId}==${customType.typeId}"
+                                        th:text="${customType.getName()}"></option>
+                            </th:block>
+                        </select>
+
                         <label class="first ">商品名称：</label>
                         <input name="goodName" th:value="*{goodName}" type="text" id="goodName" class="input-small" style="width: 120px;"/>
                         <label class="first ">分类：</label>
@@ -362,7 +461,7 @@
                                         </thead>
                                         <tbody>
 
-                                        <!--/*@thymesVar id="goods" type="java.util.List<com.huotu.mallutils.service.entity.good.Good>"*/-->
+                                        <!--/*@thymesVar id="goods" type="java.util.List<com.hot.datacenter.entity.good.Good>"*/-->
                                         <tr th:each="good:${goods}">
                                             <td class="txt40 c">
                                                 <input type="checkbox" onclick="batchSetHandler.setSavedGoodInfo()" name="chkGoodId" th:value="${good.goodId}"/>
@@ -402,3 +501,14 @@
 </form>
 </body>
 </html>
+
+<script type="text/html" id="stdType_template">
+    <div style="float: left; padding: 0px 1px;">
+        <select name="parent_0" id="parent_{parentId}" parent-id="{parentId}" onchange="stdGoodTypeHandler.stdTypeChange(this)" style="float: left;">
+            <option value="0">--请选择--</option>
+            {subStdTypes}
+        </select>
+
+        <div id="parent_{parentId}_div" style="float: left; padding: 0px 1px;"></div>
+    </div>
+</script>

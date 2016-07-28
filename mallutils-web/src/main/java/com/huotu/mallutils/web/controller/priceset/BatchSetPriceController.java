@@ -9,18 +9,20 @@
 
 package com.huotu.mallutils.web.controller.priceset;
 
+import com.hot.datacenter.entity.client.UserLevel;
+import com.hot.datacenter.entity.config.MallBaseConfig;
+import com.hot.datacenter.entity.good.Good;
+import com.hot.datacenter.entity.good.GoodBrand;
+import com.hot.datacenter.entity.good.GoodCat;
+import com.hot.datacenter.entity.good.GoodType;
+import com.hot.datacenter.search.GoodSearch;
 import com.huotu.mallutils.common.SysConstant;
 import com.huotu.mallutils.common.annotation.RequestAttribute;
-import com.huotu.mallutils.service.entity.config.MallBaseConfig;
-import com.huotu.mallutils.service.entity.good.Good;
-import com.huotu.mallutils.service.entity.good.GoodBrand;
-import com.huotu.mallutils.service.entity.good.GoodCat;
-import com.huotu.mallutils.service.entity.user.Level;
-import com.huotu.mallutils.service.search.GoodSearch;
 import com.huotu.mallutils.service.service.config.MallBaseConfigService;
 import com.huotu.mallutils.service.service.good.GoodBrandService;
 import com.huotu.mallutils.service.service.good.GoodCatService;
 import com.huotu.mallutils.service.service.good.GoodService;
+import com.huotu.mallutils.service.service.good.GoodTypeService;
 import com.huotu.mallutils.service.service.user.LevelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -49,6 +51,8 @@ public class BatchSetPriceController {
     private GoodBrandService goodBrandService;
     @Autowired
     private MallBaseConfigService baseConfigService;
+    @Autowired
+    private GoodTypeService goodTypeService;
 
     @RequestMapping(value = "/catList", method = RequestMethod.GET)
     public String catList(@RequestAttribute Integer customerId, Model model) {
@@ -72,24 +76,26 @@ public class BatchSetPriceController {
             @ModelAttribute(value = "goodSearch") GoodSearch goodSearch,
             Model model
     ) {
-        Page<Good> goods = goodService.findAll(pageIndex, SysConstant.DEFAULT_PAGE_INDEX, customerId, goodSearch);
+        goodSearch.setCustomerId(customerId);
+        Page<Good> goods = goodService.findAll(pageIndex, SysConstant.DEFAULT_PAGE_INDEX, goodSearch);
+        List<GoodType> rootTypes = goodTypeService.findRootStandardTypes();
+        List<GoodType> customTypes = goodTypeService.findByCustomerId(customerId);
 
         List<GoodCat> goodCatList = goodCatService.findByCustomerId(customerId);
-        List<GoodBrand> goodBrands = goodBrandService.findByCustomerId(customerId);
-
         model.addAttribute("goods", goods.getContent());
         model.addAttribute("pageSize", SysConstant.DEFAULT_PAGE_INDEX);
         model.addAttribute("totalPages", goods.getTotalPages());
         model.addAttribute("totalRecords", goods.getTotalElements());
         model.addAttribute("pageIndex", pageIndex);
         model.addAttribute("goodCatList", goodCatList);
-        model.addAttribute("goodBrands", goodBrands);
+        model.addAttribute("rootTypes", rootTypes);
+        model.addAttribute("customTypes", customTypes);
 
         return "batchSetPrice/good_listV2";
     }
 
     @ModelAttribute(value = "levels")
-    public List<Level> levels(@RequestAttribute Integer customerId) {
+    public List<UserLevel> levels(@RequestAttribute Integer customerId) {
         return levelService.findByCustomerIdWithOrder(customerId);
     }
 

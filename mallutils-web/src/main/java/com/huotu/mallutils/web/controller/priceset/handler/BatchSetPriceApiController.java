@@ -9,10 +9,12 @@
 
 package com.huotu.mallutils.web.controller.priceset.handler;
 
+import com.hot.datacenter.entity.good.Good;
+import com.hot.datacenter.entity.good.GoodType;
 import com.huotu.mallutils.common.annotation.RequestAttribute;
 import com.huotu.mallutils.common.ienum.ResultCode;
-import com.huotu.mallutils.service.entity.good.Good;
 import com.huotu.mallutils.service.service.good.GoodService;
+import com.huotu.mallutils.service.service.good.GoodTypeService;
 import com.huotu.mallutils.web.common.ApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,6 +35,8 @@ import java.util.Map;
 public class BatchSetPriceApiController {
     @Autowired
     private GoodService goodService;
+    @Autowired
+    private GoodTypeService goodTypeService;
 
     /**
      * 通过分类设置会员价
@@ -48,10 +52,10 @@ public class BatchSetPriceApiController {
     public ApiResult batchSetUserPriceByCats(String evalInfos, String cateIdList, @RequestAttribute Integer customerId) throws Exception {
         String[] cateIdArray = cateIdList.split(",");
         String[] evalInfoArray = evalInfos.split(",");
-        Map<Integer, String[]> levelsToSet = new HashMap<>(); //设置的等级及公式列表
+        Map<Long, String[]> levelsToSet = new HashMap<>(); //设置的等级及公式列表
         for (String evalInfo : evalInfoArray) {
             String[] info = evalInfo.split(":");
-            levelsToSet.put(Integer.valueOf(info[0]), new String[]{info[1], info[2]});
+            levelsToSet.put(Long.valueOf(info[0]), new String[]{info[1], info[2]});
         }
         for (String cateIdStr : cateIdArray) {
             List<Good> goodsBeans = goodService.findByCatIdExceptAct("|" + cateIdStr + "|", 0);
@@ -85,10 +89,10 @@ public class BatchSetPriceApiController {
     public ApiResult batchSetByBrands(String evalInfos, String brandIdList, @RequestAttribute Integer customerId) throws Exception {
         String[] brandIdArray = brandIdList.split(",");
         String[] evalInfoArray = evalInfos.split(",");
-        Map<Integer, String[]> levelsToSet = new HashMap<>(); //设置的等级及公式列表
+        Map<Long, String[]> levelsToSet = new HashMap<>(); //设置的等级及公式列表
         for (String evalInfo : evalInfoArray) {
             String[] info = evalInfo.split(":");
-            levelsToSet.put(Integer.valueOf(info[0]), new String[]{info[1], info[2]});
+            levelsToSet.put(Long.valueOf(info[0]), new String[]{info[1], info[2]});
         }
         for (String brandIdStr : brandIdArray) {
             List<Good> goodsBeans = goodService.findByBrandIdExceptAct(Integer.parseInt(brandIdStr), 0);
@@ -121,14 +125,14 @@ public class BatchSetPriceApiController {
     public ApiResult bachSetByGoods(String evalInfos, String goodListStr, @RequestAttribute Integer customerId) throws Exception {
         String[] goodIdArray = goodListStr.split(",");
         String[] evalInfoArray = evalInfos.split(",");
-        Map<Integer, String[]> levelsToSet = new HashMap<>(); //设置的等级及公式列表
+        Map<Long, String[]> levelsToSet = new HashMap<>(); //设置的等级及公式列表
         for (String evalInfo : evalInfoArray) {
             String[] info = evalInfo.split(":");
-            levelsToSet.put(Integer.valueOf(info[0]), new String[]{info[1], info[2]});
+            levelsToSet.put(Long.valueOf(info[0]), new String[]{info[1], info[2]});
         }
-        List<Integer> goodIdList = new ArrayList<>();
+        List<Long> goodIdList = new ArrayList<>();
         for (String goodIdStr : goodIdArray) {
-            goodIdList.add(Integer.valueOf(goodIdStr));
+            goodIdList.add(Long.valueOf(goodIdStr));
         }
         List<Good> goods = goodService.findByIdIn(goodIdList);
         goodService.batchSetUserPriceV2(levelsToSet, goods, customerId);
@@ -139,13 +143,21 @@ public class BatchSetPriceApiController {
     @ResponseBody
     public ApiResult batchSetRebateByGoods(String evalStr, String goodListStr, @RequestAttribute Integer customerId) throws Exception {
         String[] goodIdArray = goodListStr.split(",");
-        List<Integer> goodIdList = new ArrayList<>();
+        List<Long> goodIdList = new ArrayList<>();
         for (String goodIdStr : goodIdArray) {
-            goodIdList.add(Integer.valueOf(goodIdStr));
+            goodIdList.add(Long.valueOf(goodIdStr));
         }
         List<Good> goods = goodService.findByIdIn(goodIdList);
         goodService.batchSetRebate(evalStr, goods, customerId);
 
         return ApiResult.resultWith(ResultCode.SUCCESS);
+    }
+
+    @RequestMapping("/getStandardTypeByParent")
+    @ResponseBody
+    public ApiResult getStandardTypeByParent(String parentTypeId) {
+        List<GoodType> goodTypes = goodTypeService.findByParentStandardType(parentTypeId);
+
+        return ApiResult.resultWith(ResultCode.SUCCESS, goodTypes);
     }
 }

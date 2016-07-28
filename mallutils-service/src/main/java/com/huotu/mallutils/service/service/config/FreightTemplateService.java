@@ -9,7 +9,8 @@
 
 package com.huotu.mallutils.service.service.config;
 
-import com.huotu.mallutils.service.entity.config.FreightTemplate;
+import com.hot.datacenter.entity.config.FreightTemplate;
+import com.hot.datacenter.service.CrudService;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -18,16 +19,7 @@ import java.util.List;
  * 运费模板实体对应的服务
  * Created by allan on 7/7/16.
  */
-public interface FreightTemplateService {
-    /**
-     * 保存一个运费模板
-     *
-     * @param freightTemplate 运费模板实体
-     * @return
-     */
-    @Transactional
-    FreightTemplate save(FreightTemplate freightTemplate);
-
+public interface FreightTemplateService extends CrudService<FreightTemplate, Long, Void> {
     /**
      * 得到对应商户下所有的运费模板
      *
@@ -35,14 +27,6 @@ public interface FreightTemplateService {
      * @return
      */
     List<FreightTemplate> findByCustomerId(int customerId, int freightTemplateType);
-
-    /**
-     * 得到某个模板实体
-     *
-     * @param id 模板主键id
-     * @return
-     */
-    FreightTemplate findById(long id);
 
     /**
      * 将商户下所有的运费模板设为非默认,总是在设置默认模板前调用
@@ -62,14 +46,6 @@ public interface FreightTemplateService {
     void setDefault(long id, int customerId);
 
     /**
-     * 删除一个模板,只有在此模板未被使用时可调用
-     *
-     * @param id 模板主键id
-     */
-    @Transactional
-    void delete(long id);
-
-    /**
      * 得到运费模板的使用情况
      * long[]中索引0为模板id,索引1为数量
      *
@@ -77,6 +53,7 @@ public interface FreightTemplateService {
      * @return
      */
     List<long[]> freightTemplateUsedInfo(int customerId, int proType);
+
     /**
      * 运费是否使用
      *

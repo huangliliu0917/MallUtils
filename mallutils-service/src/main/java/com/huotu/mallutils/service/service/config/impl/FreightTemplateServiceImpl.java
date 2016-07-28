@@ -9,38 +9,40 @@
 
 package com.huotu.mallutils.service.service.config.impl;
 
-import com.huotu.mallutils.service.entity.config.FreightTemplate;
-import com.huotu.mallutils.service.ienum.ProType;
-import com.huotu.mallutils.service.repository.config.FreightTemplateRepository;
+import com.hot.datacenter.entity.config.FreightTemplate;
+import com.hot.datacenter.ienum.ProType;
+import com.hot.datacenter.service.AbstractCusCrudService;
+import com.huotu.mallutils.service.repository.config.CusFreightTemplateRepository;
 import com.huotu.mallutils.service.service.config.FreightTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 /**
  * Created by allan on 7/7/16.
  */
 @Service
-public class FreightTemplateServiceImpl implements FreightTemplateService {
+public class FreightTemplateServiceImpl extends AbstractCusCrudService<FreightTemplate, Long, Void> implements FreightTemplateService {
     @Autowired
-    private FreightTemplateRepository freightTemplateRepository;
+    private CusFreightTemplateRepository freightTemplateRepository;
+
+    @PostConstruct
+    private void init() {
+        initRepository(FreightTemplate.class);
+    }
 
     @Override
-    @Transactional
-    public FreightTemplate save(FreightTemplate freightTemplate) {
-        return freightTemplateRepository.save(freightTemplate);
+    public Specification<FreightTemplate> specification(Void aVoid) {
+        return null;
     }
 
     @Override
     public List<FreightTemplate> findByCustomerId(int customerId, int freightTemplateType) {
         return freightTemplateRepository.findByCustomerIdAndFreightTemplateType(customerId, freightTemplateType);
-    }
-
-    @Override
-    public FreightTemplate findById(long id) {
-        return freightTemplateRepository.findOne(id);
     }
 
     @Override
@@ -58,12 +60,6 @@ public class FreightTemplateServiceImpl implements FreightTemplateService {
         freightTemplateRepository.setDefault(id);
     }
 
-    @Override
-    @Transactional
-    public void delete(long id) {
-        freightTemplateRepository.delete(id);
-    }
-
     public List<long[]> freightTemplateUsedInfo(int customerId, int proType) {
         if (proType == ProType.HUOBAN_MALL.getCode()) {
             return freightTemplateRepository.freightTemplateUsedInfoForCustomer(customerId);
@@ -71,7 +67,6 @@ public class FreightTemplateServiceImpl implements FreightTemplateService {
             return freightTemplateRepository.freightTempolateUseInfoForSupplier(customerId);
         }
     }
-
 
     public boolean isUsed(long id) {
         return freightTemplateRepository.isUsed(id) > 0;

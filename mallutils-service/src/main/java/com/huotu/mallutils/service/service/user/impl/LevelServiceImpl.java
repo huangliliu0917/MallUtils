@@ -9,8 +9,8 @@
 
 package com.huotu.mallutils.service.service.user.impl;
 
-import com.huotu.mallutils.service.entity.user.Level;
-import com.huotu.mallutils.service.repository.user.LevelRepository;
+import com.hot.datacenter.entity.client.UserLevel;
+import com.hot.datacenter.repository.client.UserLevelRepository;
 import com.huotu.mallutils.service.service.user.LevelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,20 +25,20 @@ import java.util.stream.Collectors;
 @Service
 public class LevelServiceImpl implements LevelService {
     @Autowired
-    private LevelRepository levelRepository;
+    private UserLevelRepository levelRepository;
 
     @Override
-    public List<Level> findByCustomerId(int customerId) {
+    public List<UserLevel> findByCustomerId(int customerId) {
         return levelRepository.findByCustomerId(customerId);
     }
 
     @Override
-    public List<Level> findByCustomerIdWithOrder(int customerId) {
-        List<Level> levels = findByCustomerId(customerId);
+    public List<UserLevel> findByCustomerIdWithOrder(int customerId) {
+        List<UserLevel> levels = findByCustomerId(customerId);
 
-        List<Level> results = new ArrayList<>();
-        List<Level> userLevelList = levels.stream().filter(level -> level.getType() == 0).collect(Collectors.toList());
-        List<Level> buddyLevelList = levels.stream().filter(level -> level.getType() == 1).collect(Collectors.toList());
+        List<UserLevel> results = new ArrayList<>();
+        List<UserLevel> userLevelList = levels.stream().filter(level -> level.getType() == 0).collect(Collectors.toList());
+        List<UserLevel> buddyLevelList = levels.stream().filter(level -> level.getType() == 1).collect(Collectors.toList());
         results.addAll(buddyLevelList);
         results.addAll(userLevelList);
         return results;

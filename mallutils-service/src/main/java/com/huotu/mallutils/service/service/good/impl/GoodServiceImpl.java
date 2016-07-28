@@ -10,25 +10,28 @@
 package com.huotu.mallutils.service.service.good.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.huotu.mallutils.service.entity.good.Good;
-import com.huotu.mallutils.service.entity.good.GoodLvPrice;
-import com.huotu.mallutils.service.entity.good.Product;
-import com.huotu.mallutils.service.entity.user.Level;
-import com.huotu.mallutils.service.model.DisRebateDesc;
-import com.huotu.mallutils.service.model.PriceLevelDesc;
-import com.huotu.mallutils.service.repository.good.GoodRepository;
-import com.huotu.mallutils.service.search.GoodSearch;
+import com.hot.datacenter.entity.client.UserLevel;
+import com.hot.datacenter.entity.good.Good;
+import com.hot.datacenter.entity.good.GoodLvPrice;
+import com.hot.datacenter.entity.good.Product;
+import com.hot.datacenter.model.good.DisRebateDesc;
+import com.hot.datacenter.model.good.PriceLevelDesc;
+import com.hot.datacenter.search.GoodSearch;
+import com.hot.datacenter.service.AbstractCusCrudService;
+import com.huotu.mallutils.service.repository.good.CusGoodRepository;
 import com.huotu.mallutils.service.service.good.GoodService;
 import com.huotu.mallutils.service.service.good.ProductService;
 import com.huotu.mallutils.service.service.user.LevelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.criteria.Predicate;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -43,17 +46,17 @@ import java.util.Map;
  * Created by allan on 5/16/16.
  */
 @Service
-public class GoodServiceImpl implements GoodService {
+public class GoodServiceImpl extends AbstractCusCrudService<Good, Long, GoodSearch> implements GoodService {
     @Autowired
-    private GoodRepository goodRepository;
+    private CusGoodRepository goodRepository;
     @Autowired
     private LevelService levelService;
     @Autowired
     private ProductService productService;
 
-    @Override
-    public Good save(Good good) {
-        return goodRepository.save(good);
+    @PostConstruct
+    private void init() {
+        initRepository(Good.class);
     }
 
     @Override
@@ -146,16 +149,16 @@ public class GoodServiceImpl implements GoodService {
 
     @Override
     @Transactional
-    public void batchSetUserPriceV2(Map<Integer, String[]> levelsToSet, List<Good> goods, int customerId) throws Exception {
+    public void batchSetUserPriceV2(Map<Long, String[]> levelsToSet, List<Good> goods, int customerId) throws Exception {
         ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("JavaScript");
-        List<Level> levels = levelService.findByCustomerId(customerId);
+        List<UserLevel> levels = levelService.findByCustomerId(customerId);
         for (Good good : goods) {
-            Map<Integer, PriceLevelDesc> priceLevelDescMap = new HashMap<>();
+            Map<Long, PriceLevelDesc> priceLevelDescMap = new HashMap<>();
             for (Product product : good.getProducts()) {
                 String userPriceInfo = "";
 
-                Map<Integer, GoodLvPrice> goodLvPriceMap = new HashMap<>();
-                for (Level level : levels) {
+                Map<Long, GoodLvPrice> goodLvPriceMap = new HashMap<>();
+                for (UserLevel level : levels) {
                     double resultPrice = -1;
                     int resultIntegral = 0;
 
@@ -239,40 +242,21 @@ public class GoodServiceImpl implements GoodService {
 
     @Override
     public List<Good> findByCatIdExceptAct(String catId, int goodScenes) {
-        return goodRepository.findByGoodCat_CatIdAndGoodScenes(catId, goodScenes);
+        return goodRepository.findByGoodCatAndGoodScenes(catId, goodScenes);
     }
 
     @Override
-    public Page<Good> findAll(int pageIndex, int pageSize, int customerId, GoodSearch goodSearch) {
-        Specification<Good> specification = ((root, query, cb) -> {
-            List<Predicate> predicates = new ArrayList<>();
-            predicates.add(cb.equal(root.get("customerId").as(Integer.class), customerId));
-            predicates.add(cb.isFalse(root.get("disabled").as(Boolean.class)));
-            if (!StringUtils.isEmpty(goodSearch.getGoodName())) {
-                predicates.add(cb.like(root.get("name").as(String.class), "%" + goodSearch.getGoodName() + "%"));
-            }
-            if (goodSearch.getCatId() > 0) {
-                predicates.add(cb.like(root.get("goodCat").get("catPath").as(String.class), "%|" + goodSearch.getCatId() + "|%"));
-            }
-            if (!StringUtils.isEmpty(goodSearch.getGoodBn())) {
-                predicates.add(cb.like(root.get("barcode").as(String.class), "%" + goodSearch.getGoodBn() + "%"));
-            }
-            if (goodSearch.getBrand() > 0) {
-                predicates.add(cb.equal(root.get("brandId").as(Integer.class), goodSearch.getBrand()));
-            }
-            return cb.and(predicates.toArray(new Predicate[predicates.size()]));
-        });
-
-        return goodRepository.findAll(specification, new PageRequest(pageIndex - 1, pageSize));
+    public Page<Good> findAll(int pageIndex, int pageSize, GoodSearch goodSearch) {
+        return findAll(goodSearch, new PageRequest(pageIndex - 1, pageSize, new Sort(Sort.Direction.DESC, "goodId")));
     }
 
     @Override
-    public List<Good> findByIdIn(List<Integer> goodIdList) {
+    public List<Good> findByIdIn(List<Long> goodIdList) {
         return goodRepository.findByGoodIdIn(goodIdList);
     }
 
     @Override
-    public List<Good> findByBrandIdExceptAct(int brandId, int goodScenes) {
+    public List<Good> findByBrandIdExceptAct(long brandId, int goodScenes) {
         return goodRepository.findByBrandIdAndGoodScenes(brandId, goodScenes);
     }
 
@@ -286,7 +270,7 @@ public class GoodServiceImpl implements GoodService {
                 double minUserPrice = 0;
                 //得到最低的会员价
                 if (product.getGoodLvPriceMap() != null) {
-                    for (Map.Entry<Integer, GoodLvPrice> entry : product.getGoodLvPriceMap().entrySet()) {
+                    for (Map.Entry<Long, GoodLvPrice> entry : product.getGoodLvPriceMap().entrySet()) {
                         GoodLvPrice goodLvPrice = entry.getValue();
                         if (goodLvPrice.getPrice() > 0) {
                             if (minUserPrice == 0 || goodLvPrice.getPrice() < minUserPrice) {
@@ -315,6 +299,36 @@ public class GoodServiceImpl implements GoodService {
             good.setDisRebateDescList(disRebateDescList);
             this.save(good);
         }
+    }
+
+    @Override
+    public Specification<Good> specification(GoodSearch goodSearch) {
+        Specification<Good> specification = ((root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(cb.equal(root.get("customerId").as(Integer.class), goodSearch.getCustomerId()));
+            predicates.add(cb.isFalse(root.get("disabled").as(Boolean.class)));
+            if (!StringUtils.isEmpty(goodSearch.getGoodName())) {
+                predicates.add(cb.like(root.get("name").as(String.class), "%" + goodSearch.getGoodName() + "%"));
+            }
+            if (goodSearch.getCatId() > 0) {
+                predicates.add(cb.like(root.get("goodCat").get("catPath").as(String.class), "%|" + goodSearch.getCatId() + "|%"));
+            }
+            if (!StringUtils.isEmpty(goodSearch.getGoodBn())) {
+                predicates.add(cb.like(root.get("barcode").as(String.class), "%" + goodSearch.getGoodBn() + "%"));
+            }
+            if (!StringUtils.isEmpty(goodSearch.getBrandName())) {
+                predicates.add(cb.equal(root.get("goodBrand").get("brandName").as(String.class), "%" + goodSearch.getBrand() + "%"));
+            }
+            if (!StringUtils.isEmpty(goodSearch.getStandardTypePath())) {
+                String[] stdTypesArray = goodSearch.getStandardTypePath().split("\\|");
+                predicates.add(cb.like(root.get("standardTypePath").as(String.class), "%|" + stdTypesArray[stdTypesArray.length - 1] + "|%"));
+            }
+            if (goodSearch.getGoodTypeId() > 0) {
+                predicates.add(cb.equal(root.get("typeId").as(Long.class), goodSearch.getGoodTypeId()));
+            }
+            return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+        });
+        return specification;
     }
 
     /**

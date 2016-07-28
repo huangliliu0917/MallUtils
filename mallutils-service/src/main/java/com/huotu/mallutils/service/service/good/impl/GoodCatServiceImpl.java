@@ -9,8 +9,8 @@
 
 package com.huotu.mallutils.service.service.good.impl;
 
-import com.huotu.mallutils.service.entity.good.GoodCat;
-import com.huotu.mallutils.service.repository.good.GoodCatRepository;
+import com.hot.datacenter.entity.good.GoodCat;
+import com.hot.datacenter.repository.good.GoodCatRepository;
 import com.huotu.mallutils.service.service.good.GoodCatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,7 +40,7 @@ public class GoodCatServiceImpl implements GoodCatService {
         return result;
     }
 
-    private void findChild(List<GoodCat> result, int parentId, List<GoodCat> allCate) {
+    private void findChild(List<GoodCat> result, long parentId, List<GoodCat> allCate) {
         List<GoodCat> children = allCate.stream().filter(p -> p.getParentId() == parentId).collect(Collectors.toList());
         for (GoodCat child : children) {
             result.add(child);

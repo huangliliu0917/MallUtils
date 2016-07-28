@@ -31,7 +31,7 @@
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource"></property>
         <property name="persistenceUnitName" value="hbmEntity"/>
-        <property name="packagesToScan" value="com.huotu.mallutils.service.entity"/>
+        <property name="packagesToScan" value="com.hot.datacenter.entity"/>
         <property name="persistenceProvider">
             <bean class="org.eclipse.persistence.jpa.PersistenceProvider"/>
         </property>
