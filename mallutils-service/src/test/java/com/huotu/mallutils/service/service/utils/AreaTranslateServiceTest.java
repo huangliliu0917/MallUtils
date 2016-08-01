@@ -12,6 +12,7 @@ package com.huotu.mallutils.service.service.utils;
 import com.huotu.mallutils.service.ServiceTestBase;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 
 /**
  * Created by allan on 8/1/16.
@@ -21,10 +22,12 @@ public class AreaTranslateServiceTest extends ServiceTestBase {
     private AreaTranslateService areaTranslateService;
 
     @Test
+    @Rollback(false)
     public void testTaobaoAreas() throws Exception {
         System.out.println("start");
-//        areaTranslateService.TranslateArea();
-        areaTranslateService.translateRegionNode();
+        areaTranslateService.translateArea();
+//        areaTranslateService.translateRegionNode();
+//        areaTranslateService.translateAreaToDatabase();
         System.out.println("end");
     }
 }

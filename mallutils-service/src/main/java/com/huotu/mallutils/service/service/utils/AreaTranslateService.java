@@ -12,6 +12,8 @@ package com.huotu.mallutils.service.service.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hot.datacenter.entity.MallAreaData;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 
@@ -26,6 +28,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class AreaTranslateService {
+    @Autowired
+    private MallAreaService areaService;
 
     public List<TaobaoArea> taobaoAreas() throws IOException {
         InputStream inputStream = AreaTranslateService.class.getClassLoader().getResourceAsStream("taobao_area.txt");
@@ -113,8 +117,30 @@ public class AreaTranslateService {
         createJs(file, newAreaStr);
     }
 
+    /**
+     * 转换到数据库
+     *
+     * @throws IOException
+     */
     public void translateAreaToDatabase() throws IOException {
+        List<TaobaoArea> taobaoAreas = taobaoAreas();
 
+        List<HotArea> hotAreas = new ArrayList<>();
+        setSubRegion(hotAreas, taobaoAreas, "1");
+
+        List<MallAreaData> areaDatas = new ArrayList<>();
+        hotAreas.forEach(area -> {
+            MallAreaData areaData = new MallAreaData();
+            areaData.setId(area.getId());
+            areaData.setName(area.getName());
+
+            if (!"0".equals(area.getPId())) {
+                areaData.setParentId(area.getPId());
+            }
+            areaData.setLevel(area.getDepth());
+            areaDatas.add(areaData);
+        });
+        areaService.save(areaDatas);
     }
 
     private void setSubRegion(List<HotArea> hotAreas, List<TaobaoArea> taobaoAreas, String parentId) {

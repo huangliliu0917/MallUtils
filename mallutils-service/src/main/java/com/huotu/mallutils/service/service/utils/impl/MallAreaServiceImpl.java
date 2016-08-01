@@ -13,10 +13,12 @@ import com.hot.datacenter.entity.MallAreaData;
 import com.hot.datacenter.service.AbstractCrudService;
 import com.huotu.mallutils.service.service.utils.MallAreaService;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by allan on 8/1/16.
  */
+@Service
 public class MallAreaServiceImpl extends AbstractCrudService<MallAreaData, String, Void> implements MallAreaService {
 
     @Override
