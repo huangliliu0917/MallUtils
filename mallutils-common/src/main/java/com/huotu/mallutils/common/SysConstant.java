@@ -23,6 +23,7 @@ public class SysConstant {
     public static final int DEFAULT_PAGE_INDEX = 20;
     public static String HUOBANMALL_LOGIN;
     public static String SUPPLIER_LOGIN;
+    public static String Agent_SHOP_LOGIN;
 
     @Autowired
     private Environment environment;
@@ -31,5 +32,6 @@ public class SysConstant {
     public void init() {
         HUOBANMALL_LOGIN = environment.getProperty("huobanmall_login", "http://login.huobanplus.com");
         SUPPLIER_LOGIN = environment.getProperty("supplier_login", "http://gys.huobanplus.com");
+        Agent_SHOP_LOGIN = environment.getProperty("agent_shop_login", "http://localhost:8080");
     }
 }

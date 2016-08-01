@@ -32,30 +32,46 @@ public class AuthorityInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         int proType = getRequestParameter(request, "proType", 0);
 
-        Integer customerId;
-        if (proType == 0) {
-            customerId = CookieHelper.getCookieValInteger(request, "UserID");
+        Integer customerId = null;
 
-            if (environment.acceptsProfiles("development")) {
-                customerId = 296;
-            }
+        switch (proType) {
+            case 0:
+                customerId = CookieHelper.getCookieValInteger(request, "UserID");
 
-            if (customerId == 0) {
-                response.sendRedirect(SysConstant.HUOBANMALL_LOGIN);
-                return false;
-            }
-        } else {
-            customerId = CookieHelper.getCookieValInteger(request, "supplierId");
+                if (environment.acceptsProfiles("development")) {
+                    customerId = 296;
+                }
 
-            if (environment.acceptsProfiles("development")) {
-                customerId = 23367; //哟哟哟
-            }
+                if (customerId == 0) {
+                    response.sendRedirect(SysConstant.HUOBANMALL_LOGIN);
+                    return false;
+                }
+                break;
+            case 1:
+                customerId = CookieHelper.getCookieValInteger(request, "supplierId");
 
-            if (customerId == 0) {
-                response.sendRedirect(SysConstant.SUPPLIER_LOGIN);
-                return false;
-            }
+                if (environment.acceptsProfiles("development")) {
+                    customerId = 23367; //哟哟哟
+                }
+
+                if (customerId == 0) {
+                    response.sendRedirect(SysConstant.SUPPLIER_LOGIN);
+                    return false;
+                }
+                break;
+            case 2:
+                customerId = CookieHelper.getCookieValInteger(request, "agentShopId");
+                if (environment.acceptsProfiles("development")) {
+                    customerId = 35387; //哟哟哟
+                }
+
+                if (customerId == 0) {
+                    response.sendRedirect(SysConstant.Agent_SHOP_LOGIN);
+                    return false;
+                }
+                break;
         }
+
         request.setAttribute("customerId", customerId);
         return true;
     }
