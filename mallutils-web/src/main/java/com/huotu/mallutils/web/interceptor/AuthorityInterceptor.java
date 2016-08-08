@@ -39,7 +39,7 @@ public class AuthorityInterceptor extends HandlerInterceptorAdapter {
                 customerId = CookieHelper.getCookieValInteger(request, "UserID");
 
                 if (environment.acceptsProfiles("development")) {
-                    customerId = 296;
+                    customerId = 4471;
                 }
 
                 if (customerId == 0) {
