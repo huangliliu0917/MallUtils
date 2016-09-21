@@ -60,7 +60,7 @@ public class DWTApiController {
                         return ApiResult.resultWith(ResultCode.SUCCESS, data.getData());
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    return ApiResult.resultWith(ResultCode.ERROR, e.getMessage());
                 }
                 break;
             case "WechatBindCreate"://注册
@@ -72,7 +72,7 @@ public class DWTApiController {
                         return ApiResult.resultWith(ResultCode.SUCCESS, data.getData());
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    return ApiResult.resultWith(ResultCode.ERROR, e.getMessage());
                 }
                 break;
             case "AuthenticateWechatRequest"://绑定验证码
@@ -96,7 +96,7 @@ public class DWTApiController {
                         return ApiResult.resultWith(ResultCode.SUCCESS, data.getData());
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    return ApiResult.resultWith(ResultCode.ERROR, e.getMessage());
                 }
                 break;
             case "PointMaintenance": //积分维护
@@ -108,7 +108,7 @@ public class DWTApiController {
                         return ApiResult.resultWith(ResultCode.SUCCESS, data.getData());
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    return ApiResult.resultWith(ResultCode.ERROR, e.getMessage());
                 }
                 break;
             case "GetMemberInfo"://会员信息查询（包括现有积分）
@@ -123,9 +123,17 @@ public class DWTApiController {
                         log.info("url:" + DWTSysData.GET_MEMBER_INFO_URL + "&returndata:" + JSON.toJSONString(data));
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    return ApiResult.resultWith(ResultCode.ERROR, e.getMessage());
                 }
                 break;
+            case "FansManage"://关注和取消关注
+                FansBean fansBean = JSON.parseObject(infoJson, FansBean.class);
+                try {
+                    ReturnData data = new SapConnector().fansManage(fansBean);
+                    return ApiResult.resultWith(ResultCode.SUCCESS, data);
+                } catch (Exception e) {
+                    return ApiResult.resultWith(ResultCode.ERROR, e.getMessage());
+                }
             default:
                 return ApiResult.resultWith(ResultCode.ERROR);
         }
